@@ -1,0 +1,20 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "Rick And Morty Wiki"
+include ':app'
+include ':cf-core'
+include ':cf-data'
+include ':f-character-list'
+include ':cf-network'
