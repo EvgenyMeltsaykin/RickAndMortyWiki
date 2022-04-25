@@ -27,4 +27,8 @@ dependencies {
 
     implementation("io.insert-koin:koin-core:3.1.6")
     implementation("io.insert-koin:koin-android:3.1.6")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+
+    implementation(project(":cf-network"))
+    implementation(project(":cf-data"))
 }

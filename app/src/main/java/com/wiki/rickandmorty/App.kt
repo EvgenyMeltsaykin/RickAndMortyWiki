@@ -1,7 +1,10 @@
 package com.wiki.rickandmorty
 
 import android.app.Application
-import com.wiki.rickandmorty.di.mainModule
+import com.wiki.f_character_list.di.characterListModule
+import com.wiki.i_character.di.networkCharacterModule
+import com.wiki.i_episode.di.networkEpisodeModule
+import com.wiki.rickandmorty.di.navigationModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -15,7 +18,12 @@ class App : Application() {
         startKoin {
             androidLogger(Level.ERROR)
             androidContext(this@App)
-            modules(mainModule)
+            modules(
+                navigationModule,
+                networkEpisodeModule,
+                networkCharacterModule,
+                characterListModule
+            )
         }
 
     }

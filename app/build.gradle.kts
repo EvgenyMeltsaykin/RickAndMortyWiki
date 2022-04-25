@@ -91,6 +91,8 @@ dependencies {
     implementation(project(":cf-data"))
     implementation(project(":cf-network"))
     implementation(project(":f-character-list"))
+    implementation(project(":i-character"))
+    implementation(project(":i-episode"))
     //implementation(platform("com.google.firebase:firebase-bom:29.3.1"))
 
     //implementation("com.google.firebase:firebase-crashlytics")

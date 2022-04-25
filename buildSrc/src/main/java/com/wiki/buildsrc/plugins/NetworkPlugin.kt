@@ -20,6 +20,10 @@ class NetworkPlugin : BasePlugin() {
                 implementation("com.squareup.okhttp3:okhttp:4.9.3")
                 implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+
+                implementation("io.insert-koin:koin-core:3.1.6")
+                implementation("io.insert-koin:koin-android:3.1.6")
+
                 implementation(project(":cf-data"))
             }
         }

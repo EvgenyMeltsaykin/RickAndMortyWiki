@@ -24,7 +24,7 @@ class FeaturePlugin : BasePlugin() {
                 implementation("io.insert-koin:koin-core:3.1.6")
                 implementation("io.insert-koin:koin-android:3.1.6")
                 implementation("com.github.terrakok:cicerone:7.1")
-
+                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
                 implementation(project(":cf-core"))
                 implementation(project(":cf-data"))
             }

@@ -6,7 +6,7 @@ import com.wiki.cf_core.navigation.ScreenProvider
 import com.wiki.rickandmorty.navigation.Screens
 import org.koin.dsl.module
 
-val mainModule = module {
+val navigationModule = module {
     single { Cicerone.create() }
     single { NavigationTabHolder() }
     single<ScreenProvider> { Screens }
