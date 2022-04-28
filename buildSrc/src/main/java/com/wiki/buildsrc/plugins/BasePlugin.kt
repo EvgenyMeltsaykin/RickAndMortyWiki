@@ -18,6 +18,10 @@ abstract class BasePlugin : Plugin<Project> {
         add("implementation", depName)
     }
 
+    protected fun DependencyHandler.annotationProcessor(depName: String) {
+        add("annotationProcessor", depName)
+    }
+
     protected fun DependencyHandler.kapt(depName: String) {
         add("kapt", depName)
     }

@@ -12,7 +12,7 @@ import com.wiki.cf_core.R
 import com.wiki.cf_core.databinding.FragmentTabContainerBinding
 import org.koin.android.ext.android.inject
 
-class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener {
+class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener, UiControl {
 
     private var _binding: FragmentTabContainerBinding? = null
     private val binding: FragmentTabContainerBinding
@@ -76,5 +76,10 @@ class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener 
     override fun onBackPressed(): Boolean {
         return (fragment as? OnBackPressedListener)?.onBackPressed() ?: false
     }
+
+    override fun bindNavigationUi() {
+        (fragment.takeIf { it != null && it is UiControl } as? UiControl)?.bindNavigationUi()
+    }
+
 
 }

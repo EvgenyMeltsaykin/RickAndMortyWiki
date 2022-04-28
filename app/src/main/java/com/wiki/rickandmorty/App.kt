@@ -1,7 +1,9 @@
 package com.wiki.rickandmorty
 
 import android.app.Application
+import com.wiki.cf_network.di.mainNetworkModule
 import com.wiki.f_character_list.di.characterListModule
+import com.wiki.f_detail_character.di.detailCharacterModule
 import com.wiki.i_character.di.networkCharacterModule
 import com.wiki.i_episode.di.networkEpisodeModule
 import com.wiki.rickandmorty.di.navigationModule
@@ -22,7 +24,9 @@ class App : Application() {
                 navigationModule,
                 networkEpisodeModule,
                 networkCharacterModule,
-                characterListModule
+                characterListModule,
+                mainNetworkModule,
+                detailCharacterModule
             )
         }
 

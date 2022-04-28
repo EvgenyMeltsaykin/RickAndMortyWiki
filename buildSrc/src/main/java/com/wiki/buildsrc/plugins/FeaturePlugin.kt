@@ -25,8 +25,15 @@ class FeaturePlugin : BasePlugin() {
                 implementation("io.insert-koin:koin-android:3.1.6")
                 implementation("com.github.terrakok:cicerone:7.1")
                 implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+
+                implementation("jp.wasabeef:glide-transformations:4.3.0")
+
+                implementation("com.github.bumptech.glide:glide:4.13.0")
+                annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")
                 implementation(project(":cf-core"))
                 implementation(project(":cf-data"))
+                implementation(project(":cf-network"))
+                implementation(project(":cf-ui"))
             }
         }
     }

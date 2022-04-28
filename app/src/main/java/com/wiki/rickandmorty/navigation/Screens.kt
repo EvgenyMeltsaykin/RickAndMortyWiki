@@ -4,10 +4,15 @@ import com.github.terrakok.cicerone.androidx.FragmentScreen
 import com.wiki.cf_core.navigation.NavigationTabFragment
 import com.wiki.cf_core.navigation.ScreenProvider
 import com.wiki.cf_core.navigation.TabKeys
+import com.wiki.cf_data.CharacterDto
 import com.wiki.f_character_list.CharacterListFragment
+import com.wiki.f_detail_character.DetailCharacterFragment
 
 object Screens : ScreenProvider {
     override fun Characters() = FragmentScreen { CharacterListFragment() }
+
+    override fun DetailCharacter(character: CharacterDto) =
+        FragmentScreen { DetailCharacterFragment.newInstance(character) }
 
     override fun TabContainer(tabKey: TabKeys) = FragmentScreen {
         NavigationTabFragment.newInstance(tabKey)

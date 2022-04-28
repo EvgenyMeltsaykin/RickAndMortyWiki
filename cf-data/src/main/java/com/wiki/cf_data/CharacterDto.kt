@@ -1,8 +1,9 @@
 package com.wiki.cf_data
 
 import com.wiki.cf_data.common.SimpleData
+import java.io.Serializable
 
-enum class LifeStatus(val status: String) {
+enum class LifeStatus(val status: String) : Serializable {
     DEAD("Dead"),
     ALIVE("Alive"),
     UNKNOWN("Unknown"),
@@ -30,4 +31,4 @@ data class CharacterDto(
     val originLocation: SimpleData,
     val lastKnownLocation: SimpleData,
     val episodeIds: List<String>
-)
+) : Serializable
