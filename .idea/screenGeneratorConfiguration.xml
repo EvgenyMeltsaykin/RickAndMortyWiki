@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ScreenGeneratorConfiguration">
+    <option name="settings">
+      <Settings>
+        <option name="categories">
+          <list>
+            <Category>
+              <option name="id" value="1" />
+              <option name="name" value="MVI" />
+            </Category>
+          </list>
+        </option>
+        <option name="screenElements">
+          <list>
+            <ScreenElement>
+              <option name="categoryId" value="1" />
+              <option name="fileNameTemplate" value="%screenName%%screenElement%" />
+              <option name="name" value="ViewModel" />
+              <option name="template" value="package %packageName%&#10;&#10;import com.wiki.cf_core.base.BaseViewModel&#10;&#10;class %screenName%%screenElement%(&#10;&#10;): BaseViewModel&lt;%screenName%Events,%screenName%State&gt;(%screenName%State){&#10;&#10;}&#10;" />
+            </ScreenElement>
+            <ScreenElement>
+              <option name="categoryId" value="1" />
+              <option name="fileNameTemplate" value="%screenName%%screenElement%" />
+              <option name="name" value="Fragment" />
+              <option name="template" value="package %packageName%&#10;&#10;import %packageName%.databinding.%screenElement%%screenName%Binding&#10;import org.koin.androidx.viewmodel.ext.android.viewModel&#10;import com.wiki.cf_ui.controllers.NavigationUiConfig&#10;import com.wiki.cf_core.base.BaseFragment&#10;&#10;class %screenName%%screenElement% : BaseFragment&lt;&#10;%screenElement%%screenName%Binding,&#10;%screenName%Events,&#10;%screenName%State,&#10;%screenName%ViewModel&#10;    &gt;() {&#10;&#10;    override val viewModel: %screenName%ViewModel by viewModel()&#10;&#10;    override fun renderState(state: %screenName%State) {&#10;&#10;    }&#10;    &#10;    override fun initView() {&#10;        &#10;    }&#10;    &#10;    override fun bindEvents(event: %screenName%Events) {&#10;        when (event) {&#10;&#10;        }&#10;    }&#10;&#10;    override fun bindNavigationUi() {&#10;        setNavigationUiConfig(&#10;            NavigationUiConfig()&#10;        )&#10;    }&#10;}&#10;&#10;" />
+            </ScreenElement>
+            <ScreenElement>
+              <option name="categoryId" value="1" />
+              <option name="fileNameTemplate" value="%screenName%%screenElement%" />
+              <option name="name" value="Events" />
+              <option name="template" value="package %packageName%&#10;&#10;import com.wiki.cf_core.base.EventScreen&#10;&#10;sealed class %screenName%%screenElement% : EventScreen{&#10;    &#10;}" />
+            </ScreenElement>
+            <ScreenElement>
+              <option name="categoryId" value="1" />
+              <option name="fileNameTemplate" value="%screenName%%screenElement%" />
+              <option name="name" value="State" />
+              <option name="template" value="package %packageName%&#10;&#10;import com.wiki.cf_core.base.StateScreen&#10;&#10;object %screenName%%screenElement% : StateScreen" />
+            </ScreenElement>
+            <ScreenElement>
+              <option name="categoryId" value="1" />
+              <option name="fileNameTemplate" value="%screenName%%screenElement%" />
+              <option name="name" value="Module" />
+              <option name="subdirectory" value="di" />
+              <option name="template" value="package %packageName%.di&#10;&#10;import %packageName%.%screenName%ViewModel&#10;import org.koin.androidx.viewmodel.dsl.viewModel&#10;import org.koin.dsl.module&#10;&#10;val %screenName%%screenElement% = module {&#10;    viewModel {  %screenName%ViewModel() }&#10;}" />
+            </ScreenElement>
+            <ScreenElement>
+              <option name="categoryId" value="1" />
+              <option name="fileNameTemplate" value="fragment_%screenNameSnakeCase%" />
+              <option name="fileType" value="Layout XML" />
+              <option name="name" value="fragment_layout" />
+              <option name="template" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&#10;&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&#10;    android:layout_width=&quot;match_parent&quot;&#10;    android:layout_height=&quot;match_parent&quot;&gt;&#10;&#10;&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;" />
+            </ScreenElement>
+          </list>
+        </option>
+      </Settings>
+    </option>
+  </component>
+</project>
