@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <com.wiki.cf_ui.custom_view.PortalView
         android:id="@+id/loader"
         android:layout_width="64dp"
         android:layout_height="64dp"

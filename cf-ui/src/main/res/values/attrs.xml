@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TwoRowTextView">
+
+        <attr name="firstRowText" format="string" />
+        <attr name="secondRowText" format="string" />
+        <attr name="rowTextSize" format="dimension" />
+        <attr name="rowTextColor" format="color" />
+        <attr name="android:gravity" />
+    </declare-styleable>
+</resources>

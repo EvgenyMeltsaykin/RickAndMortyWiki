@@ -49,7 +49,7 @@
               <option name="fileNameTemplate" value="fragment_%screenNameSnakeCase%" />
               <option name="fileType" value="Layout XML" />
               <option name="name" value="fragment_layout" />
-              <option name="template" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&#10;&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&#10;    android:layout_width=&quot;match_parent&quot;&#10;    android:layout_height=&quot;match_parent&quot;&gt;&#10;&#10;&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;" />
+              <option name="template" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&#10;&lt;androidx.constraintlayout.widget.ConstraintLayout &#10;    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&#10;    xmlns:tools=&quot;http://schemas.android.com/tools&quot;&#10;    android:layout_width=&quot;match_parent&quot;&#10;    android:layout_height=&quot;match_parent&quot;&gt;&#10;&#10;&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;" />
             </ScreenElement>
           </list>
         </option>

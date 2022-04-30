@@ -4,7 +4,6 @@ import androidx.fragment.app.*
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 
-
 class CustomAppNavigator(
     activity: FragmentActivity,
     containerId: Int,

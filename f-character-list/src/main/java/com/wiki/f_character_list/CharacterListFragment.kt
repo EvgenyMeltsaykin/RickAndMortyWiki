@@ -1,10 +1,11 @@
 package com.wiki.f_character_list
 
+import android.view.View
 import androidx.core.view.isVisible
-import com.bumptech.glide.Glide
 import com.wiki.cf_core.base.BaseFragment
-import com.wiki.cf_core.extensions.listenerLastElementVisible
-import com.wiki.cf_core.extensions.pagination
+import com.wiki.cf_core.navigation.SharedElementFragment
+import com.wiki.cf_extensions.listenerLastElementVisible
+import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.f_character_list.adapter.CharacterAdapter
 import com.wiki.f_character_list.databinding.FragmentCharacterListBinding
@@ -15,14 +16,22 @@ class CharacterListFragment : BaseFragment<
     CharacterListEvents,
     CharacterListState,
     CharacterListViewModel
-    >() {
+    >(), SharedElementFragment {
 
     override val viewModel: CharacterListViewModel by viewModel()
+    override var sharedView: View? = null
     private val characterAdapter: CharacterAdapter = CharacterAdapter(
-        onCharacterClick = { viewModel.onCharacterClick(it) }
+        onCharacterClick = { character, view ->
+            sharedView = view
+            viewModel.onCharacterClick(character)
+        },
+        onPreviewLoaded = {
+            startPostponedEnterTransition()
+        }
     )
 
-    override fun initView() {
+    override fun initView(initialState: CharacterListState) {
+        postponeEnterTransition()
         with(binding) {
             rvCharacter.adapter = characterAdapter
             rvCharacter.pagination(
@@ -32,9 +41,7 @@ class CharacterListFragment : BaseFragment<
             rvCharacter.listenerLastElementVisible {
                 viewModel.onLastElementVisible(it)
             }
-            Glide.with(requireContext())
-                .load(com.wiki.cf_ui.R.drawable.portal_animation)
-                .into(loader)
+
         }
     }
 
@@ -58,4 +65,5 @@ class CharacterListFragment : BaseFragment<
             }
         }
     }
+
 }
