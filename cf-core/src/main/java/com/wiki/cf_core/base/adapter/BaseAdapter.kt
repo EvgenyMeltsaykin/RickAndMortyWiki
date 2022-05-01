@@ -3,6 +3,7 @@ package com.wiki.cf_core.base.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -33,6 +34,14 @@ abstract class BaseAdapter<AdapterItem, VB : ViewBinding> :
     override fun onBindViewHolder(holder: BaseViewHolder<VB>, position: Int) {
         itemView = holder.itemView
         bind(getItem(position), holder.binding)
+    }
+
+    fun submitListAndSaveState(list: List<AdapterItem>?, recyclerView: RecyclerView) {
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        val recyclerViewState = layoutManager.onSaveInstanceState()
+        submitList(list) {
+            (recyclerView.layoutManager as LinearLayoutManager).onRestoreInstanceState(recyclerViewState)
+        }
     }
 
 }

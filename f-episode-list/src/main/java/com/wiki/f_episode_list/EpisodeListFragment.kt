@@ -3,7 +3,6 @@ package com.wiki.f_episode_list
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.wiki.cf_core.base.BaseFragment
-import com.wiki.cf_extensions.listenerLastElementVisible
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.f_episode_list.databinding.FragmentEpisodeListBinding
@@ -27,20 +26,21 @@ class EpisodeListFragment : BaseFragment<
     )
 
     override fun renderState(state: EpisodeListState) {
-        episodeAdapter.submitList(state.episodes)
+        episodeAdapter.submitListAndSaveState(state.episodes, binding.rvEpisode)
+        binding.refresh.isRefreshing = state.isLoading
     }
 
     override fun initView(initialState: EpisodeListState) {
 
         with(binding) {
             rvEpisode.adapter = episodeAdapter
-            rvEpisode.addItemDecoration(DividerItemDecoration(binding.rvEpisode.context, LinearLayout.VERTICAL))
+            rvEpisode.addItemDecoration(DividerItemDecoration(rvEpisode.context, LinearLayout.VERTICAL))
             rvEpisode.pagination(
                 loadThreshold = 5,
                 loadNextPage = { viewModel.loadNextPage() }
             )
-            rvEpisode.listenerLastElementVisible {
-                //viewModel.onLastElementVisible(it)
+            refresh.setOnRefreshListener {
+                viewModel.onRefresh()
             }
 
         }
@@ -60,6 +60,10 @@ class EpisodeListFragment : BaseFragment<
                 isVisibleBottomNavigation = true
             )
         )
+    }
+
+    override fun onBackPressed(): Boolean {
+        return false
     }
 }
 

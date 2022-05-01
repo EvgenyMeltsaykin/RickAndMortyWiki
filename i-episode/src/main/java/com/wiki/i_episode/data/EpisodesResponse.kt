@@ -3,15 +3,11 @@ package com.wiki.i_episode.data
 import com.google.gson.annotations.SerializedName
 import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_network.data.PaginationInfo
-import com.wiki.cf_network.util.pagination.PaginationItem
 
 data class EpisodesResponse(
     @SerializedName("results") val result: List<EpisodeInfoResponse>,
     @SerializedName("info") val info: PaginationInfo
-) : PaginationItem {
-    override val paginationInfo: PaginationInfo
-        get() = info
-}
+)
 
 data class EpisodeInfoResponse(
     @SerializedName("id") val id: Int,

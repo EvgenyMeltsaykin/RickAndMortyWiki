@@ -2,6 +2,7 @@ package com.wiki.f_detail_episode
 
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
@@ -43,6 +44,7 @@ class DetailEpisodeFragment : BaseFragment<
 
     override fun renderState(state: DetailEpisodeState) {
         characterAdapter.submitList(state.characters)
+        binding.tvCharactersStatic.isVisible = state.characters.isNotEmpty()
     }
 
     override fun initView(initialState: DetailEpisodeState) {

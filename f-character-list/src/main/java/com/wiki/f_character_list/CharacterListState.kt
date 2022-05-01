@@ -5,7 +5,7 @@ import com.wiki.cf_data.CharacterDto
 
 data class CharacterListState(
     val characters: List<CharacterDto> = emptyList(),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val page: Int = 1,
     val endReached: Boolean = false,
     val isVisibleLastElementList: Boolean = true

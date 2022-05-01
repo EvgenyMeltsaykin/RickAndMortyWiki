@@ -27,11 +27,12 @@ class CharacterListViewModel(
         onError = {
             showSnackBar(it?.messageError)
         },
-        onSuccess = { items, newKey ->
+        onSuccess = { items, newKey, isRefresh ->
             items.map { response ->
                 _state.update {
                     it.copy(
-                        endReached = response.info.next == null
+                        endReached = response.info.next == null,
+                        characters = if (isRefresh) emptyList() else it.characters
                     )
                 }
                 response.result.map { it.toCharacterDto() }
@@ -67,6 +68,14 @@ class CharacterListViewModel(
                 isVisibleLastElementList = isLast
             )
         }
+    }
+
+    fun onRefresh() {
+        _state.update {
+            it.copy(endReached = false)
+        }
+        pagination.reset()
+        loadNextPage()
     }
 
 }

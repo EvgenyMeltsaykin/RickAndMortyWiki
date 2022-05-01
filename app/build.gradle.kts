@@ -80,7 +80,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
-    // Koin Core features
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -95,10 +95,13 @@ dependencies {
     implementation(project(":cf-ui"))
     implementation(project(":f-character-list"))
     implementation(project(":f-episode-list"))
+    implementation(project(":f-location-list"))
     implementation(project(":f-detail-episode"))
     implementation(project(":f-detail-character"))
+    implementation(project(":f-detail-location"))
     implementation(project(":i-character"))
     implementation(project(":i-episode"))
+    implementation(project(":i-location"))
 
     implementation("androidx.core:core-splashscreen:1.0.0-beta02")
     //implementation(platform("com.google.firebase:firebase-bom:29.3.1"))

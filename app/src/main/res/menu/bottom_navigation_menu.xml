@@ -3,13 +3,13 @@
     <item
         android:id="@+id/bottom_menu_item_characters"
         android:icon="@drawable/ic_bottom_navigation_characters"
-        android:title="Characters" />
+        android:title="@string/bottom_navigation_title_characters" />
     <item
         android:id="@+id/bottom_menu_item_episodes"
         android:icon="@drawable/ic_bottom_navigation_episodes"
-        android:title="Episodes" />
+        android:title="@string/bottom_navigation_title_episodes" />
     <item
         android:id="@+id/bottom_menu_item_locations"
-        android:icon="@drawable/ic_bottom_navigation_characters"
-        android:title="Locations" />
+        android:icon="@drawable/ic_bottom_navigation_locations"
+        android:title="@string/bottom_navigation_title_locations" />
 </menu>

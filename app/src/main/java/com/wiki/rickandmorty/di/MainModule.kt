@@ -9,11 +9,10 @@ import com.wiki.rickandmorty.navigation.Screens
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val navigationModule = module {
+val MainModule = module {
     single { Cicerone.create() }
     single { NavigationTabHolder() }
     single<ScreenProvider> { Screens }
-
     viewModel { MainActivityViewModel() }
     single { BaseScreenEventBus() }
 }

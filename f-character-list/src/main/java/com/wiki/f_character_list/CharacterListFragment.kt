@@ -1,8 +1,6 @@
 package com.wiki.f_character_list
 
 import android.view.View
-import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.navigation.SharedElementFragment
 import com.wiki.cf_extensions.listenerLastElementVisible
@@ -32,6 +30,13 @@ class CharacterListFragment : BaseFragment<
             }
         )
 
+    override fun renderState(state: CharacterListState) {
+        characterAdapter.submitListAndSaveState(state.characters, binding.rvCharacter)
+        with(binding) {
+            refresh.isRefreshing = state.isLoading
+        }
+    }
+
     override fun initView(initialState: CharacterListState) {
         postponeEnterTransition()
         with(binding) {
@@ -43,7 +48,17 @@ class CharacterListFragment : BaseFragment<
             rvCharacter.listenerLastElementVisible {
                 viewModel.onLastElementVisible(it)
             }
+            refresh.setOnRefreshListener {
+                viewModel.onRefresh()
+            }
+        }
+    }
 
+    override fun bindEvents(event: CharacterListEvents) {
+        when (event) {
+            is CharacterListEvents.NavigateToDetailCharacter -> {
+                router.navigateTo(screenProvider.DetailCharacter(event.character))
+            }
         }
     }
 
@@ -55,25 +70,8 @@ class CharacterListFragment : BaseFragment<
         )
     }
 
-    override fun renderState(state: CharacterListState) {
-        characterAdapter.submitList(state.characters)
-        val loaderVisible = state.isLoading && state.isVisibleLastElementList
-        with(binding) {
-            if (loaderVisible) {
-                rvCharacter.updatePadding(bottom = loader.height)
-            } else {
-                rvCharacter.updatePadding(bottom = 0)
-            }
-            loader.isVisible = loaderVisible
-        }
-    }
-
-    override fun bindEvents(event: CharacterListEvents) {
-        when (event) {
-            is CharacterListEvents.NavigateToDetailCharacter -> {
-                router.navigateTo(screenProvider.DetailCharacter(event.character))
-            }
-        }
+    override fun onBackPressed(): Boolean {
+        return false
     }
 
 }

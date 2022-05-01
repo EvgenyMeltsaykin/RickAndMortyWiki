@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="residents">Residents</string>
+    <string name="type">Type: %s</string>
+    <string name="dimension">Dimension: %s</string>
+</resources>

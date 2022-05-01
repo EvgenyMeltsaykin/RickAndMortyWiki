@@ -47,4 +47,12 @@ class DetailCharacterViewModel(
         sendEvent(DetailCharacterEvents.OnNavigateBack)
     }
 
+    fun onOriginLocationClick() {
+        sendEvent(DetailCharacterEvents.NavigateToLocation(character.originLocation))
+    }
+
+    fun onLastKnownLocation() {
+        sendEvent(DetailCharacterEvents.NavigateToLocation(character.lastKnownLocation))
+    }
+
 }

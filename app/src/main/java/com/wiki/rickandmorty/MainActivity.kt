@@ -21,6 +21,7 @@ import com.wiki.cf_core.BaseScreenEventBus
 import com.wiki.cf_core.base.BaseEventScreen
 import com.wiki.cf_core.controllers.InternetStateErrorController
 import com.wiki.cf_core.extensions.getContrastColor
+import com.wiki.cf_core.extensions.safePostDelay
 import com.wiki.cf_core.navigation.OnBackPressedListener
 import com.wiki.cf_core.navigation.RouterProvider
 import com.wiki.cf_core.navigation.TabKeys
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding get() = _binding!!
     private val viewModel by viewModel<MainActivityViewModel>()
-
+    private var doubleBackToExitPressedOnce = false
     private val baseScreenEventBus by inject<BaseScreenEventBus>()
 
     private val heightBottomNavigation: Float by lazy {
@@ -118,19 +119,17 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         if (fragment != null && fragment is OnBackPressedListener
             && (fragment as OnBackPressedListener).onBackPressed()
         ) return else {
-            super.onBackPressed()
-            router.exit()
-            /*
-             if (doubleBackToExitPressedOnce) {
+            if (doubleBackToExitPressedOnce) {
                 super.onBackPressed()
                 router.exit()
             } else {
                 doubleBackToExitPressedOnce = true
-                Toast.makeText(this, "Для выхода нажмите ещё раз", Toast.LENGTH_SHORT)
+                Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT)
                     .show()
             }
-             */
-
+            binding.root.safePostDelay(2000) {
+                doubleBackToExitPressedOnce = false
+            }
         }
 
     }

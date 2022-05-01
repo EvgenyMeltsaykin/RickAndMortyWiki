@@ -14,6 +14,7 @@ import com.wiki.cf_core.navigation.OnBackPressedListener
 import com.wiki.cf_core.navigation.RouterProvider
 import com.wiki.cf_core.navigation.ScreenProvider
 import com.wiki.cf_core.navigation.UiControl
+import com.wiki.cf_network.util.ConnectivityService
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.NavigationUiControl
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +49,7 @@ abstract class BaseFragment<
         get() = (parentFragment as RouterProvider).router
 
     val screenProvider: ScreenProvider by inject()
+    val connectivityService: ConnectivityService by inject()
 
     private var _binding: VB? = null
     val binding get() = _binding!!
@@ -80,9 +82,6 @@ abstract class BaseFragment<
     override fun onStart() {
         super.onStart()
         viewModel.viewModelScope.launch(Dispatchers.Main) {
-            bindBaseEvent()
-        }
-        viewModel.viewModelScope.launch(Dispatchers.Main) {
             viewModel.eventFlow.collect {
                 bindEvents(it)
             }
@@ -96,13 +95,13 @@ abstract class BaseFragment<
         initView(viewModel.state.value)
         viewModel.viewModelScope.launch(Dispatchers.Main) {
             viewModel.state.collect {
-                renderState(it)
+                if (_binding != null) renderState(it)
             }
         }
-    }
 
-    private suspend fun bindBaseEvent() {
-
+        if (connectivityService.isOffline()) {
+            startPostponedEnterTransition()
+        }
     }
 
     private fun showInternetError(isVisible: Boolean, text: String = "") {

@@ -8,12 +8,12 @@ class DefaultPaginator<Key, Item>(
     private inline val onRequest: suspend (nextKey: Key) -> Result<Item>,
     private inline val getNextKey: suspend () -> Key,
     private inline val onError: suspend (NetworkException?) -> Unit,
-    private inline val onSuccess: suspend (items: Item, newKey: Key) -> Unit,
+    private inline val onSuccess: suspend (items: Item, newKey: Key, isRefresh: Boolean) -> Unit,
 ) : Paginator<Key, Item> {
 
     private var currentKey: Key = initialKey
     private var isMakingRequest: Boolean = false
-
+    private var isRefreshing: Boolean = false
     override suspend fun loadNextItems() {
         try {
             if (isMakingRequest) return
@@ -28,7 +28,8 @@ class DefaultPaginator<Key, Item>(
                 return
             }
             currentKey = getNextKey()
-            onSuccess(items, currentKey)
+            onSuccess(items, currentKey, isRefreshing)
+            isRefreshing = false
             onLoadUpdated(false)
         } catch (networkException: NetworkException) {
             onLoadUpdated(false)
@@ -38,6 +39,7 @@ class DefaultPaginator<Key, Item>(
     }
 
     override fun reset() {
+        isRefreshing = true
         currentKey = initialKey
     }
 }

@@ -6,23 +6,19 @@ import com.wiki.cf_data.LifeStatus
 import com.wiki.cf_data.common.SimpleData
 import com.wiki.cf_extensions.capitalize
 import com.wiki.cf_network.data.PaginationInfo
-import com.wiki.cf_network.util.pagination.PaginationItem
 
 data class CharactersResponse(
     @SerializedName("results") val result: List<CharacterInfoResponse>,
     @SerializedName("info") val info: PaginationInfo
-) : PaginationItem {
-    override val paginationInfo: PaginationInfo
-        get() = info
-}
+)
 
 data class SimpleResponse(
     @SerializedName("name") val name: String,
     @SerializedName("url") val url: String
 ) {
     fun toDtoSimpleData(): SimpleData = SimpleData(
-        value = name,
-        url = url
+        value = name.capitalize(),
+        id = url.substringAfterLast("/")
     )
 }
 

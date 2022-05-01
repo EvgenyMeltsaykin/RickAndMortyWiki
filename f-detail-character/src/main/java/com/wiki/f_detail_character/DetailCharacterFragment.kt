@@ -6,6 +6,7 @@ import android.os.Parcelable
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -21,6 +22,7 @@ import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.extensions.blurMask
 import com.wiki.cf_ui.extensions.onTransitionCompeteListener
 import com.wiki.cf_ui.extensions.progressChangeListener
+import com.wiki.cf_ui.extensions.setTextOrGone
 import com.wiki.f_detail_character.databinding.FragmentDetailCharacterBinding
 import com.wiki.f_general_adapter.EpisodeAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -72,8 +74,15 @@ class DetailCharacterFragment : BaseFragment<
 
     override fun renderState(state: DetailCharacterState) {
         with(binding) {
-            tvFirstSeenInEpisode.secondRowText = state.firstSeenInEpisodeName
+            tvCharacterName.text = state.name
+            tvFirstSeenInEpisode.setTextOrGone(secondRowText = state.firstSeenInEpisodeName)
+            tvOriginLocation.setTextOrGone(secondRowText = state.originLocation)
+            tvLastLocation.setTextOrGone(secondRowText = state.lastKnownLocation)
+            tvStatus.setTextOrGone(secondRowText = state.lifeStatus.status)
+            tvSpecies.setTextOrGone(secondRowText = state.species)
+            tvGender.setTextOrGone(secondRowText = state.gender)
             adapter.submitList(state.episodes)
+            binding.tvEpisodesStatic.isVisible = state.episodes.isNotEmpty()
         }
     }
 
@@ -96,17 +105,19 @@ class DetailCharacterFragment : BaseFragment<
             ivPreview.transitionName = character.imageUrl
             sharedView = ivPreview
 
-            tvCharacterName.text = initialState.name
-            tvStatus.secondRowText = initialState.lifeStatus.status
-            tvSpecies.secondRowText = initialState.species
-            tvGender.secondRowText = initialState.gender
+
             Glide.with(requireContext())
                 .load(initialState.imageUrl)
                 .apply(RequestOptions().roundCorners(16))
                 .into(ivPreview)
             ivStatus.setImageDrawable(getDrawable(getStatusDrawableId(initialState.lifeStatus)))
-            tvOriginLocation.secondRowText = initialState.originLocation
-            tvLastLocation.secondRowText = initialState.lastKnownLocation
+
+            tvOriginLocation.setOnClickListener {
+                viewModel.onOriginLocationClick()
+            }
+            tvLastLocation.setOnClickListener {
+                viewModel.onLastKnownLocation()
+            }
         }
     }
 
@@ -134,6 +145,14 @@ class DetailCharacterFragment : BaseFragment<
             is DetailCharacterEvents.OnNavigateBack -> router.exit()
             is DetailCharacterEvents.NavigateToEpisode -> {
                 router.navigateTo(screenProvider.DetailEpisode(event.episode))
+            }
+            is DetailCharacterEvents.NavigateToLocation -> {
+                router.navigateTo(
+                    screenProvider.DetailLocation(
+                        location = null,
+                        locationData = event.locationData
+                    )
+                )
             }
         }
     }

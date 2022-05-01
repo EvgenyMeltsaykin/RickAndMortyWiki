@@ -5,6 +5,6 @@ import com.wiki.f_detail_character.DetailCharacterViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val detailCharacterModule = module {
+val FeatureDetailCharacterModule = module {
     viewModel { (character: CharacterDto) -> DetailCharacterViewModel(character = character, get()) }
 }

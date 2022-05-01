@@ -5,7 +5,7 @@ import com.wiki.cf_data.EpisodeDto
 
 data class EpisodeListState(
     val episodes: List<EpisodeDto> = emptyList(),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val page: Int = 1,
     val endReached: Boolean = false,
     val isVisibleLastElementList: Boolean = true

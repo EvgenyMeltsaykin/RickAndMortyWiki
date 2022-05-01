@@ -4,5 +4,5 @@ import java.io.Serializable
 
 data class SimpleData(
     val value: String,
-    val url: String
+    val id: String
 ) : Serializable

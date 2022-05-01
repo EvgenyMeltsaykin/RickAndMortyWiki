@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:transitionGroup="true"
     android:paddingHorizontal="16dp"
     android:paddingTop="16dp"
+    android:transitionGroup="true"
     app:layoutDescription="@xml/fragment_detail_character_scene">
 
     <ImageView
@@ -144,6 +144,8 @@
             android:id="@+id/tv_origin_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
             app:firstRowText="@string/detail_character_origin_location"
             app:rowTextSize="18sp"
             tools:secondRowText="Location" />
@@ -152,6 +154,8 @@
             android:id="@+id/tv_last_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
             app:firstRowText="@string/detail_character_last_known_location"
             app:rowTextSize="18sp"
             tools:secondRowText="Last location" />
@@ -170,8 +174,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_episode"
             android:layout_width="match_parent"
-            android:nestedScrollingEnabled="false"
             android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
             android:paddingBottom="@dimen/bottom_navigation_height"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 

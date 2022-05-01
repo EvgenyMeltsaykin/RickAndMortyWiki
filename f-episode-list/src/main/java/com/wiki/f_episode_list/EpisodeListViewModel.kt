@@ -25,11 +25,12 @@ class EpisodeListViewModel(
         onError = {
             showSnackBar(it?.messageError)
         },
-        onSuccess = { items, newKey ->
+        onSuccess = { items, newKey, isRefresh ->
             items.map { response ->
                 _state.update {
                     it.copy(
-                        endReached = response.info.next == null
+                        endReached = response.info.next == null,
+                        episodes = if (isRefresh) emptyList() else it.episodes
                     )
                 }
                 response.result.map { it.toEpisodeDto() }
@@ -57,6 +58,14 @@ class EpisodeListViewModel(
 
     fun onEpisodeClick(episode: EpisodeDto) {
         sendEvent(EpisodeListEvents.OnNavigateToEpisode(episode))
+    }
+
+    fun onRefresh() {
+        _state.update {
+            it.copy(endReached = false)
+        }
+        pagination.reset()
+        loadNextPage()
     }
 
 

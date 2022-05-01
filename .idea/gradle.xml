@@ -20,10 +20,13 @@
             <option value="$PROJECT_DIR$/f-character-list" />
             <option value="$PROJECT_DIR$/f-detail-character" />
             <option value="$PROJECT_DIR$/f-detail-episode" />
+            <option value="$PROJECT_DIR$/f-detail-location" />
             <option value="$PROJECT_DIR$/f-episode-list" />
             <option value="$PROJECT_DIR$/f-general-adapter" />
+            <option value="$PROJECT_DIR$/f-location-list" />
             <option value="$PROJECT_DIR$/i-character" />
             <option value="$PROJECT_DIR$/i-episode" />
+            <option value="$PROJECT_DIR$/i-location" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
