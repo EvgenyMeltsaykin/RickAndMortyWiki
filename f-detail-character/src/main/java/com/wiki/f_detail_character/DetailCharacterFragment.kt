@@ -2,6 +2,7 @@ package com.wiki.f_detail_character
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
@@ -20,8 +21,8 @@ import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.extensions.blurMask
 import com.wiki.cf_ui.extensions.onTransitionCompeteListener
 import com.wiki.cf_ui.extensions.progressChangeListener
-import com.wiki.f_detail_character.adapter.EpisodeAdapter
 import com.wiki.f_detail_character.databinding.FragmentDetailCharacterBinding
+import com.wiki.f_general_adapter.EpisodeAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -39,16 +40,28 @@ class DetailCharacterFragment : BaseFragment<
     }
 
     private val adapter: EpisodeAdapter = EpisodeAdapter(
-        onEpisodeClick = {}
+        onEpisodeClick = { viewModel.onEpisodeClick(it) }
     )
     private var character by fragmentArgument<CharacterDto>()
 
     override val viewModel: DetailCharacterViewModel by viewModel { parametersOf(character) }
     override var sharedView: View? = null
 
+    private var saveStateMotion: Parcelable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTransition()
+    }
+
+    override fun onPause() {
+        saveStateMotion = binding.root.onSaveInstanceState()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.root.onRestoreInstanceState(saveStateMotion)
     }
 
     private fun setupTransition() {
@@ -76,6 +89,9 @@ class DetailCharacterFragment : BaseFragment<
                 if (it == R.id.end) {
                     setBlurRadiusOnText(0f)
                 }
+            }
+            btnClose.setOnClickListener {
+                viewModel.onCloseClick()
             }
             ivPreview.transitionName = character.imageUrl
             sharedView = ivPreview
@@ -115,7 +131,10 @@ class DetailCharacterFragment : BaseFragment<
 
     override fun bindEvents(event: DetailCharacterEvents) {
         when (event) {
-
+            is DetailCharacterEvents.OnNavigateBack -> router.exit()
+            is DetailCharacterEvents.NavigateToEpisode -> {
+                router.navigateTo(screenProvider.DetailEpisode(event.episode))
+            }
         }
     }
 

@@ -14,7 +14,7 @@ class GetCharacterInfoUseCaseImpl(
 ) : GetCharacterInfoUseCase {
 
     override suspend fun invoke(id: Int): Flow<CharacterDto> {
-        return flowOf(apiService.getCharacter(id).toCharacterDto())
+        return flowOf(apiService.getCharacter(id.toString()).toCharacterDto())
     }
 
 }

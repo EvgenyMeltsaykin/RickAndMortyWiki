@@ -2,13 +2,14 @@ package com.wiki.f_character_list
 
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.navigation.SharedElementFragment
 import com.wiki.cf_extensions.listenerLastElementVisible
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.NavigationUiConfig
-import com.wiki.f_character_list.adapter.CharacterAdapter
 import com.wiki.f_character_list.databinding.FragmentCharacterListBinding
+import com.wiki.f_general_adapter.CharacterAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CharacterListFragment : BaseFragment<
@@ -20,15 +21,16 @@ class CharacterListFragment : BaseFragment<
 
     override val viewModel: CharacterListViewModel by viewModel()
     override var sharedView: View? = null
-    private val characterAdapter: CharacterAdapter = CharacterAdapter(
-        onCharacterClick = { character, view ->
-            sharedView = view
-            viewModel.onCharacterClick(character)
-        },
-        onPreviewLoaded = {
-            startPostponedEnterTransition()
-        }
-    )
+    private val characterAdapter: CharacterAdapter =
+        CharacterAdapter(
+            onCharacterClick = { character, view ->
+                sharedView = view
+                viewModel.onCharacterClick(character)
+            },
+            onPreviewLoaded = {
+                startPostponedEnterTransition()
+            }
+        )
 
     override fun initView(initialState: CharacterListState) {
         postponeEnterTransition()
@@ -55,7 +57,15 @@ class CharacterListFragment : BaseFragment<
 
     override fun renderState(state: CharacterListState) {
         characterAdapter.submitList(state.characters)
-        binding.loader.isVisible = state.isLoading && state.isVisibleLastElementList
+        val loaderVisible = state.isLoading && state.isVisibleLastElementList
+        with(binding) {
+            if (loaderVisible) {
+                rvCharacter.updatePadding(bottom = loader.height)
+            } else {
+                rvCharacter.updatePadding(bottom = 0)
+            }
+            loader.isVisible = loaderVisible
+        }
     }
 
     override fun bindEvents(event: CharacterListEvents) {

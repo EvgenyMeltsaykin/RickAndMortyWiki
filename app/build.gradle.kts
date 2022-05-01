@@ -78,6 +78,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.1.1")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
     // Koin Core features
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -92,9 +94,13 @@ dependencies {
     implementation(project(":cf-network"))
     implementation(project(":cf-ui"))
     implementation(project(":f-character-list"))
+    implementation(project(":f-episode-list"))
+    implementation(project(":f-detail-episode"))
     implementation(project(":f-detail-character"))
     implementation(project(":i-character"))
     implementation(project(":i-episode"))
+
+    implementation("androidx.core:core-splashscreen:1.0.0-beta02")
     //implementation(platform("com.google.firebase:firebase-bom:29.3.1"))
 
     //implementation("com.google.firebase:firebase-crashlytics")

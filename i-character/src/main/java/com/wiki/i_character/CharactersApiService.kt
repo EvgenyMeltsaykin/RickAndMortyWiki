@@ -19,8 +19,13 @@ interface CharactersApiService {
 
     @GET("$CHARACTER/{id}")
     suspend fun getCharacter(
-        @Path("id") id: Int
+        @Path("id") id: String
     ): CharacterInfoResponse
+
+    @GET("$CHARACTER/{ids}")
+    suspend fun getCharacters(
+        @Path("ids") ids: String
+    ): List<CharacterInfoResponse>
 
     companion object {
         private const val CHARACTER = "character"

@@ -19,6 +19,9 @@
             <option value="$PROJECT_DIR$/cf-ui" />
             <option value="$PROJECT_DIR$/f-character-list" />
             <option value="$PROJECT_DIR$/f-detail-character" />
+            <option value="$PROJECT_DIR$/f-detail-episode" />
+            <option value="$PROJECT_DIR$/f-episode-list" />
+            <option value="$PROJECT_DIR$/f-general-adapter" />
             <option value="$PROJECT_DIR$/i-character" />
             <option value="$PROJECT_DIR$/i-episode" />
           </set>

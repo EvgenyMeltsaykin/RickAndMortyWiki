@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
 import androidx.viewbinding.ViewBinding
 import com.github.terrakok.cicerone.Router
+import com.google.android.material.transition.MaterialElevationScale
+import com.wiki.cf_core.controllers.InternetStateErrorController
 import com.wiki.cf_core.navigation.OnBackPressedListener
 import com.wiki.cf_core.navigation.RouterProvider
 import com.wiki.cf_core.navigation.ScreenProvider
@@ -51,6 +52,17 @@ abstract class BaseFragment<
     private var _binding: VB? = null
     val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setTransitions()
+    }
+
+    private fun setTransitions() {
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
+        enterTransition = MaterialElevationScale(true)
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,6 +91,7 @@ abstract class BaseFragment<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         bindNavigationUi()
+        showInternetError(isVisible = false)
         super.onViewCreated(view, savedInstanceState)
         initView(viewModel.state.value)
         viewModel.viewModelScope.launch(Dispatchers.Main) {
@@ -89,16 +102,11 @@ abstract class BaseFragment<
     }
 
     private suspend fun bindBaseEvent() {
-        viewModel.baseEventFlow.collect { event ->
-            when (event) {
-                is BaseEventScreen.ShowToast -> {
-                    Toast.makeText(context, event.text, Toast.LENGTH_SHORT).show()
-                }
-                is BaseEventScreen.ShowSnackBar -> {
-                    //showSnackBar(context = context, text = event.text)
-                }
-            }
-        }
+
+    }
+
+    private fun showInternetError(isVisible: Boolean, text: String = "") {
+        (requireActivity() as? InternetStateErrorController)?.showInternetError(isVisible, text)
     }
 
     private val navigationConfig: NavigationUiConfig

@@ -2,6 +2,7 @@ package com.wiki.f_detail_character
 
 import com.wiki.cf_core.base.BaseViewModel
 import com.wiki.cf_data.CharacterDto
+import com.wiki.cf_data.EpisodeDto
 import com.wiki.i_episode.use_cases.GetEpisodesByIdsUseCase
 import kotlinx.coroutines.flow.update
 
@@ -36,6 +37,14 @@ class DetailCharacterViewModel(
                 }
             }
         }
+    }
+
+    fun onEpisodeClick(episode: EpisodeDto) {
+        sendEvent(DetailCharacterEvents.NavigateToEpisode(episode))
+    }
+
+    fun onCloseClick() {
+        sendEvent(DetailCharacterEvents.OnNavigateBack)
     }
 
 }

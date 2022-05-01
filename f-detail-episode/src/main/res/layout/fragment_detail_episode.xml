@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:transitionGroup="true">
+
+    <TextView
+        android:id="@+id/tv_episode_name"
+        style="@style/Text.Montserrat_SB_22"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/tv_episode_short_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Episode name" />
+
+    <TextView
+        android:id="@+id/tv_episode_short_name"
+        style="@style/Text.Montserrat_R_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_episode_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="S02D45" />
+
+    <TextView
+        android:id="@+id/tv_release_date_static"
+        style="@style/Text.Montserrat_SB_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/release_date"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_release_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_release_date" />
+
+    <TextView
+        android:id="@+id/tv_release_date"
+        style="@style/Text.Montserrat_R_18"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_release_date_static"
+        app:layout_constraintTop_toBottomOf="@+id/tv_episode_name"
+        tools:text="Januar" />
+
+    <TextView
+        android:id="@+id/tv_characters_static"
+        style="@style/Text.Montserrat_SB_18"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:gravity="center"
+        android:paddingVertical="8dp"
+        android:text="@string/characters"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/tv_release_date" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_characters"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_characters_static" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

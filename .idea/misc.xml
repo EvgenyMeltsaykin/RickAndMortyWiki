@@ -3,12 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/RickAndMortyWiki/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/RickAndMortyWiki/app/src/main/res/drawable/ic_bottom_navigation_characters.xml" value="0.27" />
+        <entry key="..\:/RickAndMortyWiki/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/RickAndMortyWiki/app/src/main/res/layout/fragment_character_list.xml" value="0.18802083333333333" />
         <entry key="..\:/RickAndMortyWiki/app/src/main/res/layout/fragment_tab.xml" value="0.18802083333333333" />
         <entry key="..\:/RickAndMortyWiki/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.18802083333333333" />
         <entry key="..\:/RickAndMortyWiki/cf-core/src/main/res/layout/fragment_tab_container.xml" value="0.36666666666666664" />
         <entry key="..\:/RickAndMortyWiki/cf-ui/src/main/res/drawable/bg_rounded_16.xml" value="0.165" />
+        <entry key="..\:/RickAndMortyWiki/cf-ui/src/main/res/drawable/ic_splash.xml" value="0.2005" />
+        <entry key="..\:/RickAndMortyWiki/cf-ui/src/main/res/drawable/news_avd_v02.xml" value="0.1975" />
         <entry key="..\:/RickAndMortyWiki/cf-ui/src/main/res/layout/view_loader.xml" value="0.26927083333333335" />
         <entry key="..\:/RickAndMortyWiki/cf-ui/src/main/res/layout/view_two_row_text.xml" value="0.44951590594744123" />
         <entry key="..\:/RickAndMortyWiki/f-character-list/src/main/res/layout/adapter_character.xml" value="0.5" />
@@ -17,6 +20,10 @@
         <entry key="..\:/RickAndMortyWiki/f-detail-character/src/main/res/layout/adapter_episode.xml" value="0.33" />
         <entry key="..\:/RickAndMortyWiki/f-detail-character/src/main/res/layout/fragment_detail_character.xml" value="0.14" />
         <entry key="..\:/RickAndMortyWiki/f-detail-character/src/main/res/layout/none_test_feature.xml" value="0.13802083333333334" />
+        <entry key="..\:/RickAndMortyWiki/f-detail-episode/src/main/res/layout/fragment_detail_episode.xml" value="0.22" />
+        <entry key="..\:/RickAndMortyWiki/f-episode-list/src/main/res/layout/fragment_episode_list.xml" value="0.275" />
+        <entry key="..\:/RickAndMortyWiki/f-general-adapter/src/main/res/layout/adapter_character.xml" value="0.275" />
+        <entry key="..\:/RickAndMortyWiki/f-general-adapter/src/main/res/layout/adapter_episode.xml" value="0.275" />
       </map>
     </option>
   </component>

@@ -1,4 +1,4 @@
-package com.wiki.cf_network.util
+package com.wiki.cf_network.util.pagination
 
 import com.wiki.cf_network.NetworkException
 

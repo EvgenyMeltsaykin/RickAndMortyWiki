@@ -1,4 +1,4 @@
-package com.wiki.f_character_list.adapter
+package com.wiki.f_general_adapter
 
 import android.view.View
 import com.bumptech.glide.Glide
@@ -8,7 +8,7 @@ import com.wiki.cf_core.extensions.context
 import com.wiki.cf_core.extensions.requestListener
 import com.wiki.cf_core.extensions.roundCorners
 import com.wiki.cf_data.CharacterDto
-import com.wiki.f_character_list.databinding.AdapterCharacterBinding
+import com.wiki.f_general_adapter.databinding.AdapterCharacterBinding
 
 class CharacterAdapter(
     private val onCharacterClick: (CharacterDto, View) -> Unit,

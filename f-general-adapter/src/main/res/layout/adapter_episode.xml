@@ -13,7 +13,7 @@
         style="@style/Text.Montserrat_SB_16"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/detail_character_release_date"
+        android:text="@string/adapter_release_date"
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="@+id/tv_release_date"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.wiki.cf_ui.custom_view.SavingMotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:transitionGroup="true"
     android:paddingHorizontal="16dp"
     android:paddingTop="16dp"
     app:layoutDescription="@xml/fragment_detail_character_scene">
@@ -12,7 +13,6 @@
         android:id="@+id/iv_preview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toTopOf="@+id/tv_character_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,6 +23,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:alpha="0"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,18 +43,16 @@
         tools:layout_editor_absoluteX="16dp"
         tools:text="Rick" />
 
-
     <LinearLayout
         android:id="@+id/ll_short_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:baselineAligned="false"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_character_name">
-
 
         <LinearLayout
             android:id="@+id/ll_status_with_icon"
@@ -178,4 +177,4 @@
 
     </LinearLayout>
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</com.wiki.cf_ui.custom_view.SavingMotionLayout>

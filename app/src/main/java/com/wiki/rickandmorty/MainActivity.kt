@@ -4,15 +4,22 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Router
+import com.wiki.cf_core.BaseScreenEventBus
+import com.wiki.cf_core.base.BaseEventScreen
+import com.wiki.cf_core.controllers.InternetStateErrorController
 import com.wiki.cf_core.extensions.getContrastColor
 import com.wiki.cf_core.navigation.OnBackPressedListener
 import com.wiki.cf_core.navigation.RouterProvider
@@ -22,16 +29,22 @@ import com.wiki.cf_ui.controllers.NavigationUiControl
 import com.wiki.cf_ui.controllers.StatusBarController
 import com.wiki.rickandmorty.databinding.ActivityMainBinding
 import com.wiki.rickandmorty.navigation.Screens.TabContainer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
-class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, StatusBarController {
+class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, StatusBarController,
+    InternetStateErrorController {
 
     private var navigationConfig: NavigationUiConfig = NavigationUiConfig()
     private val cicerone: Cicerone<Router> by inject()
     override val router = cicerone.router
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding get() = _binding!!
+    private val viewModel by viewModel<MainActivityViewModel>()
+
+    private val baseScreenEventBus by inject<BaseScreenEventBus>()
 
     private val heightBottomNavigation: Float by lazy {
         resources.getDimension(com.wiki.cf_ui.R.dimen.bottom_navigation_height)
@@ -40,6 +53,7 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         get() = supportFragmentManager.fragments.find { it.isVisible }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setupSplashScreen()
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -62,6 +76,40 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
             }
         }
 
+        viewModel.viewModelScope.launch(Dispatchers.Main) {
+            bindBaseEvent()
+        }
+
+    }
+
+    private fun setupSplashScreen() {
+        val splashScreen = installSplashScreen()
+
+        splashScreen.setOnExitAnimationListener { splashScreenView ->
+            splashScreenView.view.animate()
+                .alpha(0F)
+                .setInterpolator(LinearOutSlowInInterpolator())
+                .withEndAction { splashScreenView.remove() }
+                .start()
+        }
+    }
+
+
+    private suspend fun bindBaseEvent() {
+        baseScreenEventBus.events.collect { event ->
+            when (event) {
+                is BaseEventScreen.ShowToast -> {
+                    Toast.makeText(this, event.text, Toast.LENGTH_SHORT).show()
+                }
+                is BaseEventScreen.ShowSnackBar -> {
+                    //showSnackBar(context = context, text = event.text)
+                }
+
+                is BaseEventScreen.InternetError -> {
+                    showInternetError(isVisible = event.isVisible, text = event.text)
+                }
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -150,4 +198,10 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
     }
 
+    override fun showInternetError(isVisible: Boolean, text: String) {
+        with(binding.tvError) {
+            this.isVisible = isVisible
+            this.text = text
+        }
+    }
 }

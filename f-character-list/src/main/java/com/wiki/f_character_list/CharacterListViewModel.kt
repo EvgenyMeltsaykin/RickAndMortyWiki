@@ -2,7 +2,7 @@ package com.wiki.f_character_list
 
 import com.wiki.cf_core.base.BaseViewModel
 import com.wiki.cf_data.CharacterDto
-import com.wiki.cf_network.util.DefaultPaginator
+import com.wiki.cf_network.util.pagination.DefaultPaginator
 import com.wiki.i_character.use_cases.GetAllCharactersUseCase
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -29,13 +29,17 @@ class CharacterListViewModel(
         },
         onSuccess = { items, newKey ->
             items.map { response ->
+                _state.update {
+                    it.copy(
+                        endReached = response.info.next == null
+                    )
+                }
                 response.result.map { it.toCharacterDto() }
             }.collect { characters ->
                 _state.update {
                     it.copy(
                         characters = it.characters + characters,
                         page = newKey,
-                        endReached = characters.isEmpty()
                     )
                 }
             }
@@ -47,6 +51,7 @@ class CharacterListViewModel(
     }
 
     fun loadNextPage() {
+        if (state.value.endReached) return
         launchInternetRequest {
             pagination.loadNextItems()
         }

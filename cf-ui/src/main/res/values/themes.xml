@@ -1,12 +1,20 @@
-<resources>
-    <!-- Base application theme. -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+
     <style name="Theme.RickAndMortyWiki" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="android:windowBackground">@android:color/white</item>
-        <item name="android:windowContentTransitions">true</item>
-        <!-- Secondary brand color. -->
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
+
+    <style name="Theme.Starting" parent="Theme.SplashScreen">
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        <item name="windowSplashScreenBackground">#78FF39</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+
+        <item name="windowSplashScreenAnimationDuration">500</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.RickAndMortyWiki</item>
     </style>
 </resources>

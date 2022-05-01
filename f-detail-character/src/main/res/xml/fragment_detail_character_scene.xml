@@ -35,6 +35,18 @@
 
             <KeyAttribute
                 android:alpha="0"
+                motion:framePosition="90"
+                motion:motionTarget="@id/portal" />
+
+            <KeyAttribute
+                android:alpha="0"
+                android:scaleX="1"
+                android:scaleY="1"
+                motion:framePosition="100"
+                motion:motionTarget="@id/portal" />
+
+            <KeyAttribute
+                android:alpha="0"
                 android:scaleX="0"
                 android:scaleY="0"
                 motion:framePosition="80"
@@ -100,12 +112,10 @@
         <Constraint
             android:id="@+id/portal"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="200dp"
             android:layout_marginVertical="16dp"
             android:alpha="0"
             android:rotation="90"
-            android:scaleX="0"
-            android:scaleY="0"
             android:visibility="invisible"
             motion:layout_constraintBottom_toBottomOf="parent" />
 
@@ -116,6 +126,7 @@
             android:alpha="1"
             android:scaleX="1"
             android:scaleY="1"
+            android:visibility="visible"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintTop_toTopOf="parent" />
 
