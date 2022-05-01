@@ -17,13 +17,13 @@
             <option value="$PROJECT_DIR$/cf-extensions" />
             <option value="$PROJECT_DIR$/cf-network" />
             <option value="$PROJECT_DIR$/cf-ui" />
-            <option value="$PROJECT_DIR$/f-character-list" />
             <option value="$PROJECT_DIR$/f-detail-character" />
             <option value="$PROJECT_DIR$/f-detail-episode" />
             <option value="$PROJECT_DIR$/f-detail-location" />
-            <option value="$PROJECT_DIR$/f-episode-list" />
             <option value="$PROJECT_DIR$/f-general-adapter" />
-            <option value="$PROJECT_DIR$/f-location-list" />
+            <option value="$PROJECT_DIR$/f-list-character" />
+            <option value="$PROJECT_DIR$/f-list-episode" />
+            <option value="$PROJECT_DIR$/f-list-location" />
             <option value="$PROJECT_DIR$/i-character" />
             <option value="$PROJECT_DIR$/i-episode" />
             <option value="$PROJECT_DIR$/i-location" />

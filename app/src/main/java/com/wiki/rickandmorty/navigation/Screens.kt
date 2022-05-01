@@ -8,12 +8,12 @@ import com.wiki.cf_data.CharacterDto
 import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_data.LocationDto
 import com.wiki.cf_data.common.SimpleData
-import com.wiki.f_character_list.CharacterListFragment
 import com.wiki.f_detail_character.DetailCharacterFragment
 import com.wiki.f_detail_episode.DetailEpisodeFragment
 import com.wiki.f_detail_location.DetailLocationFragment
-import com.wiki.f_episode_list.EpisodeListFragment
-import com.wiki.f_location_list.LocationListFragment
+import com.wiki.f_list_character.CharacterListFragment
+import com.wiki.f_list_episode.EpisodeListFragment
+import com.wiki.f_list_location.LocationListFragment
 
 object Screens : ScreenProvider {
     override fun Characters() = FragmentScreen { CharacterListFragment() }
