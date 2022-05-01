@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="16dp"
-    android:paddingTop="16dp">
+    android:paddingTop="16dp"
+    app:layoutDescription="@xml/fragment_detail_character_scene">
 
     <ImageView
         android:id="@+id/iv_preview"
@@ -17,14 +18,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.wiki.cf_ui.custom_view.PortalView
+        android:id="@+id/btn_close"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:alpha="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv_character_name"
         style="@style/Text.Montserrat_R_22"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:minHeight="80dp"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
         tools:layout_editor_absoluteX="16dp"
@@ -44,6 +56,7 @@
 
 
         <LinearLayout
+            android:id="@+id/ll_status_with_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -57,6 +70,7 @@
                 android:src="@drawable/ic_circle_gray" />
 
             <LinearLayout
+                android:id="@+id/ll_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -74,64 +88,50 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <com.wiki.cf_ui.custom_view.TwoRowTextView
+            android:id="@+id/tv_species"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical">
+            app:firstRowText="@string/detail_character_species"
+            app:rowTextSize="18sp"
+            tools:secondRowText="Human" />
 
-            <com.wiki.cf_ui.custom_view.TwoRowTextView
-                android:id="@+id/tv_species"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                app:firstRowText="@string/detail_character_species"
-                app:rowTextSize="18sp"
-                tools:secondRowText="Human" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <com.wiki.cf_ui.custom_view.TwoRowTextView
+            android:id="@+id/tv_gender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:orientation="vertical">
-
-            <com.wiki.cf_ui.custom_view.TwoRowTextView
-                android:id="@+id/tv_gender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                app:firstRowText="@string/detail_character_gender"
-                app:rowTextSize="18sp"
-                tools:secondRowText="Male" />
-
-        </LinearLayout>
+            app:firstRowText="@string/detail_character_gender"
+            app:rowTextSize="18sp"
+            tools:secondRowText="Male" />
 
     </LinearLayout>
 
 
     <com.wiki.cf_ui.custom_view.PortalView
         android:id="@+id/portal"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginVertical="16dp"
+        android:elevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_short_info"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_short_info" />
 
     <LinearLayout
         android:id="@+id/ll_full_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:alpha="0"
         android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_short_info">
+        app:layout_constraintEnd_toEndOf="@+id/portal"
+        app:layout_constraintStart_toStartOf="@+id/portal"
+        app:layout_constraintTop_toBottomOf="@+id/portal">
 
         <com.wiki.cf_ui.custom_view.TwoRowTextView
             android:id="@+id/tv_first_seen_in_episode"
@@ -157,12 +157,25 @@
             app:rowTextSize="18sp"
             tools:secondRowText="Last location" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/tv_episode"
+        <TextView
+            android:id="@+id/tv_episodes_static"
+            style="@style/Text.Montserrat_SB_22"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:gravity="center"
+            android:text="@string/detail_character_episodes_title"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_episode"
+            android:layout_width="match_parent"
+            android:nestedScrollingEnabled="false"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/bottom_navigation_height"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.motion.widget.MotionLayout>

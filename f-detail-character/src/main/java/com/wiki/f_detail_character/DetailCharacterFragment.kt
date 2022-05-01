@@ -3,7 +3,9 @@ package com.wiki.f_detail_character
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.transition.MaterialContainerTransform
@@ -15,6 +17,10 @@ import com.wiki.cf_data.CharacterDto
 import com.wiki.cf_data.LifeStatus
 import com.wiki.cf_extensions.getDrawable
 import com.wiki.cf_ui.controllers.NavigationUiConfig
+import com.wiki.cf_ui.extensions.blurMask
+import com.wiki.cf_ui.extensions.onTransitionCompeteListener
+import com.wiki.cf_ui.extensions.progressChangeListener
+import com.wiki.f_detail_character.adapter.EpisodeAdapter
 import com.wiki.f_detail_character.databinding.FragmentDetailCharacterBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -32,6 +38,9 @@ class DetailCharacterFragment : BaseFragment<
         }
     }
 
+    private val adapter: EpisodeAdapter = EpisodeAdapter(
+        onEpisodeClick = {}
+    )
     private var character by fragmentArgument<CharacterDto>()
 
     override val viewModel: DetailCharacterViewModel by viewModel { parametersOf(character) }
@@ -51,11 +60,23 @@ class DetailCharacterFragment : BaseFragment<
     override fun renderState(state: DetailCharacterState) {
         with(binding) {
             tvFirstSeenInEpisode.secondRowText = state.firstSeenInEpisodeName
+            adapter.submitList(state.episodes)
         }
     }
 
     override fun initView(initialState: DetailCharacterState) {
         with(binding) {
+            rvEpisode.adapter = adapter
+            rvEpisode.addItemDecoration(DividerItemDecoration(rvEpisode.context, LinearLayout.VERTICAL))
+            root.progressChangeListener { progress ->
+                val blurRadius = (1 - progress) * 10f
+                setBlurRadiusOnText(blurRadius)
+            }
+            root.onTransitionCompeteListener {
+                if (it == R.id.end) {
+                    setBlurRadiusOnText(0f)
+                }
+            }
             ivPreview.transitionName = character.imageUrl
             sharedView = ivPreview
 
@@ -70,6 +91,15 @@ class DetailCharacterFragment : BaseFragment<
             ivStatus.setImageDrawable(getDrawable(getStatusDrawableId(initialState.lifeStatus)))
             tvOriginLocation.secondRowText = initialState.originLocation
             tvLastLocation.secondRowText = initialState.lastKnownLocation
+        }
+    }
+
+    private fun setBlurRadiusOnText(blurRadius: Float) {
+        with(binding) {
+            tvFirstSeenInEpisode.blurRadius = blurRadius
+            tvOriginLocation.blurRadius = blurRadius
+            tvLastLocation.blurRadius = blurRadius
+            tvEpisodesStatic.text = tvEpisodesStatic.text.toString().blurMask(blurRadius)
         }
     }
 

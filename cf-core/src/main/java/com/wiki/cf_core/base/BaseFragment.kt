@@ -78,9 +78,9 @@ abstract class BaseFragment<
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        bindNavigationUi()
         super.onViewCreated(view, savedInstanceState)
         initView(viewModel.state.value)
-        bindNavigationUi()
         viewModel.viewModelScope.launch(Dispatchers.Main) {
             viewModel.state.collect {
                 renderState(it)

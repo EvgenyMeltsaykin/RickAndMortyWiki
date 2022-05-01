@@ -8,14 +8,29 @@
         <item name="android:fontFamily">@font/montserrat_semi_bold</item>
     </style>
 
+    <style name="Text.Montserrat_SB_16">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/montserrat_semi_bold</item>
+    </style>
+
     <style name="Text.Montserrat_R_18">
         <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="Text.Montserrat_R_16">
+        <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">@font/montserrat_regular</item>
     </style>
 
     <style name="Text.Montserrat_R_22">
         <item name="android:textSize">22sp</item>
         <item name="android:fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="Text.Montserrat_SB_22">
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">@font/montserrat_semi_bold</item>
     </style>
 
     <style name="Text.RickStyle_24">
