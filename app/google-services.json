@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "454806453594",
+    "project_id": "rick-and-morty-wiki-14daa",
+    "storage_bucket": "rick-and-morty-wiki-14daa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454806453594:android:4e57b714134543b0960763",
+        "android_client_info": {
+          "package_name": "com.wiki.rickandmortywiki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454806453594-vooarfpgnh72i13cntg5a1gvc10ikmtr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQcH2jBuCkVZZ6J-5EG7LYEV5xFHQTAj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454806453594-vooarfpgnh72i13cntg5a1gvc10ikmtr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

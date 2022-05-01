@@ -6,8 +6,8 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-parcelize")
-    //id("com.google.gms.google-services")
-    // id("com.google.firebase.crashlytics")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -33,21 +33,9 @@ android {
 
     }
 
-    signingConfigs {
-        /*
-        create("release") {
-            keyAlias = "RAMW"
-            keyPassword = "rick_and_morty_wiki"
-            storeFile = file("rick_and_morty_wiki")
-            storePassword = "rick_and_morty_wiki"
-        }
-
-         */
-    }
 
     buildTypes {
         release {
-            //signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFile(getDefaultProguardFile("proguard-android-optimize.txt"))
             proguardFile(file("proguard-rules.pro"))
@@ -82,10 +70,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
 
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
     implementation("io.insert-koin:koin-core:3.1.6")
     implementation("io.insert-koin:koin-android:3.1.6")
     implementation("com.github.terrakok:cicerone:7.1")
@@ -104,10 +88,9 @@ dependencies {
     implementation(project(":i-location"))
 
     implementation("androidx.core:core-splashscreen:1.0.0-beta02")
-    //implementation(platform("com.google.firebase:firebase-bom:29.3.1"))
-
-    //implementation("com.google.firebase:firebase-crashlytics")
-    //implementation("com.google.firebase:firebase-analytics")
+    implementation(platform("com.google.firebase:firebase-bom:29.3.1"))
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
 
 }
 
