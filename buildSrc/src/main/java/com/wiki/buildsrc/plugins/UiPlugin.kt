@@ -2,6 +2,7 @@ package com.wiki.buildsrc.plugins
 
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.project
 
 class UiPlugin : BasePlugin() {
     override fun apply(target: Project) = target.applyAndroid()
@@ -15,7 +16,7 @@ class UiPlugin : BasePlugin() {
         android {
 
             dependencies {
-
+                implementation(project(":cf-extensions"))
             }
         }
 

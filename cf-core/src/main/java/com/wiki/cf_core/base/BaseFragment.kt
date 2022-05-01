@@ -29,7 +29,7 @@ interface ViewModelProvider<
 
 interface ScreenBinder<EventFromScreen : EventScreen, State : StateScreen> {
     fun bindEvents(event: EventFromScreen)
-    fun initView()
+    fun initView(initialState: State)
     fun renderState(state: State)
 }
 
@@ -78,9 +78,9 @@ abstract class BaseFragment<
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initView()
         bindNavigationUi()
+        super.onViewCreated(view, savedInstanceState)
+        initView(viewModel.state.value)
         viewModel.viewModelScope.launch(Dispatchers.Main) {
             viewModel.state.collect {
                 renderState(it)

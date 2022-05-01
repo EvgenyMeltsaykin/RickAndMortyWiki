@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:paddingVertical="16dp">
+
+    <TextView
+        android:id="@+id/tv_release_date_static"
+        style="@style/Text.Montserrat_SB_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/detail_character_release_date"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_release_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_release_date" />
+
+    <TextView
+        android:id="@+id/tv_release_date"
+        style="@style/Text.Montserrat_R_16"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toStartOf="@+id/tv_short_episode_name"
+        app:layout_constraintStart_toEndOf="@+id/tv_release_date_static"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="January " />
+
+    <TextView
+        android:id="@+id/tv_short_episode_name"
+        style="@style/Text.Montserrat_SB_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="S01E06 " />
+
+    <TextView
+        android:id="@+id/tv_season_name"
+        style="@style/Text.Montserrat_R_22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toStartOf="@+id/tv_release_date_static"
+        app:layout_constraintTop_toBottomOf="@+id/tv_release_date"
+        tools:text="Rick potion" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

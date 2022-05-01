@@ -1,4 +1,4 @@
-package com.wiki.cf_core.extensions
+package com.wiki.cf_extensions
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

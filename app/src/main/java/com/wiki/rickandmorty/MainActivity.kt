@@ -10,13 +10,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Router
 import com.wiki.cf_core.extensions.getContrastColor
 import com.wiki.cf_core.navigation.OnBackPressedListener
 import com.wiki.cf_core.navigation.RouterProvider
 import com.wiki.cf_core.navigation.TabKeys
-import com.wiki.cf_core.navigation.UiControl
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.NavigationUiControl
 import com.wiki.cf_ui.controllers.StatusBarController
@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding get() = _binding!!
 
+    private val heightBottomNavigation: Float by lazy {
+        resources.getDimension(com.wiki.cf_ui.R.dimen.bottom_navigation_height)
+    }
     private val visibleFragment
         get() = supportFragmentManager.fragments.find { it.isVisible }
 
@@ -94,10 +97,6 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         if (currentFragment != null && newFragment != null && currentFragment === newFragment)
             return
 
-        if (newFragment != null && newFragment is UiControl)
-            (newFragment as UiControl).bindNavigationUi()
-
-
         with(fm.beginTransaction()) {
             newFragment?.let {
                 show(it)
@@ -134,6 +133,11 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
 
     private fun setBottomNavigationBarVisible(isVisible: Boolean) {
         binding.bottomNavigation.isVisible = isVisible
+        if (isVisible) {
+            binding.navHostFragment.updatePadding(bottom = heightBottomNavigation.toInt())
+        } else {
+            binding.navHostFragment.updatePadding(bottom = 0)
+        }
     }
 
     override fun setStatusBarColor(color: Int) {

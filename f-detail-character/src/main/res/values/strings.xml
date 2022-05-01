@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="detail_character_name">Name: %s</string>
+    <string name="detail_character_gender">Gender</string>
+    <string name="detail_character_type">Type: %s</string>
+    <string name="detail_character_status">Status</string>
+    <string name="detail_character_species">Species</string>
+    <string name="detail_character_status_and_species">%s - %s</string>
+    <string name="detail_character_last_known_location">Last known location:</string>
+    <string name="detail_character_origin_location">Origin location:</string>
+    <string name="detail_character_first_seen_in_episode">First seen in episode:</string>
+    <string name="detail_character_episodes_title">Episodes</string>
+    <string name="detail_character_release_date">Release date:</string>
+</resources>

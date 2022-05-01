@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.wiki.cf_data.CharacterDto
 import com.wiki.cf_data.LifeStatus
 import com.wiki.cf_data.common.SimpleData
+import com.wiki.cf_extensions.capitalize
 import com.wiki.cf_network.data.PaginationInfo
 
 data class CharactersResponse(
@@ -39,8 +40,8 @@ data class CharacterInfoResponse(
         id = id,
         name = name,
         lifeStatus = LifeStatus.getByStatus(status),
-        species = species,
-        gender = gender,
+        species = species.capitalize(),
+        gender = gender.capitalize(),
         imageUrl = imageUrl,
         originLocation = origin.toDtoSimpleData(),
         lastKnownLocation = location.toDtoSimpleData(),

@@ -34,6 +34,7 @@ class FeaturePlugin : BasePlugin() {
                 implementation(project(":cf-data"))
                 implementation(project(":cf-network"))
                 implementation(project(":cf-ui"))
+                implementation(project(":cf-extensions"))
             }
         }
     }

@@ -25,6 +25,7 @@ class NetworkPlugin : BasePlugin() {
                 implementation("io.insert-koin:koin-android:3.1.6")
 
                 implementation(project(":cf-data"))
+                implementation(project(":cf-extensions"))
             }
         }
 
