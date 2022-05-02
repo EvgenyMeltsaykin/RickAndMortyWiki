@@ -75,7 +75,7 @@ class DetailLocationFragment : BaseFragment<
     override fun bindNavigationUi() {
         setNavigationUiConfig(
             NavigationUiConfig(
-                isVisibleBottomNavigation = false
+                isVisibleBottomNavigation = true
             )
         )
     }

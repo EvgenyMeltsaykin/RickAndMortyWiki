@@ -48,10 +48,12 @@ class DetailCharacterViewModel(
     }
 
     fun onOriginLocationClick() {
+        if (character.originLocation.id.isEmpty()) return
         sendEvent(DetailCharacterEvents.NavigateToLocation(character.originLocation))
     }
 
     fun onLastKnownLocation() {
+        if (character.lastKnownLocation.id.isEmpty()) return
         sendEvent(DetailCharacterEvents.NavigateToLocation(character.lastKnownLocation))
     }
 
