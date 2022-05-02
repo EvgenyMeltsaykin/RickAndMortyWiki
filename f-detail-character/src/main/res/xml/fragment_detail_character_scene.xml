@@ -8,6 +8,9 @@
         motion:duration="1000"
         motion:pathMotionArc="startHorizontal">
 
+        <OnClick
+            motion:clickAction="transitionToEnd"
+            motion:targetId="@+id/portal" />
 
         <OnSwipe
             motion:dragDirection="dragUp"
