@@ -14,5 +14,6 @@ data class SearchState(
     val isLoading: Boolean = true,
     val page: Int = 1,
     val endReached: Boolean = false,
-    val isVisibleNotFound: Boolean = false
+    val isVisibleNotFound: Boolean = false,
+    val searchText: String = ""
 ) : StateScreen

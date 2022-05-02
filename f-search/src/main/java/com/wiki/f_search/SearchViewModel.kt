@@ -130,6 +130,9 @@ class SearchViewModel(
     fun onChangeSearchText(text: String) {
         if (searchText == text) return
         searchText = text
+        _state.update {
+            it.copy(searchText = text)
+        }
         pagination.reset()
         searchJob?.cancel()
         searchJob = launchInternetRequest(

@@ -13,7 +13,6 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import androidx.core.widget.doOnTextChanged
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Cicerone
@@ -22,9 +21,7 @@ import com.wiki.cf_core.BaseScreenEventBus
 import com.wiki.cf_core.base.BaseEventScreen
 import com.wiki.cf_core.controllers.InternetStateErrorController
 import com.wiki.cf_core.extensions.getContrastColor
-import com.wiki.cf_core.extensions.hideKeyboard
 import com.wiki.cf_core.extensions.safePostDelay
-import com.wiki.cf_core.extensions.showKeyboard
 import com.wiki.cf_core.navigation.OnBackPressedListener
 import com.wiki.cf_core.navigation.RouterProvider
 import com.wiki.cf_core.navigation.TabKeys
@@ -38,7 +35,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, StatusBarController,
-    InternetStateErrorController, SearchToolbarController {
+    InternetStateErrorController {
 
     private var navigationConfig: NavigationUiConfig = NavigationUiConfig()
     private val cicerone: Cicerone<Router> by inject()
@@ -191,23 +188,10 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         val toolbarType = toolbarConfig.toolbarType
         when (toolbarType) {
             is ToolbarType.Simple -> {
-                binding.etSearch.setText("")
-                binding.etSearch.hint = ""
-                binding.etSearch.isVisible = false
                 with(binding.tvTitle) {
                     isVisible = true
                     text = toolbarConfig.title
                     isAllCaps = toolbarConfig.isTextAllCaps
-                }
-            }
-            is ToolbarType.Search -> {
-                with(binding) {
-                    etSearch.isVisible = true
-                    tvTitle.isVisible = false
-                    etSearch.hint = toolbarType.hint
-                    etSearch.doOnTextChanged { text, _, _, _ ->
-                        toolbarType.onTextChange(text.toString())
-                    }
                 }
             }
         }
@@ -225,6 +209,7 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
 
     private fun setToolbarVisible(isVisible: Boolean) {
         binding.toolbar.isVisible = isVisible
+        binding.divider.isVisible = isVisible
     }
 
     private fun setBackgroundColor(@ColorRes color: Int) {
@@ -257,15 +242,5 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         }
     }
 
-    override fun showKeyboard() {
-        binding.etSearch.showKeyboard()
-    }
-
-    override fun hideKeyboard() {
-        binding.etSearch.hideKeyboard()
-    }
-
-    override fun clearFocus() {
-        binding.etSearch.clearFocus()
-    }
 }
+

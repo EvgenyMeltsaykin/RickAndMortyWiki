@@ -15,11 +15,9 @@ enum class MenuType {
 
 sealed class ToolbarType() {
     object Simple : ToolbarType()
-    data class Search(val onTextChange: (String) -> Unit, val hint: String) : ToolbarType()
 }
 
 fun ToolbarType.isSimple(): Boolean = this is ToolbarType.Simple
-fun ToolbarType.isSearch(): Boolean = this is ToolbarType.Search
 
 data class ToolbarConfig(
     val toolbarType: ToolbarType = ToolbarType.Simple,

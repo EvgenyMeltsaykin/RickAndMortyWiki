@@ -3,18 +3,19 @@ package com.wiki.f_search
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
+import com.wiki.cf_core.extensions.hideKeyboard
+import com.wiki.cf_core.extensions.showKeyboard
 import com.wiki.cf_core.navigation.SharedElementFragment
 import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_data.isCharacter
 import com.wiki.cf_extensions.capitalize
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.NavigationUiConfig
-import com.wiki.cf_ui.controllers.ToolbarConfig
-import com.wiki.cf_ui.controllers.ToolbarType
 import com.wiki.f_general_adapter.CharacterAdapter
 import com.wiki.f_general_adapter.EpisodeAdapter
 import com.wiki.f_general_adapter.LocationAdapter
@@ -73,7 +74,6 @@ class SearchFragment : BaseFragment<
         binding.tvNotFound.isVisible = state.isVisibleNotFound
     }
 
-
     override fun initView(initialState: SearchState) {
         if (feature.isCharacter()) postponeEnterTransition()
         with(binding) {
@@ -91,15 +91,22 @@ class SearchFragment : BaseFragment<
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (kotlin.math.abs(dy) > HIDE_KEYBOARD_ON_SCROLL_THRESHOLD) {
-                        hideSearchKeyboard()
+                        etSearch.hideKeyboard()
                     }
                 }
             })
-
+            etSearch.hint = getHintText(initialState.feature)
+            etSearch.doOnTextChanged { text, _, _, _ ->
+                viewModel.onChangeSearchText(text.toString())
+            }
             tvNotFound.text = getNotFoundText(initialState.feature)
-            showSearchKeyboard()
+            etSearch.showKeyboard()
         }
 
+    }
+
+    private fun getHintText(feature: SearchFeature): String {
+        return getString(R.string.search_hint, feature.featureName)
     }
 
     private fun getNotFoundText(feature: SearchFeature): String {
@@ -107,7 +114,7 @@ class SearchFragment : BaseFragment<
     }
 
     override fun bindEvents(event: SearchEvents) {
-        hideSearchKeyboard()
+        binding.etSearch.hideKeyboard()
         when (event) {
             is SearchEvents.OnCharacterClick -> router.navigateTo(screenProvider.DetailCharacter(event.character))
             is SearchEvents.OnEpisodeClick -> router.navigateTo(screenProvider.DetailEpisode(event.episode))
@@ -119,19 +126,9 @@ class SearchFragment : BaseFragment<
         setNavigationUiConfig(
             NavigationUiConfig(
                 isVisibleBottomNavigation = false,
-                isVisibleToolbar = true,
-                toolbarConfig = ToolbarConfig(
-                    toolbarType = ToolbarType.Search(
-                        onTextChange = { viewModel.onChangeSearchText(it) },
-                        hint = getHintText(feature)
-                    )
-                )
+                isVisibleToolbar = false
             )
         )
-    }
-
-    private fun getHintText(feature: SearchFeature): String {
-        return getString(R.string.search_hint, feature.featureName)
     }
 }
 

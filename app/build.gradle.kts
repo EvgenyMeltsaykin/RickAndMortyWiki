@@ -77,6 +77,7 @@ dependencies {
     implementation(project(":cf-data"))
     implementation(project(":cf-network"))
     implementation(project(":cf-ui"))
+    implementation(project(":cf-extensions"))
     implementation(project(":f-list-character"))
     implementation(project(":f-list-episode"))
     implementation(project(":f-list-location"))
