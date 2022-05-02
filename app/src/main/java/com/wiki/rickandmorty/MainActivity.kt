@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         selectTab(TabKeys.CHARACTERS)
+        setStatusBarColor(com.wiki.cf_ui.R.color.white)
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.bottom_menu_item_characters -> {
