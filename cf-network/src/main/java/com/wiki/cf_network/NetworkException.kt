@@ -6,5 +6,7 @@ sealed class NetworkException(val messageError: String) : IOException() {
 
     object NoConnectivity : NetworkException("No internet connection")
     object Other : NetworkException("Unexpected error")
+    object ServerError : NetworkException("Server error")
+    object NothingFound : NetworkException("Nothing found")
 
 }

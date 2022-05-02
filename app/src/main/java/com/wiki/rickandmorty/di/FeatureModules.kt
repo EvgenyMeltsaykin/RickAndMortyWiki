@@ -6,6 +6,7 @@ import com.wiki.f_detail_location.di.FeatureDetailLocationModule
 import com.wiki.f_list_character.di.FeatureCharacterListModule
 import com.wiki.f_list_episode.di.FeatureEpisodeListModule
 import com.wiki.f_list_location.di.FeatureLocationListModule
+import com.wiki.f_search.di.FeatureSearchModule
 
 val FeatureModules = listOf(
     FeatureCharacterListModule,
@@ -13,5 +14,6 @@ val FeatureModules = listOf(
     FeatureEpisodeListModule,
     FeatureDetailEpisodeModule,
     FeatureLocationListModule,
-    FeatureDetailLocationModule
+    FeatureDetailLocationModule,
+    FeatureSearchModule
 )

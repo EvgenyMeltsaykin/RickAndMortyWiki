@@ -39,6 +39,7 @@ class DefaultPaginator<Key, Item>(
     }
 
     override fun reset() {
+        isMakingRequest = false
         isRefreshing = true
         currentKey = initialKey
     }

@@ -9,4 +9,5 @@ val NetworkCharacterModule = module {
     single<GetAllCharactersUseCase> { GetAllCharactersUseCaseImpl(get()) }
     single<GetCharacterInfoUseCase> { GetCharacterInfoUseCaseImpl(get()) }
     single<GetCharactersByIdsUseCase> { GetCharactersByIdsUseCaseImpl(get()) }
+    single<GetCharactersByNameUseCase> { GetCharactersByNameUseCaseImpl(get()) }
 }

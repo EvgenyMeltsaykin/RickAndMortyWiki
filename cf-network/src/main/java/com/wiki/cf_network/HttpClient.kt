@@ -1,6 +1,7 @@
 package com.wiki.cf_network
 
 import com.wiki.cf_network.interceptors.ConnectivityInterceptor
+import com.wiki.cf_network.interceptors.HttpErrorInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
@@ -10,7 +11,8 @@ object HttpClient {
     const val BASE_URL = "https://rickandmortyapi.com/api/"
 
     fun createHttpClient(
-        connectivityInterceptor: ConnectivityInterceptor
+        connectivityInterceptor: ConnectivityInterceptor,
+        httpErrorInterceptor: HttpErrorInterceptor
     ): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -20,6 +22,7 @@ object HttpClient {
             readTimeout(TIMEOUT, TimeUnit.SECONDS)
             writeTimeout(TIMEOUT, TimeUnit.SECONDS)
             addInterceptor(connectivityInterceptor)
+            addInterceptor(httpErrorInterceptor)
             addInterceptor(loggingInterceptor)
         }.build()
     }

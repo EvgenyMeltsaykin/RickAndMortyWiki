@@ -27,6 +27,12 @@ interface EpisodeApiService {
         @Path("ids") ids: String
     ): List<EpisodeInfoResponse>
 
+    @GET(EPISODE)
+    suspend fun getEpisodesByName(
+        @Query("page") page: Int,
+        @Query("name") name: String
+    ): EpisodesResponse
+
     companion object {
         private const val EPISODE = "episode"
         fun create(

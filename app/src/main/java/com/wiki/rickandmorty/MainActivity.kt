@@ -13,6 +13,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.core.widget.doOnTextChanged
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Cicerone
@@ -21,13 +22,14 @@ import com.wiki.cf_core.BaseScreenEventBus
 import com.wiki.cf_core.base.BaseEventScreen
 import com.wiki.cf_core.controllers.InternetStateErrorController
 import com.wiki.cf_core.extensions.getContrastColor
+import com.wiki.cf_core.extensions.hideKeyboard
 import com.wiki.cf_core.extensions.safePostDelay
+import com.wiki.cf_core.extensions.showKeyboard
 import com.wiki.cf_core.navigation.OnBackPressedListener
 import com.wiki.cf_core.navigation.RouterProvider
 import com.wiki.cf_core.navigation.TabKeys
-import com.wiki.cf_ui.controllers.NavigationUiConfig
-import com.wiki.cf_ui.controllers.NavigationUiControl
-import com.wiki.cf_ui.controllers.StatusBarController
+import com.wiki.cf_core.navigation.UiControl
+import com.wiki.cf_ui.controllers.*
 import com.wiki.rickandmorty.databinding.ActivityMainBinding
 import com.wiki.rickandmorty.navigation.Screens.TabContainer
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +38,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, StatusBarController,
-    InternetStateErrorController {
+    InternetStateErrorController, SearchToolbarController {
 
     private var navigationConfig: NavigationUiConfig = NavigationUiConfig()
     private val cicerone: Cicerone<Router> by inject()
@@ -144,6 +146,9 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         if (currentFragment != null && newFragment != null && currentFragment === newFragment)
             return
 
+        if (newFragment != null && newFragment is UiControl)
+            (newFragment as UiControl).bindNavigationUi()
+
         with(fm.beginTransaction()) {
             newFragment?.let {
                 show(it)
@@ -169,9 +174,56 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
     }
 
     private fun setupToolbar(navigationConfig: NavigationUiConfig) {
+        clearMenu(navigationConfig.toolbarConfig.menuItem)
         setStatusBarColor(navigationConfig.colorStatusBar)
         setBackgroundColor(navigationConfig.colorBackground)
+        setToolbarVisible(navigationConfig.isVisibleToolbar)
+        setToolbarInfo(navigationConfig.toolbarConfig)
         setBottomNavigationBarVisible(navigationConfig.isVisibleBottomNavigation)
+    }
+
+    private fun clearMenu(menuItem: List<MenuItem>) {
+        binding.btnSearch.isVisible = menuItem.any { it.menuType == MenuType.SEARCH }
+    }
+
+    private fun setToolbarInfo(toolbarConfig: ToolbarConfig) {
+        val toolbarType = toolbarConfig.toolbarType
+        when (toolbarType) {
+            is ToolbarType.Simple -> {
+                binding.etSearch.setText("")
+                binding.etSearch.hint = ""
+                binding.etSearch.isVisible = false
+                with(binding.tvTitle) {
+                    isVisible = true
+                    text = toolbarConfig.title
+                    isAllCaps = toolbarConfig.isTextAllCaps
+                }
+            }
+            is ToolbarType.Search -> {
+                with(binding) {
+                    etSearch.isVisible = true
+                    tvTitle.isVisible = false
+                    etSearch.hint = toolbarType.hint
+                    etSearch.doOnTextChanged { text, _, _, _ ->
+                        toolbarType.onTextChange(text.toString())
+                    }
+                }
+            }
+        }
+
+        toolbarConfig.menuItem.forEach { menuItem ->
+            when (menuItem.menuType) {
+                MenuType.SEARCH -> {
+                    binding.btnSearch.setOnClickListener {
+                        menuItem.clickListener()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setToolbarVisible(isVisible: Boolean) {
+        binding.toolbar.isVisible = isVisible
     }
 
     private fun setBackgroundColor(@ColorRes color: Int) {
@@ -202,5 +254,17 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
             this.isVisible = isVisible
             this.text = text
         }
+    }
+
+    override fun showKeyboard() {
+        binding.etSearch.showKeyboard()
+    }
+
+    override fun hideKeyboard() {
+        binding.etSearch.hideKeyboard()
+    }
+
+    override fun clearFocus() {
+        binding.etSearch.clearFocus()
     }
 }

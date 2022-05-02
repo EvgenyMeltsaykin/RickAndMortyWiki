@@ -27,6 +27,12 @@ interface LocationApiService {
         @Path("ids") ids: String
     ): List<LocationInfoResponse>
 
+    @GET(LOCATION)
+    suspend fun getLocationsByName(
+        @Query("page") page: Int,
+        @Query("name") name: String
+    ): LocationsResponse
+
     companion object {
         private const val LOCATION = "location"
         fun create(

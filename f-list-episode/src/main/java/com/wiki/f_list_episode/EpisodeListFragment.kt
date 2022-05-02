@@ -4,7 +4,10 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_extensions.pagination
+import com.wiki.cf_ui.controllers.MenuItem
+import com.wiki.cf_ui.controllers.MenuType
 import com.wiki.cf_ui.controllers.NavigationUiConfig
+import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_general_adapter.EpisodeAdapter
 import com.wiki.f_list_episode.databinding.FragmentEpisodeListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -31,7 +34,6 @@ class EpisodeListFragment : BaseFragment<
     }
 
     override fun initView(initialState: EpisodeListState) {
-
         with(binding) {
             rvEpisode.adapter = episodeAdapter
             rvEpisode.addItemDecoration(DividerItemDecoration(rvEpisode.context, LinearLayout.VERTICAL))
@@ -42,7 +44,6 @@ class EpisodeListFragment : BaseFragment<
             refresh.setOnRefreshListener {
                 viewModel.onRefresh()
             }
-
         }
     }
 
@@ -51,13 +52,26 @@ class EpisodeListFragment : BaseFragment<
             is EpisodeListEvents.OnNavigateToEpisode -> {
                 router.navigateTo(screenProvider.DetailEpisode(event.episode))
             }
+            is EpisodeListEvents.NavigateToSearch -> {
+                router.navigateTo(screenProvider.Search(event.feature))
+            }
         }
     }
 
     override fun bindNavigationUi() {
         setNavigationUiConfig(
             NavigationUiConfig(
-                isVisibleBottomNavigation = true
+                isVisibleBottomNavigation = true,
+                isVisibleToolbar = true,
+                toolbarConfig = ToolbarConfig(
+                    title = getString(R.string.episodes_toolbar_title),
+                    menuItem = listOf(
+                        MenuItem(
+                            menuType = MenuType.SEARCH,
+                            clickListener = { viewModel.onSearchClick() }
+                        )
+                    )
+                )
             )
         )
     }

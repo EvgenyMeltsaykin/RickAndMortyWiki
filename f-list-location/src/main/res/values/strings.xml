@@ -2,4 +2,5 @@
 <resources>
     <string name="type">Type: %s</string>
     <string name="dimension">Dimension: %s</string>
+    <string name="locations_toolbar_title">Locations</string>
 </resources>

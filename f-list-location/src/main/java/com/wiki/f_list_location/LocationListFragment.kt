@@ -4,8 +4,11 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_extensions.pagination
+import com.wiki.cf_ui.controllers.MenuItem
+import com.wiki.cf_ui.controllers.MenuType
 import com.wiki.cf_ui.controllers.NavigationUiConfig
-import com.wiki.f_list_location.adapter.LocationAdapter
+import com.wiki.cf_ui.controllers.ToolbarConfig
+import com.wiki.f_general_adapter.LocationAdapter
 import com.wiki.f_list_location.databinding.FragmentLocationListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -45,13 +48,24 @@ class LocationListFragment : BaseFragment<
     override fun bindEvents(event: LocationListEvents) {
         when (event) {
             is LocationListEvents.OnNavigateToLocation -> router.navigateTo(screenProvider.DetailLocation(event.location))
+            is LocationListEvents.NavigateToSearch -> router.navigateTo(screenProvider.Search(event.feature))
         }
     }
 
     override fun bindNavigationUi() {
         setNavigationUiConfig(
             NavigationUiConfig(
-                isVisibleBottomNavigation = true
+                isVisibleBottomNavigation = true,
+                isVisibleToolbar = true,
+                toolbarConfig = ToolbarConfig(
+                    title = getString(R.string.locations_toolbar_title),
+                    menuItem = listOf(
+                        MenuItem(
+                            menuType = MenuType.SEARCH,
+                            clickListener = { viewModel.onSearchClick() }
+                        )
+                    )
+                )
             )
         )
     }

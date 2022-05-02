@@ -62,10 +62,17 @@ class LocationListViewModel(
 
     fun onRefresh() {
         _state.update {
-            it.copy(endReached = false)
+            it.copy(
+                page = 1,
+                endReached = false
+            )
         }
         pagination.reset()
         loadNextPage()
+    }
+
+    fun onSearchClick() {
+        sendEvent(LocationListEvents.NavigateToSearch())
     }
 
 }

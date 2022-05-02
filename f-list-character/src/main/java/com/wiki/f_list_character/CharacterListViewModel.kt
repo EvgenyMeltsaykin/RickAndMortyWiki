@@ -64,10 +64,17 @@ class CharacterListViewModel(
 
     fun onRefresh() {
         _state.update {
-            it.copy(endReached = false)
+            it.copy(
+                page = 1,
+                endReached = false
+            )
         }
         pagination.reset()
         loadNextPage()
+    }
+
+    fun onSearchClick() {
+        sendEvent(CharacterListEvents.NavigateToSearch())
     }
 
 }

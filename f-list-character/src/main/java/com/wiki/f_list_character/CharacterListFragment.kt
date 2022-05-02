@@ -4,7 +4,10 @@ import android.view.View
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.navigation.SharedElementFragment
 import com.wiki.cf_extensions.pagination
+import com.wiki.cf_ui.controllers.MenuItem
+import com.wiki.cf_ui.controllers.MenuType
 import com.wiki.cf_ui.controllers.NavigationUiConfig
+import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_general_adapter.CharacterAdapter
 import com.wiki.f_list_character.databinding.FragmentCharacterListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -55,13 +58,26 @@ class CharacterListFragment : BaseFragment<
             is CharacterListEvents.NavigateToDetailCharacter -> {
                 router.navigateTo(screenProvider.DetailCharacter(event.character))
             }
+            is CharacterListEvents.NavigateToSearch -> {
+                router.navigateTo(screenProvider.Search(event.feature))
+            }
         }
     }
 
     override fun bindNavigationUi() {
         setNavigationUiConfig(
             NavigationUiConfig(
-                isVisibleBottomNavigation = true
+                isVisibleBottomNavigation = true,
+                isVisibleToolbar = true,
+                toolbarConfig = ToolbarConfig(
+                    title = getString(R.string.characters_toolbar_title),
+                    menuItem = listOf(
+                        MenuItem(
+                            menuType = MenuType.SEARCH,
+                            clickListener = { viewModel.onSearchClick() }
+                        )
+                    )
+                )
             )
         )
     }

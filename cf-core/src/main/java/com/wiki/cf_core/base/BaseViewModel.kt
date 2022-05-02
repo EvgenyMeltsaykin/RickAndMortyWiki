@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wiki.cf_core.BaseScreenEventBus
 import com.wiki.cf_network.NetworkException
+import com.wiki.cf_network.util.ConnectivityService
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +25,7 @@ abstract class BaseViewModel<EventsFromScreen : EventScreen, ViewStateFromScreen
         get() = _state
 
     private val baseScreenEventBus: BaseScreenEventBus by inject()
+    private val connectivityService: ConnectivityService by inject()
 
     fun sendEvent(event: EventsFromScreen) {
         viewModelScope.launch {
@@ -35,14 +39,24 @@ abstract class BaseViewModel<EventsFromScreen : EventScreen, ViewStateFromScreen
         }
     }
 
-    fun launchInternetRequest(block: suspend () -> Unit) {
-        viewModelScope.launch {
+    private var job: Job? = null
+
+    fun launchInternetRequest(onNothingFoundError: (() -> Unit?)? = null, block: suspend () -> Unit): Job {
+        job = viewModelScope.launch {
             try {
+                if (connectivityService.isOffline()) throw NetworkException.NoConnectivity
                 block()
                 baseScreenEventBus.invokeEvent(BaseEventScreen.InternetError(false))
+            } catch (e: CancellationException) {
+
             } catch (e: NetworkException) {
-                baseScreenEventBus.invokeEvent(BaseEventScreen.InternetError(true, text = e.messageError))
+                when {
+                    e is NetworkException.NothingFound && onNothingFoundError != null -> onNothingFoundError()
+                    e is NetworkException.NothingFound -> {}
+                    else -> baseScreenEventBus.invokeEvent(BaseEventScreen.InternetError(true, text = e.messageError))
+                }
             }
         }
+        return job as Job
     }
 }

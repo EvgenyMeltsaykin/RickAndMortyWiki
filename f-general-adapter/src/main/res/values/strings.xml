@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="adapter_release_date">Release date:</string>
-
+    <string name="adapter_type">Type: %s</string>
+    <string name="adapter_dimension">Dimension: %s</string>
 </resources>

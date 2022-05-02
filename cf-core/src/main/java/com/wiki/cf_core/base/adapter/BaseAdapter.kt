@@ -36,11 +36,12 @@ abstract class BaseAdapter<AdapterItem, VB : ViewBinding> :
         bind(getItem(position), holder.binding)
     }
 
-    fun submitListAndSaveState(list: List<AdapterItem>?, recyclerView: RecyclerView) {
+    fun submitListAndSaveState(list: List<AdapterItem>?, recyclerView: RecyclerView, afterSubmit: () -> Unit = {}) {
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
         val recyclerViewState = layoutManager.onSaveInstanceState()
         submitList(list) {
             (recyclerView.layoutManager as LinearLayoutManager).onRestoreInstanceState(recyclerViewState)
+            afterSubmit()
         }
     }
 

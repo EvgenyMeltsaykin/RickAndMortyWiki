@@ -27,6 +27,12 @@ interface CharactersApiService {
         @Path("ids") ids: String
     ): List<CharacterInfoResponse>
 
+    @GET(CHARACTER)
+    suspend fun getCharactersByName(
+        @Query("page") page: Int,
+        @Query("name") name: String
+    ): CharactersResponse
+
     companion object {
         private const val CHARACTER = "character"
         fun create(

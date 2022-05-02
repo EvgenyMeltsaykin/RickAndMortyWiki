@@ -83,6 +83,7 @@ dependencies {
     implementation(project(":f-detail-episode"))
     implementation(project(":f-detail-character"))
     implementation(project(":f-detail-location"))
+    implementation(project(":f-search"))
     implementation(project(":i-character"))
     implementation(project(":i-episode"))
     implementation(project(":i-location"))

@@ -8,5 +8,4 @@ data class LocationListState(
     val isLoading: Boolean = true,
     val page: Int = 1,
     val endReached: Boolean = false,
-    val isVisibleLastElementList: Boolean = true
 ) : StateScreen

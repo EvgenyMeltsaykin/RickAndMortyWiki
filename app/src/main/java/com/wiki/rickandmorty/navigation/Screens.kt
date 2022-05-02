@@ -7,6 +7,7 @@ import com.wiki.cf_core.navigation.TabKeys
 import com.wiki.cf_data.CharacterDto
 import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_data.LocationDto
+import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_data.common.SimpleData
 import com.wiki.f_detail_character.DetailCharacterFragment
 import com.wiki.f_detail_episode.DetailEpisodeFragment
@@ -14,6 +15,7 @@ import com.wiki.f_detail_location.DetailLocationFragment
 import com.wiki.f_list_character.CharacterListFragment
 import com.wiki.f_list_episode.EpisodeListFragment
 import com.wiki.f_list_location.LocationListFragment
+import com.wiki.f_search.SearchFragment
 
 object Screens : ScreenProvider {
     override fun Characters() = FragmentScreen { CharacterListFragment() }
@@ -29,6 +31,8 @@ object Screens : ScreenProvider {
 
     override fun DetailLocation(location: LocationDto?, locationData: SimpleData?): FragmentScreen =
         FragmentScreen { DetailLocationFragment.newInstance(location, locationData) }
+
+    override fun Search(feature: SearchFeature) = FragmentScreen { SearchFragment.newInstance(feature) }
 
     override fun TabContainer(tabKey: TabKeys) = FragmentScreen {
         NavigationTabFragment.newInstance(tabKey)

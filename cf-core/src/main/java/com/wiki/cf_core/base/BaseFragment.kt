@@ -17,6 +17,8 @@ import com.wiki.cf_core.navigation.UiControl
 import com.wiki.cf_network.util.ConnectivityService
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.NavigationUiControl
+import com.wiki.cf_ui.controllers.SearchToolbarController
+import com.wiki.cf_ui.controllers.isSearch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -113,6 +115,21 @@ abstract class BaseFragment<
 
     protected fun setNavigationUiConfig(navigationUiConfig: NavigationUiConfig) {
         (requireActivity() as NavigationUiControl).setNavigationUiConfig(navigationUiConfig)
+    }
+
+    protected fun showSearchKeyboard() {
+        if (!navigationConfig.toolbarConfig.toolbarType.isSearch()) return
+        (requireActivity() as? SearchToolbarController)?.showKeyboard()
+    }
+
+    protected fun hideSearchKeyboard() {
+        if (!navigationConfig.toolbarConfig.toolbarType.isSearch()) return
+        (requireActivity() as? SearchToolbarController)?.hideKeyboard()
+    }
+
+    protected fun clearFocusSearchKeyboard() {
+        if (!navigationConfig.toolbarConfig.toolbarType.isSearch()) return
+        (requireActivity() as? SearchToolbarController)?.clearFocus()
     }
 
     override fun onDestroyView() {

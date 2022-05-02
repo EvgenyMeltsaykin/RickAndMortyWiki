@@ -9,4 +9,5 @@ val NetworkEpisodeModule = module {
     single<GetAllEpisodesUseCase> { GetAllEpisodesUseCaseImpl(get()) }
     single<GetEpisodeInfoUseCase> { GetEpisodeInfoUseCaseImpl(get()) }
     single<GetEpisodesByIdsUseCase> { GetEpisodesByIdsUseCaseImpl(get()) }
+    single<GetEpisodesByNameUseCase> { GetEpisodesByNameUseCaseImpl(get()) }
 }
