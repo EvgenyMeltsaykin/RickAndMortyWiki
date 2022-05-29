@@ -49,7 +49,7 @@ abstract class BaseFragment<
         get() = (parentFragment as RouterProvider).router
 
     val screenProvider: ScreenProvider by inject()
-    val connectivityService: ConnectivityService by inject()
+    private val connectivityService: ConnectivityService by inject()
 
     private var _binding: VB? = null
     val binding get() = _binding!!
@@ -81,7 +81,6 @@ abstract class BaseFragment<
 
     override fun onStart() {
         super.onStart()
-        bindNavigationUi()
         viewModel.viewModelScope.launch(Dispatchers.Main) {
             viewModel.eventFlow.collect {
                 bindEvents(it)
@@ -92,6 +91,7 @@ abstract class BaseFragment<
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         showInternetError(isVisible = false)
         super.onViewCreated(view, savedInstanceState)
+        bindNavigationUi()
         initView(viewModel.state.value)
         viewModel.viewModelScope.launch(Dispatchers.Main) {
             viewModel.state.collect {

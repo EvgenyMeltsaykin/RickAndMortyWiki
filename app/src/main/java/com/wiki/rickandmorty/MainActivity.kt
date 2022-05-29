@@ -160,6 +160,7 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
             }
             commitNow()
         }
+
     }
 
     override fun setNavigationUiConfig(config: NavigationUiConfig) {

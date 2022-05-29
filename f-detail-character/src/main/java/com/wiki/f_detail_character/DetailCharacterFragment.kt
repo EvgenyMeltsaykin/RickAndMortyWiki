@@ -2,7 +2,6 @@ package com.wiki.f_detail_character
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
@@ -20,8 +19,6 @@ import com.wiki.cf_data.LifeStatus
 import com.wiki.cf_extensions.getDrawable
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.extensions.blurMask
-import com.wiki.cf_ui.extensions.onTransitionCompeteListener
-import com.wiki.cf_ui.extensions.progressChangeListener
 import com.wiki.cf_ui.extensions.setTextOrGone
 import com.wiki.f_detail_character.databinding.FragmentDetailCharacterBinding
 import com.wiki.f_general_adapter.EpisodeAdapter
@@ -49,21 +46,9 @@ class DetailCharacterFragment : BaseFragment<
     override val viewModel: DetailCharacterViewModel by viewModel { parametersOf(character) }
     override var sharedView: View? = null
 
-    private var saveStateMotion: Parcelable? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTransition()
-    }
-
-    override fun onPause() {
-        saveStateMotion = binding.root.onSaveInstanceState()
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        binding.root.onRestoreInstanceState(saveStateMotion)
     }
 
     private fun setupTransition() {
@@ -90,21 +75,8 @@ class DetailCharacterFragment : BaseFragment<
         with(binding) {
             rvEpisode.adapter = adapter
             rvEpisode.addItemDecoration(DividerItemDecoration(rvEpisode.context, LinearLayout.VERTICAL))
-            root.progressChangeListener { progress ->
-                val blurRadius = (1 - progress) * 10f
-                setBlurRadiusOnText(blurRadius)
-            }
-            root.onTransitionCompeteListener {
-                if (it == R.id.end) {
-                    setBlurRadiusOnText(0f)
-                }
-            }
-            btnClose.setOnClickListener {
-                viewModel.onCloseClick()
-            }
             ivPreview.transitionName = character.imageUrl
             sharedView = ivPreview
-
 
             Glide.with(requireContext())
                 .load(initialState.imageUrl)
