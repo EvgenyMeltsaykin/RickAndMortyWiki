@@ -12,6 +12,7 @@ class FeaturePlugin : BasePlugin() {
         plugins.run {
             apply("common-plugin")
             apply("ui-plugin")
+            apply("test-plugin")
         }
 
         android {
