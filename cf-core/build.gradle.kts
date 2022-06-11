@@ -19,4 +19,6 @@ dependencies {
     implementation(project(":cf-network"))
     implementation(project(":cf-data"))
     implementation(project(":cf-ui"))
+
+    api("com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.5.6")
 }

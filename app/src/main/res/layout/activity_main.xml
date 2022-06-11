@@ -7,33 +7,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:id="@+id/status_bar_background"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="2dp"
-        android:background="@android:color/white"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/bubbles"
-            app:lottie_scale="2" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/bubbles" />
-    </LinearLayout>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/top_snack_bar"
         android:layout_width="match_parent"
@@ -53,7 +26,7 @@
         android:paddingEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/status_bar_background">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/btn_back"

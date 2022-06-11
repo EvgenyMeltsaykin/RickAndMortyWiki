@@ -26,8 +26,8 @@ import com.wiki.f_general_adapter.EpisodeAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class DetailCharacterFragment : BaseFragment<
-        FragmentDetailCharacterBinding, State, Effects, Events, DetailCharacterViewModel>() {
+class DetailCharacterFragment :
+    BaseFragment<FragmentDetailCharacterBinding, State, Effects, Events, DetailCharacterViewModel>() {
 
     companion object {
         fun newInstance(character: CharacterDto) = DetailCharacterFragment().apply {
@@ -56,40 +56,40 @@ class DetailCharacterFragment : BaseFragment<
 
     override fun renderState(state: State) {
         with(binding) {
-            tvCharacterName.performIfChanged(state.name){
+            tvCharacterName.performIfChanged(state.name) {
                 text = it
             }
-            tvFirstSeenInEpisode.performIfChanged(state.firstSeenInEpisodeName){
+            tvFirstSeenInEpisode.performIfChanged(state.firstSeenInEpisodeName) {
                 setTextOrGone(secondRowText = state.firstSeenInEpisodeName)
             }
-            tvOriginLocation.performIfChanged(state.originLocation){
+            tvOriginLocation.performIfChanged(state.originLocation) {
                 setTextOrGone(secondRowText = state.originLocation)
             }
-            tvLastLocation.performIfChanged(state.lastKnownLocation){
+            tvLastLocation.performIfChanged(state.lastKnownLocation) {
                 setTextOrGone(secondRowText = state.lastKnownLocation)
             }
-            tvStatus.performIfChanged(state.lifeStatus.status){
+            tvStatus.performIfChanged(state.lifeStatus.status) {
                 setTextOrGone(secondRowText = state.lifeStatus.status)
             }
-            tvSpecies.performIfChanged(state.species){
+            tvSpecies.performIfChanged(state.species) {
                 setTextOrGone(secondRowText = state.species)
             }
-            tvGender.performIfChanged(state.gender){
+            tvGender.performIfChanged(state.gender) {
                 setTextOrGone(secondRowText = state.gender)
             }
-            rvEpisode.performIfChanged(state.episodes){
+            rvEpisode.performIfChanged(state.episodes) {
                 episodeAdapter.submitList(state.episodes)
             }
-            tvEpisodesStatic.performIfChanged(state.episodes.isNotEmpty()){
+            tvEpisodesStatic.performIfChanged(state.episodes.isNotEmpty()) {
                 isVisible = it
             }
-            ivPreview.performIfChanged(state.imageUrl){
+            ivPreview.performIfChanged(state.imageUrl) {
                 Glide.with(requireContext())
                     .load(state.imageUrl)
                     .apply(RequestOptions().roundCorners(16))
                     .into(ivPreview)
             }
-            ivStatus.performIfChanged(state.lifeStatus){
+            ivStatus.performIfChanged(state.lifeStatus) {
                 ivStatus.setImageDrawable(getDrawable(getStatusDrawableId(state.lifeStatus)))
             }
 

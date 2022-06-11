@@ -12,8 +12,8 @@ import com.wiki.f_list_character.CharacterListScreenFeature.*
 import com.wiki.f_list_character.databinding.FragmentCharacterListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CharacterListFragment : BaseFragment<
-    FragmentCharacterListBinding, State, Effects, Events, CharacterListViewModel>() {
+class CharacterListFragment :
+    BaseFragment<FragmentCharacterListBinding, State, Effects, Events, CharacterListViewModel>() {
 
     override val viewModel: CharacterListViewModel by viewModel()
     private val characterAdapter: CharacterAdapter =
@@ -26,10 +26,10 @@ class CharacterListFragment : BaseFragment<
 
     override fun renderState(state: State) {
         with(binding) {
-            rvCharacter.performIfChanged(state.characters){
+            rvCharacter.performIfChanged(state.characters) {
                 characterAdapter.submitListAndSaveState(it, rvCharacter)
             }
-            refresh.performIfChanged(state.isLoading){
+            refresh.performIfChanged(state.isLoading) {
                 isRefreshing = it
             }
         }

@@ -22,8 +22,7 @@ import com.wiki.f_search.databinding.FragmentSearchBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class SearchFragment : BaseFragment<
-        FragmentSearchBinding, State, Effects, Events, SearchViewModel>() {
+class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Events, SearchViewModel>() {
 
     companion object {
         fun newInstance(feature: SearchFeature) = SearchFragment().apply {
@@ -138,15 +137,6 @@ class SearchFragment : BaseFragment<
         return getString(R.string.not_found, feature.featureName.capitalize())
     }
 
-    override fun bindNavigationUi() {
-        setNavigationUiConfig(
-            NavigationUiConfig(
-                isVisibleBottomNavigation = false,
-                isVisibleToolbar = false
-            )
-        )
-    }
-
     override fun bindEffects(effect: Effects) {
         binding.etSearch.hideKeyboard()
         when (effect) {
@@ -164,6 +154,15 @@ class SearchFragment : BaseFragment<
             is Effects.OnNavigateToBack -> router.exit()
 
         }
+    }
+
+    override fun bindNavigationUi() {
+        setNavigationUiConfig(
+            NavigationUiConfig(
+                isVisibleBottomNavigation = false,
+                isVisibleToolbar = false
+            )
+        )
     }
 }
 

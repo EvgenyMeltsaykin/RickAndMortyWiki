@@ -9,18 +9,16 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 abstract class BaseViewModel<
-        ViewStateFromScreen : StateScreen,
-        EffectsFromScreen : EffectScreen,
-        EventViewModel: EventScreen
-        >(
+    ViewStateFromScreen : StateScreen,
+    EffectsFromScreen : EffectScreen,
+    EventViewModel : EventScreen
+    >(
     initialViewState: ViewStateFromScreen
 ) : ViewModel(), KoinComponent {
     private val effectChanel = Channel<EffectsFromScreen>()
@@ -39,10 +37,10 @@ abstract class BaseViewModel<
         setState(initialViewState)
     }
 
-    private fun subscribeEvents(){
-        viewModelScope.launch {
-            eventFlow.collect{ bindEvents(it) }
-        }
+    private fun subscribeEvents() {
+        eventFlow.onEach {
+            bindEvents(it)
+        }.launchIn(viewModelScope)
     }
 
     protected fun setEffect(builder: () -> EffectsFromScreen?){

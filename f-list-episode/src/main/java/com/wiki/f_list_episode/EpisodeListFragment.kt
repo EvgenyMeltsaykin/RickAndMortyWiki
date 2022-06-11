@@ -14,13 +14,7 @@ import com.wiki.f_list_episode.EpisodeListScreenFeature.*
 import com.wiki.f_list_episode.databinding.FragmentEpisodeListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class EpisodeListFragment : BaseFragment<
-    FragmentEpisodeListBinding,
-    State,
-    Effects,
-        Events,
-    EpisodeListViewModel
-    >() {
+class EpisodeListFragment : BaseFragment<FragmentEpisodeListBinding, State, Effects, Events, EpisodeListViewModel>() {
 
     override val viewModel: EpisodeListViewModel by viewModel()
 

@@ -18,6 +18,8 @@ import com.wiki.cf_network.util.ConnectivityService
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.NavigationUiControl
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.lang.reflect.ParameterizedType
@@ -63,7 +65,20 @@ abstract class BaseFragment<
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         subscribeState()
+        subscribeEffects()
         setTransitions()
+    }
+
+    private fun subscribeState() {
+        viewModel.stateFlow.onEach {
+            if (_binding != null) renderState(it)
+        }.launchIn(viewModel.viewModelScope)
+    }
+
+    private fun subscribeEffects() {
+        viewModel.effectFlow.onEach {
+            bindEffects(it)
+        }.launchIn(viewModel.viewModelScope)
     }
 
     private fun setTransitions() {
@@ -99,18 +114,8 @@ abstract class BaseFragment<
             )
         _binding = method.invoke(null, inflater, container, false) as VB
         initView()
+        renderState(viewModel.stateFlow.value)
         return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
-        subscribeEffects()
-    }
-
-    private fun subscribeEffects() {
-        with(viewModel){
-            viewModelScope.launch(Dispatchers.Main) { effectFlow.collect { bindEffects(it) } }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -118,18 +123,8 @@ abstract class BaseFragment<
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun subscribeState() {
-        viewModel.viewModelScope.launch(Dispatchers.Main) {
-            viewModel.stateFlow.collect {
-                if (_binding != null) renderState(it)
-            }
-        }
-    }
-
     fun sendEvent(event: EventsViewModel) {
-        with(viewModel){
-            viewModelScope.launch(Dispatchers.Main) { eventChannel.send(event) }
-        }
+        viewModel.viewModelScope.launch(Dispatchers.Main) { viewModel.eventChannel.send(event) }
     }
 
     private fun showInternetError(isVisible: Boolean, text: String = "") {

@@ -15,8 +15,8 @@ import com.wiki.f_general_adapter.CharacterAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class DetailEpisodeFragment : BaseFragment<
-    FragmentDetailEpisodeBinding, State, Effects, Events, DetailEpisodeViewModel>() {
+class DetailEpisodeFragment :
+    BaseFragment<FragmentDetailEpisodeBinding, State, Effects, Events, DetailEpisodeViewModel>() {
 
     override val viewModel: DetailEpisodeViewModel by viewModel { parametersOf(episode) }
 
@@ -36,20 +36,20 @@ class DetailEpisodeFragment : BaseFragment<
     private var episode by fragmentArgument<EpisodeDto>()
 
     override fun renderState(state: State) {
-        with(binding){
-            tvCharactersStatic.performIfChanged(state.characters.isNotEmpty()){
+        with(binding) {
+            tvCharactersStatic.performIfChanged(state.characters.isNotEmpty()) {
                 tvCharactersStatic.isVisible = it
             }
-            tvEpisodeName.performIfChanged(state.name){
+            tvEpisodeName.performIfChanged(state.name) {
                 this.text = it
             }
-            tvReleaseDate.performIfChanged(state.releaseDate){
+            tvReleaseDate.performIfChanged(state.releaseDate) {
                 this.text = it
             }
-            tvEpisodeShortName.performIfChanged(state.shortName){
+            tvEpisodeShortName.performIfChanged(state.shortName) {
                 this.text = it
             }
-            rvCharacters.performIfChanged(state.characters){
+            rvCharacters.performIfChanged(state.characters) {
                 characterAdapter.submitList(state.characters)
             }
         }
@@ -59,6 +59,12 @@ class DetailEpisodeFragment : BaseFragment<
         with(binding) {
             rvCharacters.adapter = characterAdapter
             rvCharacters.addItemDecoration(DividerItemDecoration(rvCharacters.context, LinearLayout.VERTICAL))
+        }
+    }
+
+    override fun bindEffects(effect: Effects) {
+        when (effect) {
+            is Effects.OnNavigateToCharacter -> router.navigateTo(screenProvider.DetailCharacter(effect.character))
         }
     }
 
@@ -75,10 +81,5 @@ class DetailEpisodeFragment : BaseFragment<
         )
     }
 
-    override fun bindEffects(effect: Effects) {
-        when(effect){
-            is Effects.OnNavigateToCharacter -> router.navigateTo(screenProvider.DetailCharacter(effect.character))
-        }
-    }
 }
 

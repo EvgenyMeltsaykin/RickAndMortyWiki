@@ -16,8 +16,8 @@ import com.wiki.f_general_adapter.CharacterAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class DetailLocationFragment : BaseFragment<
-    FragmentDetailLocationBinding, State, Effects, Events, DetailLocationViewModel>() {
+class DetailLocationFragment :
+    BaseFragment<FragmentDetailLocationBinding, State, Effects, Events, DetailLocationViewModel>() {
 
     companion object {
         fun newInstance(location: LocationDto?, locationData: SimpleData?) = DetailLocationFragment().apply {
@@ -42,17 +42,17 @@ class DetailLocationFragment : BaseFragment<
         characterAdapter.submitList(state.residentCharacters)
 
         with(binding) {
-            tvResidentsStatic.performIfChanged(state.residentCharacters.isNotEmpty()){
+            tvResidentsStatic.performIfChanged(state.residentCharacters.isNotEmpty()) {
                 isVisible = it
             }
-            tvLocationName.performIfChanged(state.name){
+            tvLocationName.performIfChanged(state.name) {
                 text = it
             }
-            tvType.performIfChanged(state.type){
+            tvType.performIfChanged(state.type) {
                 isVisible = it.isNotEmpty()
                 text = getString(R.string.detail_location_type, state.type)
             }
-            tvDimension.performIfChanged(state.dimension){
+            tvDimension.performIfChanged(state.dimension) {
                 isVisible = it.isNotEmpty()
                 text = getString(R.string.detail_location_dimension, state.dimension)
             }
@@ -63,6 +63,14 @@ class DetailLocationFragment : BaseFragment<
         with(binding.rvCharacters) {
             adapter = characterAdapter
             addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
+        }
+    }
+
+    override fun bindEffects(effect: Effects) {
+        when (effect) {
+            is Effects.OnNavigateToCharacter -> {
+                router.navigateTo(screenProvider.DetailCharacter(effect.character))
+            }
         }
     }
 
@@ -79,12 +87,5 @@ class DetailLocationFragment : BaseFragment<
         )
     }
 
-    override fun bindEffects(effect: Effects) {
-        when(effect){
-            is Effects.OnNavigateToCharacter ->{
-                router.navigateTo(screenProvider.DetailCharacter(effect.character))
-            }
-        }
-    }
 }
 

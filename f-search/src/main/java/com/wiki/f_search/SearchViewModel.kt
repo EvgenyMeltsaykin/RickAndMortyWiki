@@ -25,9 +25,7 @@ class SearchViewModel(
     private val getEpisodesByNameUseCase: GetEpisodesByNameUseCase,
     private val getLocationsByNameUseCase: GetLocationsByNameUseCase
 ) : BaseViewModel<State, Effects, Events>(
-    State(
-        feature = feature
-    )
+    State(feature = feature)
 ) {
     companion object {
         const val SEARCH_DELAY = 300L
@@ -181,7 +179,4 @@ class SearchViewModel(
         }
     }
 
-    fun onBackClick() {
-        sendEvent(SearchEvents.OnBackClick)
-    }
 }

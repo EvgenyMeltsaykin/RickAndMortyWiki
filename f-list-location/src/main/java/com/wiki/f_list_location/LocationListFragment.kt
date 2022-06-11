@@ -14,8 +14,8 @@ import com.wiki.f_list_location.LocationListScreenFeature.*
 import com.wiki.f_list_location.databinding.FragmentLocationListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class LocationListFragment : BaseFragment<
-        FragmentLocationListBinding, State, Effects, Events, LocationListViewModel>() {
+class LocationListFragment :
+    BaseFragment<FragmentLocationListBinding, State, Effects, Events, LocationListViewModel>() {
 
     override val viewModel: LocationListViewModel by viewModel()
 
@@ -24,11 +24,11 @@ class LocationListFragment : BaseFragment<
     }
 
     override fun renderState(state: State) {
-        with(binding){
-            rvLocation.performIfChanged(state.locations){
+        with(binding) {
+            rvLocation.performIfChanged(state.locations) {
                 locationAdapter.submitListAndSaveState(state.locations, rvLocation)
             }
-            refresh.performIfChanged(state.isLoading){
+            refresh.performIfChanged(state.isLoading) {
                 isRefreshing = it
             }
         }
