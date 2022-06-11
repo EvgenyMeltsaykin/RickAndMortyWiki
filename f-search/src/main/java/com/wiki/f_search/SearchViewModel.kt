@@ -180,4 +180,8 @@ class SearchViewModel(
             is Events.OnChangeSearchText -> onChangeSearchText(event.text)
         }
     }
+
+    fun onBackClick() {
+        sendEvent(SearchEvents.OnBackClick)
+    }
 }
