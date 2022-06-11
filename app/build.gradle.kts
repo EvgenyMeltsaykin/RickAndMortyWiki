@@ -1,4 +1,5 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+import com.wiki.buildsrc.Libs
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -66,45 +67,44 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.4.2")
-    implementation("com.google.android.material:material:1.6.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.1.1")
+    implementation(Libs.Koin.core)
+    implementation(Libs.Koin.android)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
+    implementation(Libs.Ui.AndroidX.core)
+    implementation(Libs.Ui.AndroidX.appcompat)
+    implementation(Libs.Ui.material)
+    implementation(Libs.Ui.constraintLayout)
 
-    implementation("io.insert-koin:koin-core:3.1.6")
-    implementation("io.insert-koin:koin-android:3.1.6")
-    implementation("com.github.terrakok:cicerone:7.1")
-    implementation(project(":cf-core"))
-    implementation(project(":cf-data"))
-    implementation(project(":cf-network"))
-    implementation(project(":cf-ui"))
-    implementation(project(":cf-extensions"))
-    implementation(project(":f-list-character"))
-    implementation(project(":f-list-episode"))
-    implementation(project(":f-list-location"))
-    implementation(project(":f-detail-episode"))
-    implementation(project(":f-detail-character"))
-    implementation(project(":f-detail-location"))
-    implementation(project(":f-search"))
-    implementation(project(":i-character"))
-    implementation(project(":i-episode"))
-    implementation(project(":i-location"))
+    testImplementation(Libs.Test.junit)
+    androidTestImplementation(Libs.Test.testJunit)
+    androidTestImplementation(Libs.Test.testEspressoCore)
+    androidTestImplementation(Libs.Test.compose)
+    implementation(Libs.Coroutines.core)
+    implementation(Libs.Lifecycle.viewModel)
+    implementation(Libs.Lifecycle.runtime)
 
-    implementation("androidx.core:core-splashscreen:1.0.0-rc01")
-    implementation(platform("com.google.firebase:firebase-bom:29.3.1"))
-    implementation("com.google.firebase:firebase-crashlytics")
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.airbnb.android:lottie:4.1.0")
-    implementation("com.gitee.zackratos:UltimateBarX:0.8.0")
-    implementation("com.github.terrakok:cicerone:7.1")
+    implementation(Libs.cicerone)
+    implementation(Libs.splashscreen)
+    implementation(platform(Libs.Firebase.bom))
+    implementation(Libs.Firebase.crashlytics)
+    implementation(Libs.Firebase.analytics)
+
+    implementation(projects.cfCore)
+    implementation(projects.cfData)
+    implementation(projects.cfNetwork)
+    implementation(projects.cfUi)
+    implementation(projects.cfExtensions)
+    implementation(projects.fListCharacter)
+    implementation(projects.fListEpisode)
+    implementation(projects.fListLocation)
+    implementation(projects.fDetailCharacter)
+    implementation(projects.fDetailEpisode)
+    implementation(projects.fDetailLocation)
+    implementation(projects.fSearch)
+    implementation(projects.iCharacter)
+    implementation(projects.iEpisode)
+    implementation(projects.iLocation)
+
 }
 
 val currentFormatDate: String

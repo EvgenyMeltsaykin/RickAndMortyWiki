@@ -1,8 +1,9 @@
+import com.wiki.buildsrc.Libs
+
 plugins {
     id("ui-plugin")
     id("kotlin-parcelize")
 }
-
 dependencies {
-    implementation("androidx.core:core-splashscreen:1.0.0-beta02")
+    implementation(Libs.splashscreen)
 }
