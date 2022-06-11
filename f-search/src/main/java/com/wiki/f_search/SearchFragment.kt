@@ -58,25 +58,23 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
     override val viewModel: SearchViewModel by viewModel { parametersOf(feature) }
 
     override fun renderState(state: State) {
-        binding.rvResult.performIfChanged(state.feature){
-            when (state.feature) {
-                SearchFeature.CHARACTER -> characterAdapter.submitListAndSaveState(
-                    state.characters,
-                    binding.rvResult
-                )
-                SearchFeature.EPISODE -> episodeAdapter.submitListAndSaveState(
-                    state.episodes,
-                    binding.rvResult
-                )
-                SearchFeature.LOCATION -> locationAdapter.submitListAndSaveState(
-                    state.locations,
-                    binding.rvResult
-                )
-            }
+        when (state.feature) {
+            SearchFeature.CHARACTER -> characterAdapter.submitListAndSaveState(
+                state.characters,
+                binding.rvResult
+            )
+            SearchFeature.EPISODE -> episodeAdapter.submitListAndSaveState(
+                state.episodes,
+                binding.rvResult
+            )
+            SearchFeature.LOCATION -> locationAdapter.submitListAndSaveState(
+                state.locations,
+                binding.rvResult
+            )
         }
 
-        with(binding){
-            rvResult.performIfChanged(state.feature){
+        with(binding) {
+            rvResult.performIfChanged(state.feature) {
                 adapter = when (it) {
                     SearchFeature.CHARACTER -> characterAdapter
                     SearchFeature.EPISODE -> episodeAdapter
@@ -84,11 +82,11 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
                 }
             }
 
-            etSearch.performIfChanged(state.feature){
+            etSearch.performIfChanged(state.feature) {
                 hint = getHintText(it)
             }
 
-            tvNotFound.performIfChanged(state.feature, state.isVisibleNotFound){feature, isVisible ->
+            tvNotFound.performIfChanged(state.feature, state.isVisibleNotFound) { feature, isVisible ->
                 text = getNotFoundText(feature)
                 this.isVisible = isVisible
 
