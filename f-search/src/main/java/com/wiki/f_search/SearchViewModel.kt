@@ -8,6 +8,7 @@ import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_data.LocationDto
 import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_network.util.pagination.DefaultPaginator
+import com.wiki.f_search.SearchScreenFeature.*
 import com.wiki.i_character.data.CharactersResponse
 import com.wiki.i_character.use_cases.GetCharactersByNameUseCase
 import com.wiki.i_episode.data.EpisodesResponse
@@ -17,15 +18,14 @@ import com.wiki.i_location.use_cases.GetLocationsByNameUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 
 class SearchViewModel(
     private val feature: SearchFeature,
     private val getCharactersByNameUseCase: GetCharactersByNameUseCase,
     private val getEpisodesByNameUseCase: GetEpisodesByNameUseCase,
     private val getLocationsByNameUseCase: GetLocationsByNameUseCase
-) : BaseViewModel<SearchEvents, SearchState>(
-    SearchState(
+) : BaseViewModel<State, Effects, Events>(
+    State(
         feature = feature
     )
 ) {
@@ -36,20 +36,29 @@ class SearchViewModel(
     private var searchJob: Job? = null
     private var searchText: String = ""
     private val pagination = DefaultPaginator(
-        initialKey = state.value.page,
+        initialKey = state.page,
         onLoadUpdated = { isLoading ->
-            _state.update {
-                it.copy(isLoading = isLoading)
-            }
+            setState(
+                state.copy(isLoading = isLoading)
+            )
         },
         onRequest = { nextPage ->
             when (feature) {
-                SearchFeature.CHARACTER -> getCharactersByNameUseCase(text = searchText, page = nextPage)
-                SearchFeature.EPISODE -> getEpisodesByNameUseCase(text = searchText, page = nextPage)
-                SearchFeature.LOCATION -> getLocationsByNameUseCase(text = searchText, page = nextPage)
+                SearchFeature.CHARACTER -> getCharactersByNameUseCase(
+                    text = searchText,
+                    page = nextPage
+                )
+                SearchFeature.EPISODE -> getEpisodesByNameUseCase(
+                    text = searchText,
+                    page = nextPage
+                )
+                SearchFeature.LOCATION -> getLocationsByNameUseCase(
+                    text = searchText,
+                    page = nextPage
+                )
             }
         },
-        getNextKey = { state.value.page + 1 },
+        getNextKey = { state.page + 1 },
         onError = {
             showSnackBar(it?.messageError)
         },
@@ -57,30 +66,30 @@ class SearchViewModel(
             items.map { response ->
                 when (response) {
                     is CharactersResponse -> {
-                        _state.update {
-                            it.copy(
+                        setState(
+                            state.copy(
                                 endReached = response.info.next == null,
-                                characters = if (isRefresh) emptyList() else it.characters
+                                characters = if (isRefresh) emptyList() else state.characters
                             )
-                        }
+                        )
                         response.result.map { it.toCharacterDto() }
                     }
                     is EpisodesResponse -> {
-                        _state.update {
-                            it.copy(
+                        setState(
+                            state.copy(
                                 endReached = response.info.next == null,
-                                episodes = if (isRefresh) emptyList() else it.episodes
+                                episodes = if (isRefresh) emptyList() else state.episodes
                             )
-                        }
+                        )
                         response.result.map { it.toEpisodeDto() }
                     }
                     is LocationsResponse -> {
-                        _state.update {
-                            it.copy(
+                        setState(
+                            state.copy(
                                 endReached = response.info.next == null,
-                                locations = if (isRefresh) emptyList() else it.locations
+                                locations = if (isRefresh) emptyList() else state.locations
                             )
-                        }
+                        )
                         response.result.map { it.toLocationDto() }
                     }
                     else -> {}
@@ -88,40 +97,40 @@ class SearchViewModel(
             }.collect { result ->
                 if (result.isNeededClass<CharacterDto>()) {
                     val characters = result.convertToList<CharacterDto>() ?: emptyList()
-                    _state.update {
-                        it.copy(
-                            characters = it.characters + characters,
+                    setState(
+                        state.copy(
+                            characters = state.characters + characters,
                             page = newKey,
                             isVisibleNotFound = false
                         )
-                    }
+                    )
                 }
                 if (result.isNeededClass<EpisodeDto>()) {
                     val episodes = result.convertToList<EpisodeDto>() ?: emptyList()
-                    _state.update {
-                        it.copy(
-                            episodes = it.episodes + episodes,
+                    setState(
+                        state.copy(
+                            episodes = state.episodes + episodes,
                             page = newKey,
                             isVisibleNotFound = false
                         )
-                    }
+                    )
                 }
                 if (result.isNeededClass<LocationDto>()) {
                     val locations = result.convertToList<LocationDto>() ?: emptyList()
-                    _state.update {
-                        it.copy(
-                            locations = it.locations + locations,
+                    setState(
+                        state.copy(
+                            locations = state.locations + locations,
                             page = newKey,
                             isVisibleNotFound = false
                         )
-                    }
+                    )
                 }
             }
         }
     )
 
-    fun loadNextPage() {
-        if (state.value.endReached) return
+    private fun loadNextPage() {
+        if (state.endReached) return
         launchInternetRequest {
             pagination.loadNextItems()
         }
@@ -130,21 +139,21 @@ class SearchViewModel(
     fun onChangeSearchText(text: String) {
         if (searchText == text) return
         searchText = text
-        _state.update {
-            it.copy(searchText = text)
-        }
+        setState(
+            state.copy(searchText = text)
+        )
         pagination.reset()
         searchJob?.cancel()
         searchJob = launchInternetRequest(
             onNothingFoundError = {
-                _state.update {
-                    it.copy(
+                setState(
+                    state.copy(
                         characters = emptyList(),
                         locations = emptyList(),
                         episodes = emptyList(),
                         isVisibleNotFound = true
                     )
-                }
+                )
             }
         ) {
             delay(SEARCH_DELAY)
@@ -153,15 +162,22 @@ class SearchViewModel(
 
     }
 
-    fun onCharacterClick(character: CharacterDto) {
-        sendEvent(SearchEvents.OnCharacterClick(character))
-    }
-
-    fun onEpisodeClick(episode: EpisodeDto) {
-        sendEvent(SearchEvents.OnEpisodeClick(episode))
-    }
-
-    fun onLocationClick(location: LocationDto) {
-        sendEvent(SearchEvents.OnLocationClick(location))
+    override fun bindEvents(event: Events) {
+        when (event) {
+            is Events.LoadNextPage -> loadNextPage()
+            is Events.OnCharacterClick -> setEffect {
+                Effects.OnNavigateToCharacter(event.character)
+            }
+            is Events.OnEpisodeClick -> setEffect {
+                Effects.OnNavigateToEpisode(event.episode)
+            }
+            is Events.OnLocationClick -> setEffect {
+                Effects.OnNavigateToLocation(event.location)
+            }
+            is Events.OnBackClick -> setEffect {
+                Effects.OnNavigateToBack
+            }
+            is Events.OnChangeSearchText -> onChangeSearchText(event.text)
+        }
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="release_date">Release date:</string>
-    <string name="characters">Characters</string>
+    <string name="detail_episode_toolbar_title">Episode</string>
+    <string name="detail_episode_release_date">Release date:</string>
+    <string name="detail_episode_characters">Characters</string>
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="residents">Residents</string>
-    <string name="type">Type: %s</string>
-    <string name="dimension">Dimension: %s</string>
+    <string name="detail_location_toolbar_title">Location</string>
+    <string name="detail_location_residents">Residents</string>
+    <string name="detail_location_type">Type: %s</string>
+    <string name="detail_location_dimension">Dimension: %s</string>
 </resources>

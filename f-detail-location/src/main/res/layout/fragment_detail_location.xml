@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="8dp"
     android:transitionGroup="true">
 
     <TextView
@@ -56,7 +57,7 @@
         android:layout_marginHorizontal="16dp"
         android:gravity="center"
         android:paddingVertical="8dp"
-        android:text="@string/residents"
+        android:text="@string/detail_location_residents"
         android:textAllCaps="true"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/tv_dimension" />

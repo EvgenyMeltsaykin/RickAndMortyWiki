@@ -29,6 +29,7 @@ data class ToolbarConfig(
 data class NavigationUiConfig(
     val isVisibleBottomNavigation: Boolean = false,
     val isVisibleToolbar: Boolean = false,
+    val isVisibleBackButton: Boolean = true,
     val toolbarConfig: ToolbarConfig = ToolbarConfig(),
     @ColorRes val colorStatusBar: Int = R.color.white,
     @ColorRes val colorBackground: Int = colorStatusBar,

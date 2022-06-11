@@ -2,15 +2,14 @@ package com.wiki.f_detail_character
 
 import com.wiki.cf_core.base.BaseViewModel
 import com.wiki.cf_data.CharacterDto
-import com.wiki.cf_data.EpisodeDto
+import com.wiki.f_detail_character.DetailCharacterScreenFeature.*
 import com.wiki.i_episode.use_cases.GetEpisodesByIdsUseCase
-import kotlinx.coroutines.flow.update
 
 class DetailCharacterViewModel(
     private val character: CharacterDto,
     private val getEpisodesByIdsUseCase: GetEpisodesByIdsUseCase
-) : BaseViewModel<DetailCharacterEvents, DetailCharacterState>(
-    DetailCharacterState(
+) : BaseViewModel<State, Effects, Events>(
+    State(
         name = character.name,
         imageUrl = character.imageUrl,
         gender = character.gender,
@@ -29,32 +28,35 @@ class DetailCharacterViewModel(
         launchInternetRequest {
             getEpisodesByIdsUseCase(character.episodeIds).collect { response ->
                 val firstSeenInLocation: String = response.firstOrNull()?.name ?: "Unknown"
-                _state.update {
-                    it.copy(
+                setState(
+                    state.copy(
                         firstSeenInEpisodeName = firstSeenInLocation,
                         episodes = response
                     )
-                }
+                )
             }
         }
     }
 
-    fun onEpisodeClick(episode: EpisodeDto) {
-        sendEvent(DetailCharacterEvents.NavigateToEpisode(episode))
+    override fun bindEvents(event: Events) {
+        when (event) {
+            is Events.OnEpisodeClick -> setEffect {
+                Effects.NavigateToEpisode(event.episodeDto)
+            }
+            is Events.OnCloseClick -> setEffect { Effects.OnNavigateBack }
+            is Events.OnOriginLocationClick -> setEffect { onOriginLocationClick() }
+            is Events.OnLastKnownLocation -> setEffect { onLastKnownLocation() }
+        }
     }
 
-    fun onCloseClick() {
-        sendEvent(DetailCharacterEvents.OnNavigateBack)
+    private fun onOriginLocationClick(): Effects? {
+        if (character.originLocation.id.isEmpty()) return null
+        return Effects.NavigateToLocation(character.originLocation)
     }
 
-    fun onOriginLocationClick() {
-        if (character.originLocation.id.isEmpty()) return
-        sendEvent(DetailCharacterEvents.NavigateToLocation(character.originLocation))
-    }
-
-    fun onLastKnownLocation() {
-        if (character.lastKnownLocation.id.isEmpty()) return
-        sendEvent(DetailCharacterEvents.NavigateToLocation(character.lastKnownLocation))
+    private fun onLastKnownLocation(): Effects? {
+        if (character.lastKnownLocation.id.isEmpty()) return null
+        return Effects.NavigateToLocation(character.lastKnownLocation)
     }
 
 }

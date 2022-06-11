@@ -33,12 +33,21 @@ android {
 
     }
 
+    signingConfigs{
+        create("release"){
+            keyAlias = "RAM"
+            keyPassword = "ncdPZ9tBJ3Esxmbw"
+            storeFile = file("rick_and_morty_key.jks")
+            storePassword = "ncdPZ9tBJ3Esxmbw"
+        }
+    }
 
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFile(getDefaultProguardFile("proguard-android-optimize.txt"))
             proguardFile(file("proguard-rules.pro"))
+            signingConfig = signingConfigs.getByName("release")
         }
 
     }
@@ -57,10 +66,10 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("com.google.android.material:material:1.5.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+    implementation("androidx.core:core-ktx:1.8.0")
+    implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("com.google.android.material:material:1.6.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
@@ -89,11 +98,13 @@ dependencies {
     implementation(project(":i-episode"))
     implementation(project(":i-location"))
 
-    implementation("androidx.core:core-splashscreen:1.0.0-beta02")
+    implementation("androidx.core:core-splashscreen:1.0.0-rc01")
     implementation(platform("com.google.firebase:firebase-bom:29.3.1"))
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-analytics")
-
+    implementation("com.airbnb.android:lottie:4.1.0")
+    implementation("com.gitee.zackratos:UltimateBarX:0.8.0")
+    implementation("com.github.terrakok:cicerone:7.1")
 }
 
 val currentFormatDate: String

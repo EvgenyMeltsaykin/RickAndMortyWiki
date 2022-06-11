@@ -2,7 +2,6 @@ package com.wiki.f_detail_character
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
 import androidx.core.view.isVisible
@@ -12,25 +11,23 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.transition.MaterialContainerTransform
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
+import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.roundCorners
-import com.wiki.cf_core.navigation.SharedElementFragment
 import com.wiki.cf_data.CharacterDto
 import com.wiki.cf_data.LifeStatus
 import com.wiki.cf_extensions.getDrawable
 import com.wiki.cf_ui.controllers.NavigationUiConfig
+import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.cf_ui.extensions.blurMask
 import com.wiki.cf_ui.extensions.setTextOrGone
+import com.wiki.f_detail_character.DetailCharacterScreenFeature.*
 import com.wiki.f_detail_character.databinding.FragmentDetailCharacterBinding
 import com.wiki.f_general_adapter.EpisodeAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class DetailCharacterFragment : BaseFragment<
-    FragmentDetailCharacterBinding,
-    DetailCharacterEvents,
-    DetailCharacterState,
-    DetailCharacterViewModel
-    >(), SharedElementFragment {
+        FragmentDetailCharacterBinding, State, Effects, Events, DetailCharacterViewModel>() {
 
     companion object {
         fun newInstance(character: CharacterDto) = DetailCharacterFragment().apply {
@@ -38,13 +35,13 @@ class DetailCharacterFragment : BaseFragment<
         }
     }
 
-    private val adapter: EpisodeAdapter = EpisodeAdapter(
-        onEpisodeClick = { viewModel.onEpisodeClick(it) }
+    private val episodeAdapter: EpisodeAdapter = EpisodeAdapter(
+        onEpisodeClick = { sendEvent(Events.OnEpisodeClick(it)) }
     )
+
     private var character by fragmentArgument<CharacterDto>()
 
     override val viewModel: DetailCharacterViewModel by viewModel { parametersOf(character) }
-    override var sharedView: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,38 +54,58 @@ class DetailCharacterFragment : BaseFragment<
         sharedElementEnterTransition = transform
     }
 
-    override fun renderState(state: DetailCharacterState) {
+    override fun renderState(state: State) {
         with(binding) {
-            tvCharacterName.text = state.name
-            tvFirstSeenInEpisode.setTextOrGone(secondRowText = state.firstSeenInEpisodeName)
-            tvOriginLocation.setTextOrGone(secondRowText = state.originLocation)
-            tvLastLocation.setTextOrGone(secondRowText = state.lastKnownLocation)
-            tvStatus.setTextOrGone(secondRowText = state.lifeStatus.status)
-            tvSpecies.setTextOrGone(secondRowText = state.species)
-            tvGender.setTextOrGone(secondRowText = state.gender)
-            adapter.submitList(state.episodes)
-            binding.tvEpisodesStatic.isVisible = state.episodes.isNotEmpty()
+            tvCharacterName.performIfChanged(state.name){
+                text = it
+            }
+            tvFirstSeenInEpisode.performIfChanged(state.firstSeenInEpisodeName){
+                setTextOrGone(secondRowText = state.firstSeenInEpisodeName)
+            }
+            tvOriginLocation.performIfChanged(state.originLocation){
+                setTextOrGone(secondRowText = state.originLocation)
+            }
+            tvLastLocation.performIfChanged(state.lastKnownLocation){
+                setTextOrGone(secondRowText = state.lastKnownLocation)
+            }
+            tvStatus.performIfChanged(state.lifeStatus.status){
+                setTextOrGone(secondRowText = state.lifeStatus.status)
+            }
+            tvSpecies.performIfChanged(state.species){
+                setTextOrGone(secondRowText = state.species)
+            }
+            tvGender.performIfChanged(state.gender){
+                setTextOrGone(secondRowText = state.gender)
+            }
+            rvEpisode.performIfChanged(state.episodes){
+                episodeAdapter.submitList(state.episodes)
+            }
+            tvEpisodesStatic.performIfChanged(state.episodes.isNotEmpty()){
+                isVisible = it
+            }
+            ivPreview.performIfChanged(state.imageUrl){
+                Glide.with(requireContext())
+                    .load(state.imageUrl)
+                    .apply(RequestOptions().roundCorners(16))
+                    .into(ivPreview)
+            }
+            ivStatus.performIfChanged(state.lifeStatus){
+                ivStatus.setImageDrawable(getDrawable(getStatusDrawableId(state.lifeStatus)))
+            }
+
         }
     }
 
-    override fun initView(initialState: DetailCharacterState) {
+    override fun initView() {
         with(binding) {
-            rvEpisode.adapter = adapter
+            rvEpisode.adapter = episodeAdapter
             rvEpisode.addItemDecoration(DividerItemDecoration(rvEpisode.context, LinearLayout.VERTICAL))
-            ivPreview.transitionName = character.imageUrl
-            sharedView = ivPreview
-
-            Glide.with(requireContext())
-                .load(initialState.imageUrl)
-                .apply(RequestOptions().roundCorners(16))
-                .into(ivPreview)
-            ivStatus.setImageDrawable(getDrawable(getStatusDrawableId(initialState.lifeStatus)))
 
             tvOriginLocation.setOnClickListener {
-                viewModel.onOriginLocationClick()
+                sendEvent(Events.OnOriginLocationClick)
             }
             tvLastLocation.setOnClickListener {
-                viewModel.onLastKnownLocation()
+                sendEvent(Events.OnLastKnownLocation)
             }
         }
     }
@@ -112,17 +129,17 @@ class DetailCharacterFragment : BaseFragment<
         }
     }
 
-    override fun bindEvents(event: DetailCharacterEvents) {
-        when (event) {
-            is DetailCharacterEvents.OnNavigateBack -> router.exit()
-            is DetailCharacterEvents.NavigateToEpisode -> {
-                router.navigateTo(screenProvider.DetailEpisode(event.episode))
+    override fun bindEffects(effect: Effects) {
+        when (effect) {
+            is Effects.OnNavigateBack -> router.exit()
+            is Effects.NavigateToEpisode -> {
+                router.navigateTo(screenProvider.DetailEpisode(effect.episode))
             }
-            is DetailCharacterEvents.NavigateToLocation -> {
+            is Effects.NavigateToLocation -> {
                 router.navigateTo(
                     screenProvider.DetailLocation(
                         location = null,
-                        locationData = event.locationData
+                        locationData = effect.locationData
                     )
                 )
             }
@@ -132,7 +149,12 @@ class DetailCharacterFragment : BaseFragment<
     override fun bindNavigationUi() {
         setNavigationUiConfig(
             NavigationUiConfig(
-                isVisibleBottomNavigation = true
+                isVisibleToolbar = true,
+                isVisibleBackButton = true,
+                isVisibleBottomNavigation = true,
+                toolbarConfig = ToolbarConfig(
+                    title = getString(R.string.detail_character_toolbar_title)
+                )
             )
         )
     }

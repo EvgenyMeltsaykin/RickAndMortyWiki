@@ -1,6 +1,7 @@
 package com.wiki.rickandmorty
 
 import android.app.Application
+import com.github.terrakok.cicerone.Cicerone
 import com.wiki.rickandmorty.di.FeatureModules
 import com.wiki.rickandmorty.di.MainModule
 import com.wiki.rickandmorty.di.NetworkModules
@@ -13,14 +14,13 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         startKoin {
             androidLogger(Level.ERROR)
             androidContext(this@App)
             modules(
                 listOf(MainModule) +
-                    NetworkModules +
-                    FeatureModules,
+                        NetworkModules +
+                        FeatureModules,
             )
         }
     }
