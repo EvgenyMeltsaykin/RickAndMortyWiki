@@ -57,10 +57,10 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("com.google.android.material:material:1.5.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+    implementation("androidx.core:core-ktx:1.8.0")
+    implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("com.google.android.material:material:1.6.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
@@ -89,11 +89,17 @@ dependencies {
     implementation(project(":i-episode"))
     implementation(project(":i-location"))
 
-    implementation("androidx.core:core-splashscreen:1.0.0-beta02")
+    implementation("androidx.core:core-splashscreen:1.0.0-rc01")
     implementation(platform("com.google.firebase:firebase-bom:29.3.1"))
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-analytics")
-
+    implementation("com.airbnb.android:lottie:4.1.0")
+    implementation("com.gitee.zackratos:UltimateBarX:0.8.0")
+//modo core
+    implementation("com.github.terrakok:modo:0.6.4")
+    //for navigation based on FragmentManager
+    implementation("com.github.terrakok:modo-render-android-fm:0.6.4")
+    implementation("com.github.terrakok:cicerone:7.1")
 }
 
 val currentFormatDate: String

@@ -63,6 +63,7 @@ class EpisodeListFragment : BaseFragment<
             NavigationUiConfig(
                 isVisibleBottomNavigation = true,
                 isVisibleToolbar = true,
+                isVisibleBackButton = false,
                 toolbarConfig = ToolbarConfig(
                     title = getString(R.string.episodes_toolbar_title),
                     menuItem = listOf(

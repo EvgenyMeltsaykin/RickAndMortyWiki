@@ -1,8 +1,6 @@
 package com.wiki.f_list_character
 
-import android.view.View
 import com.wiki.cf_core.base.BaseFragment
-import com.wiki.cf_core.navigation.SharedElementFragment
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.MenuItem
 import com.wiki.cf_ui.controllers.MenuType
@@ -17,19 +15,15 @@ class CharacterListFragment : BaseFragment<
     CharacterListEvents,
     CharacterListState,
     CharacterListViewModel
-    >(), SharedElementFragment {
+    >() {
 
     override val viewModel: CharacterListViewModel by viewModel()
-    override var sharedView: View? = null
     private val characterAdapter: CharacterAdapter =
         CharacterAdapter(
             onCharacterClick = { character, view ->
-                sharedView = view
                 viewModel.onCharacterClick(character)
             },
-            onPreviewLoaded = {
-                startPostponedEnterTransition()
-            }
+            onPreviewLoaded = {}
         )
 
     override fun renderState(state: CharacterListState) {
@@ -40,7 +34,6 @@ class CharacterListFragment : BaseFragment<
     }
 
     override fun initView(initialState: CharacterListState) {
-        postponeEnterTransition()
         with(binding) {
             rvCharacter.adapter = characterAdapter
             rvCharacter.pagination(
@@ -69,6 +62,7 @@ class CharacterListFragment : BaseFragment<
             NavigationUiConfig(
                 isVisibleBottomNavigation = true,
                 isVisibleToolbar = true,
+                isVisibleBackButton = false,
                 toolbarConfig = ToolbarConfig(
                     title = getString(R.string.characters_toolbar_title),
                     menuItem = listOf(

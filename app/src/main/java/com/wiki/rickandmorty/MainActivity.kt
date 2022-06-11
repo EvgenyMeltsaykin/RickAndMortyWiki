@@ -1,5 +1,6 @@
 package com.wiki.rickandmorty
 
+import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Window
@@ -9,10 +10,7 @@ import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
+import androidx.core.view.*
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Cicerone
@@ -58,7 +56,7 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         selectTab(TabKeys.CHARACTERS)
-        setStatusBarColor(com.wiki.cf_ui.R.color.white)
+        //setStatusBarColor(com.wiki.cf_ui.R.color.white)
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.bottom_menu_item_characters -> {
@@ -80,7 +78,39 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         viewModel.viewModelScope.launch(Dispatchers.Main) {
             bindBaseEvent()
         }
+        binding.statusBarBackground.updateLayoutParams {
+            height = getStatusBarHeight()
+        }
 
+        binding.btnBack.setOnClickListener {
+            onBackPressed()
+        }
+        makeStatusBarTransparent()
+    }
+
+    fun getStatusBarHeight(): Int {
+        var result = 0
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = resources.getDimensionPixelSize(resourceId)
+        }
+        return result
+    }
+
+    fun Activity.makeStatusBarTransparent() {
+        window?.apply {
+            val flags = decorView.systemUiVisibility
+            //clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            //addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            //decorView.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            statusBarColor = Color.TRANSPARENT
+            //binding.root.fitsSystemWindows = true
+            //binding.root.requestFitSystemWindows()
+            //window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        //window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+        //window.setFlags(SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN,WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+        //WindowInsetsControllerCompat(window, binding.root).isAppearanceLightStatusBars = true
     }
 
     private fun setupSplashScreen() {
@@ -90,7 +120,7 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
             splashScreenView.view.animate()
                 .alpha(0F)
                 .setInterpolator(LinearOutSlowInInterpolator())
-                .withEndAction { splashScreenView.remove() }
+                .withEndAction { }
                 .start()
         }
     }
@@ -134,7 +164,6 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
 
     }
 
-
     private fun selectTab(tabKey: TabKeys) {
         val fm = supportFragmentManager
 
@@ -174,11 +203,13 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
 
     private fun setupToolbar(navigationConfig: NavigationUiConfig) {
         clearMenu(navigationConfig.toolbarConfig.menuItem)
-        setStatusBarColor(navigationConfig.colorStatusBar)
+        binding.btnBack.isVisible = navigationConfig.isVisibleBackButton
+        //setStatusBarColor(navigationConfig.colorStatusBar)
         setBackgroundColor(navigationConfig.colorBackground)
         setToolbarVisible(navigationConfig.isVisibleToolbar)
         setToolbarInfo(navigationConfig.toolbarConfig)
         setBottomNavigationBarVisible(navigationConfig.isVisibleBottomNavigation)
+        makeStatusBarTransparent()
     }
 
     private fun clearMenu(menuItem: List<MenuItem>) {

@@ -1,15 +1,14 @@
 package com.wiki.f_detail_location
 
-import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentNullableArgument
-import com.wiki.cf_core.navigation.SharedElementFragment
 import com.wiki.cf_data.LocationDto
 import com.wiki.cf_data.common.SimpleData
 import com.wiki.cf_ui.controllers.NavigationUiConfig
+import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_detail_location.databinding.FragmentDetailLocationBinding
 import com.wiki.f_general_adapter.CharacterAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -20,7 +19,7 @@ class DetailLocationFragment : BaseFragment<
     DetailLocationEvents,
     DetailLocationState,
     DetailLocationViewModel
-    >(), SharedElementFragment {
+    >() {
 
     companion object {
         fun newInstance(location: LocationDto?, locationData: SimpleData?) = DetailLocationFragment().apply {
@@ -31,17 +30,12 @@ class DetailLocationFragment : BaseFragment<
 
     override val viewModel: DetailLocationViewModel by viewModel { parametersOf(location, locationData) }
 
-    override var sharedView: View? = null
-
     private var location by fragmentNullableArgument<LocationDto>()
     private var locationData by fragmentNullableArgument<SimpleData>()
 
     private val characterAdapter = CharacterAdapter(
-        onPreviewLoaded = {
-            startPostponedEnterTransition()
-        },
+        onPreviewLoaded = { },
         onCharacterClick = { character, view ->
-            sharedView = view
             viewModel.onCharacterClick(character)
         }
     )
@@ -52,14 +46,13 @@ class DetailLocationFragment : BaseFragment<
         with(binding) {
             tvLocationName.text = state.name
             tvType.isVisible = state.type.isNotEmpty()
-            tvType.text = getString(R.string.type, state.type)
+            tvType.text = getString(R.string.detail_location_type, state.type)
             tvDimension.isVisible = state.dimension.isNotEmpty()
-            tvDimension.text = getString(R.string.dimension, state.dimension)
+            tvDimension.text = getString(R.string.detail_location_dimension, state.dimension)
         }
     }
 
     override fun initView(initialState: DetailLocationState) {
-        postponeEnterTransition()
         with(binding) {
             rvCharacters.adapter = characterAdapter
             rvCharacters.addItemDecoration(DividerItemDecoration(rvCharacters.context, LinearLayout.VERTICAL))
@@ -75,7 +68,12 @@ class DetailLocationFragment : BaseFragment<
     override fun bindNavigationUi() {
         setNavigationUiConfig(
             NavigationUiConfig(
-                isVisibleBottomNavigation = true
+                isVisibleToolbar = true,
+                isVisibleBackButton = true,
+                isVisibleBottomNavigation = true,
+                toolbarConfig = ToolbarConfig(
+                    title = getString(R.string.detail_location_toolbar_title)
+                )
             )
         )
     }

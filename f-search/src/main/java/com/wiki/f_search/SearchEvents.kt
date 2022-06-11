@@ -9,4 +9,5 @@ sealed class SearchEvents : EventScreen {
     data class OnCharacterClick(val character: CharacterDto) : SearchEvents()
     data class OnEpisodeClick(val episode: EpisodeDto) : SearchEvents()
     data class OnLocationClick(val location: LocationDto) : SearchEvents()
+    object OnBackClick : SearchEvents()
 }

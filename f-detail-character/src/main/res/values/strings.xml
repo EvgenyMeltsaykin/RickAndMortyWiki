@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="detail_character_toolbar_title">Character</string>
     <string name="detail_character_name">Name: %s</string>
     <string name="detail_character_gender">Gender</string>
     <string name="detail_character_type">Type: %s</string>

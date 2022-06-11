@@ -2,7 +2,6 @@ package com.wiki.f_detail_character
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
 import androidx.core.view.isVisible
@@ -13,11 +12,11 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.extensions.roundCorners
-import com.wiki.cf_core.navigation.SharedElementFragment
 import com.wiki.cf_data.CharacterDto
 import com.wiki.cf_data.LifeStatus
 import com.wiki.cf_extensions.getDrawable
 import com.wiki.cf_ui.controllers.NavigationUiConfig
+import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.cf_ui.extensions.blurMask
 import com.wiki.cf_ui.extensions.setTextOrGone
 import com.wiki.f_detail_character.databinding.FragmentDetailCharacterBinding
@@ -30,7 +29,7 @@ class DetailCharacterFragment : BaseFragment<
     DetailCharacterEvents,
     DetailCharacterState,
     DetailCharacterViewModel
-    >(), SharedElementFragment {
+    >() {
 
     companion object {
         fun newInstance(character: CharacterDto) = DetailCharacterFragment().apply {
@@ -44,7 +43,6 @@ class DetailCharacterFragment : BaseFragment<
     private var character by fragmentArgument<CharacterDto>()
 
     override val viewModel: DetailCharacterViewModel by viewModel { parametersOf(character) }
-    override var sharedView: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,8 +73,6 @@ class DetailCharacterFragment : BaseFragment<
         with(binding) {
             rvEpisode.adapter = adapter
             rvEpisode.addItemDecoration(DividerItemDecoration(rvEpisode.context, LinearLayout.VERTICAL))
-            ivPreview.transitionName = character.imageUrl
-            sharedView = ivPreview
 
             Glide.with(requireContext())
                 .load(initialState.imageUrl)
@@ -90,6 +86,7 @@ class DetailCharacterFragment : BaseFragment<
             tvLastLocation.setOnClickListener {
                 viewModel.onLastKnownLocation()
             }
+
         }
     }
 
@@ -132,7 +129,12 @@ class DetailCharacterFragment : BaseFragment<
     override fun bindNavigationUi() {
         setNavigationUiConfig(
             NavigationUiConfig(
-                isVisibleBottomNavigation = true
+                isVisibleToolbar = true,
+                isVisibleBackButton = true,
+                isVisibleBottomNavigation = true,
+                toolbarConfig = ToolbarConfig(
+                    title = getString(R.string.detail_character_toolbar_title)
+                )
             )
         )
     }

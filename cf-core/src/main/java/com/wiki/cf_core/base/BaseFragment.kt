@@ -35,12 +35,19 @@ interface ScreenBinder<EventFromScreen : EventScreen, State : StateScreen> {
     fun renderState(state: State)
 }
 
+enum class TransitionType {
+    SIMPLE,
+    NONE
+}
+
 abstract class BaseFragment<
     VB : ViewBinding,
     EventsFromScreen : EventScreen,
     ViewStateFromScreen : StateScreen,
     VM : BaseViewModel<EventsFromScreen, ViewStateFromScreen>
-    > : Fragment(),
+    >(
+    private val transitionType: TransitionType = TransitionType.SIMPLE
+) : Fragment(),
     ViewModelProvider<EventsFromScreen, ViewStateFromScreen, VM>,
     ScreenBinder<EventsFromScreen, ViewStateFromScreen>,
     RouterProvider,
@@ -60,9 +67,19 @@ abstract class BaseFragment<
     }
 
     private fun setTransitions() {
-        exitTransition = MaterialElevationScale(false)
-        reenterTransition = MaterialElevationScale(true)
-        enterTransition = MaterialElevationScale(true)
+        when (transitionType) {
+            TransitionType.SIMPLE -> {
+                exitTransition = MaterialElevationScale(false)
+                reenterTransition = MaterialElevationScale(true)
+                enterTransition = MaterialElevationScale(true)
+            }
+            TransitionType.NONE -> {
+                exitTransition = null
+                reenterTransition = null
+                enterTransition = null
+            }
+        }
+
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -71,6 +88,7 @@ abstract class BaseFragment<
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        bindNavigationUi()
         val vbType = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0]
         val vbClass = vbType as Class<VB>
         val method =
@@ -91,7 +109,6 @@ abstract class BaseFragment<
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         showInternetError(isVisible = false)
         super.onViewCreated(view, savedInstanceState)
-        bindNavigationUi()
         initView(viewModel.state.value)
         viewModel.viewModelScope.launch(Dispatchers.Main) {
             viewModel.state.collect {

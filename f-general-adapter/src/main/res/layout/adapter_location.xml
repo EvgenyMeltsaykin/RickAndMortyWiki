@@ -6,7 +6,8 @@
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
 
     <TextView
         android:id="@+id/tv_name"
@@ -31,7 +32,6 @@
         style="@style/Text.Montserrat_R_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         tools:text="Dimension: Dimension" />
 
 </LinearLayout>

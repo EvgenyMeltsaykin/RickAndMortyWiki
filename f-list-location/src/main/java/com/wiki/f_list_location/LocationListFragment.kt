@@ -57,6 +57,7 @@ class LocationListFragment : BaseFragment<
             NavigationUiConfig(
                 isVisibleBottomNavigation = true,
                 isVisibleToolbar = true,
+                isVisibleBackButton = false,
                 toolbarConfig = ToolbarConfig(
                     title = getString(R.string.locations_toolbar_title),
                     menuItem = listOf(

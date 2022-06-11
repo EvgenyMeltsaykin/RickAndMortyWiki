@@ -164,4 +164,8 @@ class SearchViewModel(
     fun onLocationClick(location: LocationDto) {
         sendEvent(SearchEvents.OnLocationClick(location))
     }
+
+    fun onBackClick() {
+        sendEvent(SearchEvents.OnBackClick)
+    }
 }

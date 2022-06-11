@@ -1,6 +1,5 @@
 package com.wiki.f_search
 
-import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -10,9 +9,7 @@ import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.extensions.hideKeyboard
 import com.wiki.cf_core.extensions.showKeyboard
-import com.wiki.cf_core.navigation.SharedElementFragment
 import com.wiki.cf_data.SearchFeature
-import com.wiki.cf_data.isCharacter
 import com.wiki.cf_extensions.capitalize
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.NavigationUiConfig
@@ -28,7 +25,7 @@ class SearchFragment : BaseFragment<
     SearchEvents,
     SearchState,
     SearchViewModel
-    >(), SharedElementFragment {
+    >() {
 
     companion object {
         fun newInstance(feature: SearchFeature) = SearchFragment().apply {
@@ -39,13 +36,9 @@ class SearchFragment : BaseFragment<
 
     }
 
-    override var sharedView: View? = null
     private val characterAdapter = CharacterAdapter(
-        onPreviewLoaded = {
-            startPostponedEnterTransition()
-        },
+        onPreviewLoaded = { },
         onCharacterClick = { character, view ->
-            sharedView = view
             viewModel.onCharacterClick(character)
         }
     )
@@ -65,9 +58,7 @@ class SearchFragment : BaseFragment<
 
     override fun renderState(state: SearchState) {
         when (state.feature) {
-            SearchFeature.CHARACTER -> characterAdapter.submitListAndSaveState(state.characters, binding.rvResult) {
-                startPostponedEnterTransition()
-            }
+            SearchFeature.CHARACTER -> characterAdapter.submitListAndSaveState(state.characters, binding.rvResult)
             SearchFeature.EPISODE -> episodeAdapter.submitListAndSaveState(state.episodes, binding.rvResult)
             SearchFeature.LOCATION -> locationAdapter.submitListAndSaveState(state.locations, binding.rvResult)
         }
@@ -75,7 +66,6 @@ class SearchFragment : BaseFragment<
     }
 
     override fun initView(initialState: SearchState) {
-        if (feature.isCharacter()) postponeEnterTransition()
         with(binding) {
             rvResult.adapter = when (initialState.feature) {
                 SearchFeature.CHARACTER -> characterAdapter
@@ -101,6 +91,7 @@ class SearchFragment : BaseFragment<
             }
             tvNotFound.text = getNotFoundText(initialState.feature)
             etSearch.showKeyboard()
+            btnBack.setOnClickListener { viewModel.onBackClick() }
         }
 
     }
@@ -119,6 +110,7 @@ class SearchFragment : BaseFragment<
             is SearchEvents.OnCharacterClick -> router.navigateTo(screenProvider.DetailCharacter(event.character))
             is SearchEvents.OnEpisodeClick -> router.navigateTo(screenProvider.DetailEpisode(event.episode))
             is SearchEvents.OnLocationClick -> router.navigateTo(screenProvider.DetailLocation(event.location))
+            is SearchEvents.OnBackClick -> router.exit()
         }
     }
 

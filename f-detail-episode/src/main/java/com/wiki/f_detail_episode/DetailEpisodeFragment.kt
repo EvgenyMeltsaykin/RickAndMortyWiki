@@ -1,14 +1,13 @@
 package com.wiki.f_detail_episode
 
-import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
-import com.wiki.cf_core.navigation.SharedElementFragment
 import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_ui.controllers.NavigationUiConfig
+import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_detail_episode.databinding.FragmentDetailEpisodeBinding
 import com.wiki.f_general_adapter.CharacterAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -18,18 +17,13 @@ class DetailEpisodeFragment : BaseFragment<
     FragmentDetailEpisodeBinding,
     DetailEpisodeEvents,
     DetailEpisodeState,
-    DetailEpisodeViewModel>(), SharedElementFragment {
+    DetailEpisodeViewModel>() {
 
     override val viewModel: DetailEpisodeViewModel by viewModel { parametersOf(episode) }
 
-    override var sharedView: View? = null
-
     private val characterAdapter: CharacterAdapter = CharacterAdapter(
-        onPreviewLoaded = {
-            startPostponedEnterTransition()
-        },
+        onPreviewLoaded = { },
         onCharacterClick = { character, view ->
-            sharedView = view
             viewModel.onCharacterClick(character)
         }
     )
@@ -48,7 +42,6 @@ class DetailEpisodeFragment : BaseFragment<
     }
 
     override fun initView(initialState: DetailEpisodeState) {
-        postponeEnterTransition()
         with(binding) {
             rvCharacters.adapter = characterAdapter
             rvCharacters.addItemDecoration(DividerItemDecoration(rvCharacters.context, LinearLayout.VERTICAL))
@@ -67,7 +60,12 @@ class DetailEpisodeFragment : BaseFragment<
     override fun bindNavigationUi() {
         setNavigationUiConfig(
             NavigationUiConfig(
-                isVisibleBottomNavigation = true
+                isVisibleToolbar = true,
+                isVisibleBackButton = true,
+                isVisibleBottomNavigation = true,
+                toolbarConfig = ToolbarConfig(
+                    title = getString(R.string.detail_episode_toolbar_title)
+                )
             )
         )
     }
