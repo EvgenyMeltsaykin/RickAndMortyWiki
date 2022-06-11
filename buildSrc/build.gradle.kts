@@ -24,6 +24,11 @@ gradlePlugin {
             implementationClass = "com.wiki.buildsrc.plugins.NetworkPlugin"
         }
 
+        register("test-plugin") {
+            id = "test-plugin"
+            implementationClass = "com.wiki.buildsrc.plugins.TestPlugin"
+        }
+
     }
 }
 repositories {
@@ -33,7 +38,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.squareup:kotlinpoet:1.8.0")
+    implementation("com.squareup:kotlinpoet:1.11.0")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
     implementation("com.android.tools.build:gradle:7.1.3")
 }

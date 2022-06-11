@@ -42,4 +42,12 @@ abstract class BasePlugin : Plugin<Project> {
         add("testImplementation", project)
     }
 
+    fun DependencyHandler.testImplementation(depName: String) {
+        add("testImplementation", depName)
+    }
+
+    fun DependencyHandler.androidTestImplementation(depName: String) {
+        add("androidTestImplementation", depName)
+    }
+
 }

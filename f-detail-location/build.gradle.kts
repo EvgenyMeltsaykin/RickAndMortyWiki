@@ -1,9 +1,8 @@
 plugins {
     id("feature-plugin")
 }
-
 dependencies {
-    implementation(project(":i-character"))
-    implementation(project(":i-location"))
-    implementation(project(":f-general-adapter"))
+    implementation(projects.iCharacter)
+    implementation(projects.iLocation)
+    implementation(projects.fGeneralAdapter)
 }

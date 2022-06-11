@@ -1,5 +1,6 @@
 package com.wiki.buildsrc.plugins
 
+import com.wiki.buildsrc.Libs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.project
@@ -16,11 +17,11 @@ class FeaturePlugin : BasePlugin() {
         android {
 
             dependencies {
+                implementation(Libs.Koin.core)
+                implementation(Libs.Koin.android)
+                implementation(Libs.cicerone)
+                implementation(Libs.Lifecycle.viewModel)
 
-                implementation("io.insert-koin:koin-core:3.1.6")
-                implementation("io.insert-koin:koin-android:3.1.6")
-                implementation("com.github.terrakok:cicerone:7.1")
-                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
                 implementation(project(":cf-core"))
                 implementation(project(":cf-data"))
                 implementation(project(":cf-network"))

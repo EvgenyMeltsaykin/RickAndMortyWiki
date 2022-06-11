@@ -1,8 +1,7 @@
 plugins {
     id("feature-plugin")
 }
-
 dependencies {
-    implementation(project(":i-episode"))
-    implementation(project(":f-general-adapter"))
+    implementation(projects.iEpisode)
+    implementation(projects.fGeneralAdapter)
 }

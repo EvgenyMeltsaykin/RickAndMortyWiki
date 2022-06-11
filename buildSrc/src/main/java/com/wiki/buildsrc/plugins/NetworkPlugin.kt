@@ -1,5 +1,6 @@
 package com.wiki.buildsrc.plugins
 
+import com.wiki.buildsrc.Libs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.project
@@ -15,14 +16,14 @@ class NetworkPlugin : BasePlugin() {
         android {
 
             dependencies {
-                implementation("com.squareup.retrofit2:retrofit:2.9.0")
-                implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-                implementation("com.squareup.okhttp3:okhttp:4.9.3")
-                implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+                implementation(Libs.Retrofit.retrofit)
+                implementation(Libs.Retrofit.convertorGson)
+                implementation(Libs.OkHttp3.okHttp)
+                implementation(Libs.OkHttp3.loggingInterceptor)
+                implementation(Libs.Coroutines.core)
 
-                implementation("io.insert-koin:koin-core:3.1.6")
-                implementation("io.insert-koin:koin-android:3.1.6")
+                api(Libs.Koin.core)
+                api(Libs.Koin.android)
 
                 implementation(project(":cf-data"))
                 implementation(project(":cf-extensions"))

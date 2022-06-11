@@ -1,27 +1,26 @@
 package com.wiki.buildsrc.plugins
 
+import com.wiki.buildsrc.Libs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 
-class CommonPlugin : BasePlugin() {
+class TestPlugin : BasePlugin() {
     override fun apply(target: Project) = target.applyAndroid()
 
     private fun Project.applyAndroid() {
         plugins.run {
             apply("com.android.library")
-            apply("org.jetbrains.kotlin.android")
+            apply("common-plugin")
         }
 
         android {
-            compileSdkVersion(31)
-            defaultConfig {
-                minSdk = 26
-            }
-            buildFeatures.viewBinding = true
-
             dependencies {
-
+                testImplementation(Libs.Test.junit)
+                androidTestImplementation(Libs.Test.testJunit)
+                androidTestImplementation(Libs.Test.testEspressoCore)
+                androidTestImplementation(Libs.Test.compose)
             }
         }
     }
+
 }
