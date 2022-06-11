@@ -3,52 +3,67 @@ package com.wiki.f_list_location
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.wiki.cf_core.base.BaseFragment
+import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.MenuItem
 import com.wiki.cf_ui.controllers.MenuType
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_general_adapter.LocationAdapter
+import com.wiki.f_list_location.LocationListScreenFeature.*
 import com.wiki.f_list_location.databinding.FragmentLocationListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class LocationListFragment : BaseFragment<
-    FragmentLocationListBinding,
-    LocationListEvents,
-    LocationListState,
-    LocationListViewModel
-    >() {
+class LocationListFragment :
+    BaseFragment<FragmentLocationListBinding, State, Effects, Events, LocationListViewModel>() {
 
     override val viewModel: LocationListViewModel by viewModel()
 
     private val locationAdapter: LocationAdapter = LocationAdapter {
-        viewModel.onLocationClick(it)
+        sendEvent(Events.OnLocationClick(it))
     }
 
-    override fun renderState(state: LocationListState) {
-        locationAdapter.submitListAndSaveState(state.locations, binding.rvLocation)
-        binding.refresh.isRefreshing = state.isLoading
+    override fun renderState(state: State) {
+        with(binding) {
+            rvLocation.performIfChanged(state.locations) {
+                locationAdapter.submitListAndSaveState(state.locations, rvLocation)
+            }
+            refresh.performIfChanged(state.isLoading) {
+                isRefreshing = it
+            }
+        }
     }
 
-    override fun initView(initialState: LocationListState) {
+    override fun initView() {
         with(binding) {
             rvLocation.adapter = locationAdapter
-            rvLocation.addItemDecoration(DividerItemDecoration(rvLocation.context, LinearLayout.VERTICAL))
+            rvLocation.addItemDecoration(
+                DividerItemDecoration(
+                    rvLocation.context,
+                    LinearLayout.VERTICAL
+                )
+            )
             rvLocation.pagination(
                 loadThreshold = 5,
-                loadNextPage = { viewModel.loadNextPage() }
+                loadNextPage = {
+                    sendEvent(Events.LoadNextPage)
+                }
             )
             refresh.setOnRefreshListener {
-                viewModel.onRefresh()
+                sendEvent(Events.OnRefresh)
             }
         }
 
     }
 
-    override fun bindEvents(event: LocationListEvents) {
-        when (event) {
-            is LocationListEvents.OnNavigateToLocation -> router.navigateTo(screenProvider.DetailLocation(event.location))
-            is LocationListEvents.NavigateToSearch -> router.navigateTo(screenProvider.Search(event.feature))
+    override fun bindEffects(effect: Effects) {
+        when (effect) {
+            is Effects.OnNavigateToLocation -> router.navigateTo(
+                screenProvider.DetailLocation(
+                    effect.location
+                )
+            )
+            is Effects.NavigateToSearch -> router.navigateTo(screenProvider.Search(effect.feature))
         }
     }
 
@@ -57,12 +72,15 @@ class LocationListFragment : BaseFragment<
             NavigationUiConfig(
                 isVisibleBottomNavigation = true,
                 isVisibleToolbar = true,
+                isVisibleBackButton = false,
                 toolbarConfig = ToolbarConfig(
                     title = getString(R.string.locations_toolbar_title),
                     menuItem = listOf(
                         MenuItem(
                             menuType = MenuType.SEARCH,
-                            clickListener = { viewModel.onSearchClick() }
+                            clickListener = {
+                                sendEvent(Events.OnSearchClick)
+                            }
                         )
                     )
                 )

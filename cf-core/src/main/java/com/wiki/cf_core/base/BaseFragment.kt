@@ -18,37 +18,45 @@ import com.wiki.cf_network.util.ConnectivityService
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.NavigationUiControl
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import java.lang.reflect.ParameterizedType
 
 interface ViewModelProvider<
-    EventsFromScreen : EventScreen,
-    ViewStateFromScreen : StateScreen,
-    VM : BaseViewModel<EventsFromScreen, ViewStateFromScreen>> {
-    val viewModel: VM
+        ViewStateFromScreen : StateScreen,
+        EffectsFromScreen : EffectScreen,
+        EventsViewModel : EventScreen,
+        ViewModel : BaseViewModel<ViewStateFromScreen, EffectsFromScreen, EventsViewModel>> {
+    val viewModel: ViewModel
 }
 
-interface ScreenBinder<EventFromScreen : EventScreen, State : StateScreen> {
-    fun bindEvents(event: EventFromScreen)
-    fun initView(initialState: State)
+interface ScreenBinder<EffectFromScreen : EffectScreen, State : StateScreen> {
+    fun bindEffects(effect: EffectFromScreen)
+    fun initView()
     fun renderState(state: State)
 }
 
-abstract class BaseFragment<
-    VB : ViewBinding,
-    EventsFromScreen : EventScreen,
-    ViewStateFromScreen : StateScreen,
-    VM : BaseViewModel<EventsFromScreen, ViewStateFromScreen>
-    > : Fragment(),
-    ViewModelProvider<EventsFromScreen, ViewStateFromScreen, VM>,
-    ScreenBinder<EventsFromScreen, ViewStateFromScreen>,
-    RouterProvider,
-    OnBackPressedListener, UiControl {
-    override val router: Router
-        get() = (parentFragment as RouterProvider).router
+enum class TransitionType {
+    SIMPLE,
+    NONE
+}
 
-    val screenProvider: ScreenProvider by inject()
+abstract class BaseFragment<
+        VB : ViewBinding,
+        ViewStateFromScreen : StateScreen,
+        EffectsFromScreen : EffectScreen,
+        EventsViewModel : EventScreen,
+        ViewModel : BaseViewModel<ViewStateFromScreen, EffectsFromScreen, EventsViewModel>
+        >(private val transitionType: TransitionType = TransitionType.SIMPLE) : Fragment(),
+    ViewModelProvider<ViewStateFromScreen, EffectsFromScreen, EventsViewModel, ViewModel>,
+    ScreenBinder<EffectsFromScreen, ViewStateFromScreen>, RouterProvider,
+    OnBackPressedListener, UiControl {
+
+    override val router: Router get() = (parentFragment as RouterProvider).router
+
+    protected val screenProvider: ScreenProvider by inject()
     private val connectivityService: ConnectivityService by inject()
 
     private var _binding: VB? = null
@@ -56,13 +64,36 @@ abstract class BaseFragment<
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        subscribeState()
+        subscribeEffects()
         setTransitions()
     }
 
+    private fun subscribeState() {
+        viewModel.stateFlow.onEach {
+            if (_binding != null) renderState(it)
+        }.launchIn(viewModel.viewModelScope)
+    }
+
+    private fun subscribeEffects() {
+        viewModel.effectFlow.onEach {
+            bindEffects(it)
+        }.launchIn(viewModel.viewModelScope)
+    }
+
     private fun setTransitions() {
-        exitTransition = MaterialElevationScale(false)
-        reenterTransition = MaterialElevationScale(true)
-        enterTransition = MaterialElevationScale(true)
+        when (transitionType) {
+            TransitionType.SIMPLE -> {
+                exitTransition = MaterialElevationScale(false)
+                reenterTransition = MaterialElevationScale(true)
+                enterTransition = MaterialElevationScale(true)
+            }
+            TransitionType.NONE -> {
+                exitTransition = null
+                reenterTransition = null
+                enterTransition = null
+            }
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -71,37 +102,29 @@ abstract class BaseFragment<
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        bindNavigationUi()
         val vbType = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0]
         val vbClass = vbType as Class<VB>
         val method =
-            vbClass.getMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
+            vbClass.getMethod(
+                "inflate",
+                LayoutInflater::class.java,
+                ViewGroup::class.java,
+                Boolean::class.java
+            )
         _binding = method.invoke(null, inflater, container, false) as VB
+        initView()
+        renderState(viewModel.stateFlow.value)
         return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
-        viewModel.viewModelScope.launch(Dispatchers.Main) {
-            viewModel.eventFlow.collect {
-                bindEvents(it)
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         showInternetError(isVisible = false)
         super.onViewCreated(view, savedInstanceState)
-        bindNavigationUi()
-        initView(viewModel.state.value)
-        viewModel.viewModelScope.launch(Dispatchers.Main) {
-            viewModel.state.collect {
-                if (_binding != null) renderState(it)
-            }
-        }
+    }
 
-        if (connectivityService.isOffline()) {
-            startPostponedEnterTransition()
-        }
+    fun sendEvent(event: EventsViewModel) {
+        viewModel.viewModelScope.launch(Dispatchers.Main) { viewModel.eventChannel.send(event) }
     }
 
     private fun showInternetError(isVisible: Boolean, text: String = "") {

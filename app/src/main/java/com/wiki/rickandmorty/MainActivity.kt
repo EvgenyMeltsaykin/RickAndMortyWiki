@@ -18,7 +18,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Router
 import com.wiki.cf_core.BaseScreenEventBus
-import com.wiki.cf_core.base.BaseEventScreen
+import com.wiki.cf_core.base.BaseEffectScreen
 import com.wiki.cf_core.controllers.InternetStateErrorController
 import com.wiki.cf_core.extensions.getContrastColor
 import com.wiki.cf_core.extensions.safePostDelay
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         selectTab(TabKeys.CHARACTERS)
-        setStatusBarColor(com.wiki.cf_ui.R.color.white)
+        //setStatusBarColor(com.wiki.cf_ui.R.color.white)
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.bottom_menu_item_characters -> {
@@ -81,6 +81,9 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
             bindBaseEvent()
         }
 
+        binding.btnBack.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun setupSplashScreen() {
@@ -90,7 +93,7 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
             splashScreenView.view.animate()
                 .alpha(0F)
                 .setInterpolator(LinearOutSlowInInterpolator())
-                .withEndAction { splashScreenView.remove() }
+                .withEndAction { }
                 .start()
         }
     }
@@ -99,14 +102,14 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
     private suspend fun bindBaseEvent() {
         baseScreenEventBus.events.collect { event ->
             when (event) {
-                is BaseEventScreen.ShowToast -> {
+                is BaseEffectScreen.ShowToast -> {
                     Toast.makeText(this, event.text, Toast.LENGTH_SHORT).show()
                 }
-                is BaseEventScreen.ShowSnackBar -> {
+                is BaseEffectScreen.ShowSnackBar -> {
                     //showSnackBar(context = context, text = event.text)
                 }
 
-                is BaseEventScreen.InternetError -> {
+                is BaseEffectScreen.InternetError -> {
                     showInternetError(isVisible = event.isVisible, text = event.text)
                 }
             }
@@ -133,7 +136,6 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         }
 
     }
-
 
     private fun selectTab(tabKey: TabKeys) {
         val fm = supportFragmentManager
@@ -174,7 +176,8 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
 
     private fun setupToolbar(navigationConfig: NavigationUiConfig) {
         clearMenu(navigationConfig.toolbarConfig.menuItem)
-        setStatusBarColor(navigationConfig.colorStatusBar)
+        binding.btnBack.isVisible = navigationConfig.isVisibleBackButton
+        //setStatusBarColor(navigationConfig.colorStatusBar)
         setBackgroundColor(navigationConfig.colorBackground)
         setToolbarVisible(navigationConfig.isVisibleToolbar)
         setToolbarInfo(navigationConfig.toolbarConfig)
@@ -186,8 +189,7 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
     }
 
     private fun setToolbarInfo(toolbarConfig: ToolbarConfig) {
-        val toolbarType = toolbarConfig.toolbarType
-        when (toolbarType) {
+        when (toolbarConfig.toolbarType) {
             is ToolbarType.Simple -> {
                 with(binding.tvTitle) {
                     isVisible = true

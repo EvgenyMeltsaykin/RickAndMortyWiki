@@ -1,46 +1,45 @@
 package com.wiki.f_list_episode
 
 import com.wiki.cf_core.base.BaseViewModel
-import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_network.util.pagination.DefaultPaginator
+import com.wiki.f_list_episode.EpisodeListScreenFeature.*
 import com.wiki.i_episode.use_cases.GetAllEpisodesUseCase
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 
 class EpisodeListViewModel(
     private val getAllEpisodesUseCase: GetAllEpisodesUseCase
-) : BaseViewModel<EpisodeListEvents, EpisodeListState>(EpisodeListState()) {
+) : BaseViewModel<State, Effects,Events>(State()) {
 
     private val pagination = DefaultPaginator(
-        initialKey = state.value.page,
+        initialKey = state.page,
         onLoadUpdated = { isLoading ->
-            _state.update {
-                it.copy(isLoading = isLoading)
-            }
+            setState(
+                state.copy(isLoading = isLoading)
+            )
         },
         onRequest = { nextPage ->
             getAllEpisodesUseCase(nextPage)
         },
-        getNextKey = { state.value.page + 1 },
+        getNextKey = { state.page + 1 },
         onError = {
             showSnackBar(it?.messageError)
         },
         onSuccess = { items, newKey, isRefresh ->
             items.map { response ->
-                _state.update {
-                    it.copy(
+                setState(
+                    state.copy(
                         endReached = response.info.next == null,
-                        episodes = if (isRefresh) emptyList() else it.episodes
+                        episodes = if (isRefresh) emptyList() else state.episodes
                     )
-                }
+                )
                 response.result.map { it.toEpisodeDto() }
             }.collect { episodes ->
-                _state.update {
-                    it.copy(
-                        episodes = it.episodes + episodes,
+                setState(
+                    state.copy(
+                        episodes = state.episodes + episodes,
                         page = newKey,
                     )
-                }
+                )
             }
         }
     )
@@ -49,30 +48,35 @@ class EpisodeListViewModel(
         loadNextPage()
     }
 
-    fun loadNextPage() {
-        if (state.value.endReached) return
+    override fun bindEvents(event: Events) {
+        when(event){
+            is Events.LoadNextPage -> loadNextPage()
+            is Events.OnRefresh -> onRefresh()
+            is Events.OnSearchClick -> setEffect {
+                Effects.NavigateToSearch()
+            }
+            is Events.OnEpisodeClick ->setEffect{
+                Effects.OnNavigateToEpisode(event.episode)
+            }
+        }
+    }
+
+    private fun loadNextPage() {
+        if (state.endReached) return
         launchInternetRequest {
             pagination.loadNextItems()
         }
     }
 
-    fun onEpisodeClick(episode: EpisodeDto) {
-        sendEvent(EpisodeListEvents.OnNavigateToEpisode(episode))
-    }
-
-    fun onRefresh() {
-        _state.update {
-            it.copy(
+    private fun onRefresh() {
+        setState(
+            state.copy(
                 page = 1,
                 endReached = false
             )
-        }
+        )
         pagination.reset()
         loadNextPage()
-    }
-
-    fun onSearchClick() {
-        sendEvent(EpisodeListEvents.NavigateToSearch())
     }
 
 }

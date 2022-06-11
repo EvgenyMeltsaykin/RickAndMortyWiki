@@ -10,7 +10,8 @@ enum class LifeStatus(val status: String) : Serializable {
     OTHER("Other");
 
     companion object {
-        fun getByStatus(status: String): LifeStatus {
+        fun getByStatus(status: String?): LifeStatus {
+            if (status == null) return OTHER
             return when {
                 status.contains(DEAD.status, ignoreCase = true) -> DEAD
                 status.contains(ALIVE.status, ignoreCase = true) -> ALIVE

@@ -1,46 +1,45 @@
 package com.wiki.f_list_location
 
 import com.wiki.cf_core.base.BaseViewModel
-import com.wiki.cf_data.LocationDto
 import com.wiki.cf_network.util.pagination.DefaultPaginator
+import com.wiki.f_list_location.LocationListScreenFeature.*
 import com.wiki.i_location.use_cases.GetAllLocationsUseCase
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 
 class LocationListViewModel(
     private val getAllLocationsUseCase: GetAllLocationsUseCase
-) : BaseViewModel<LocationListEvents, LocationListState>(LocationListState()) {
+) : BaseViewModel<State, Effects, Events>(State()) {
 
     private val pagination = DefaultPaginator(
-        initialKey = state.value.page,
+        initialKey = state.page,
         onLoadUpdated = { isLoading ->
-            _state.update {
-                it.copy(isLoading = isLoading)
-            }
+            setState(
+                state.copy(isLoading = isLoading)
+            )
         },
         onRequest = { nextPage ->
             getAllLocationsUseCase(nextPage)
         },
-        getNextKey = { state.value.page + 1 },
+        getNextKey = { state.page + 1 },
         onError = {
             showSnackBar(it?.messageError)
         },
         onSuccess = { items, newKey, isRefresh ->
             items.map { response ->
-                _state.update {
-                    it.copy(
+                setState(
+                    state.copy(
                         endReached = response.info.next == null,
-                        locations = if (isRefresh) emptyList() else it.locations
+                        locations = if (isRefresh) emptyList() else state.locations
                     )
-                }
+                )
                 response.result.map { it.toLocationDto() }
-            }.collect { episodes ->
-                _state.update {
-                    it.copy(
-                        locations = it.locations + episodes,
+            }.collect { locations ->
+                setState(
+                    state.copy(
+                        locations = state.locations + locations,
                         page = newKey,
                     )
-                }
+                )
             }
         }
     )
@@ -49,30 +48,35 @@ class LocationListViewModel(
         loadNextPage()
     }
 
-    fun loadNextPage() {
-        if (state.value.endReached) return
+    override fun bindEvents(event: Events) {
+        when(event){
+            is Events.LoadNextPage -> loadNextPage()
+            is Events.OnRefresh -> onRefresh()
+            is Events.OnSearchClick -> setEffect {
+                Effects.NavigateToSearch()
+            }
+            is Events.OnLocationClick ->setEffect{
+                Effects.OnNavigateToLocation(event.location)
+            }
+        }
+    }
+
+    private fun loadNextPage() {
+        if (state.endReached) return
         launchInternetRequest {
             pagination.loadNextItems()
         }
     }
 
-    fun onLocationClick(location: LocationDto) {
-        sendEvent(LocationListEvents.OnNavigateToLocation(location))
-    }
-
-    fun onRefresh() {
-        _state.update {
-            it.copy(
+    private fun onRefresh() {
+        setState(
+            state.copy(
                 page = 1,
                 endReached = false
             )
-        }
+        )
         pagination.reset()
         loadNextPage()
-    }
-
-    fun onSearchClick() {
-        sendEvent(LocationListEvents.NavigateToSearch())
     }
 
 }
