@@ -18,7 +18,7 @@ class CharacterListFragment :
     override val viewModel: CharacterListViewModel by viewModel()
     private val characterAdapter: CharacterAdapter =
         CharacterAdapter(
-            onCharacterClick = { character, view ->
+            onCharacterClick = { character, _ ->
                 sendEvent(Events.OnCharacterClick(character))
             },
             onPreviewLoaded = {}

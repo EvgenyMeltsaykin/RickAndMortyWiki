@@ -35,7 +35,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
 
     private val characterAdapter = CharacterAdapter(
         onPreviewLoaded = { },
-        onCharacterClick = { character, view ->
+        onCharacterClick = { character, _ ->
             sendEvent(Events.OnCharacterClick(character))
         }
     )

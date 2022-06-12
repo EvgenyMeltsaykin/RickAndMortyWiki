@@ -22,7 +22,7 @@ class DetailEpisodeFragment :
 
     private val characterAdapter: CharacterAdapter = CharacterAdapter(
         onPreviewLoaded = { },
-        onCharacterClick = { character, view ->
+        onCharacterClick = { character, _ ->
             sendEvent(Events.OnCharacterClick(character))
         }
     )
