@@ -3,6 +3,8 @@ package com.wiki.f_detail_episode
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
+import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.extensions.performIfChanged
@@ -11,7 +13,9 @@ import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_detail_episode.DetailEpisodeScreenFeature.*
 import com.wiki.f_detail_episode.databinding.FragmentDetailEpisodeBinding
-import com.wiki.f_general_adapter.CharacterAdapter
+import com.wiki.f_general_adapter.GeneralAdapterUi
+import com.wiki.f_general_adapter.getCharacterAdapter
+import com.wiki.f_general_adapter.getGeneralAdaptersDiffCallback
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -20,11 +24,16 @@ class DetailEpisodeFragment :
 
     override val viewModel: DetailEpisodeViewModel by viewModel { parametersOf(episode) }
 
-    private val characterAdapter: CharacterAdapter = CharacterAdapter(
-        onPreviewLoaded = { },
-        onCharacterClick = { character, _ ->
-            sendEvent(Events.OnCharacterClick(character))
-        }
+    private val characterAdapter = AsyncListDifferDelegationAdapter(
+        getGeneralAdaptersDiffCallback(),
+        AdapterDelegatesManager<List<GeneralAdapterUi>>()
+            .addDelegate(
+                getCharacterAdapter(
+                    onCharacterClick = { character, _ ->
+                        sendEvent(Events.OnCharacterClick(character))
+                    }
+                )
+            )
     )
 
     companion object {
@@ -49,8 +58,10 @@ class DetailEpisodeFragment :
             tvEpisodeShortName.performIfChanged(state.shortName) {
                 this.text = it
             }
-            rvCharacters.performIfChanged(state.characters) {
-                characterAdapter.submitList(state.characters)
+            rvCharacters.performIfChanged(state.characters) { characters ->
+                characterAdapter.items = characters.map { character ->
+                    GeneralAdapterUi.Character(character)
+                }
             }
         }
     }
@@ -58,13 +69,22 @@ class DetailEpisodeFragment :
     override fun initView() {
         with(binding) {
             rvCharacters.adapter = characterAdapter
-            rvCharacters.addItemDecoration(DividerItemDecoration(rvCharacters.context, LinearLayout.VERTICAL))
+            rvCharacters.addItemDecoration(
+                DividerItemDecoration(
+                    rvCharacters.context,
+                    LinearLayout.VERTICAL
+                )
+            )
         }
     }
 
     override fun bindEffects(effect: Effects) {
         when (effect) {
-            is Effects.OnNavigateToCharacter -> router.navigateTo(screenProvider.DetailCharacter(effect.character))
+            is Effects.OnNavigateToCharacter -> router.navigateTo(
+                screenProvider.DetailCharacter(
+                    effect.character
+                )
+            )
         }
     }
 

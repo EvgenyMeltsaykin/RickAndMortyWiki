@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.transition.MaterialContainerTransform
+import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
+import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.extensions.performIfChanged
@@ -22,7 +24,7 @@ import com.wiki.cf_ui.extensions.blurMask
 import com.wiki.cf_ui.extensions.setTextOrGone
 import com.wiki.f_detail_character.DetailCharacterScreenFeature.*
 import com.wiki.f_detail_character.databinding.FragmentDetailCharacterBinding
-import com.wiki.f_general_adapter.EpisodeAdapter
+import com.wiki.f_general_adapter.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -35,8 +37,14 @@ class DetailCharacterFragment :
         }
     }
 
-    private val episodeAdapter: EpisodeAdapter = EpisodeAdapter(
-        onEpisodeClick = { sendEvent(Events.OnEpisodeClick(it)) }
+    private val episodeAdapter = AsyncListDifferDelegationAdapter(
+        getGeneralAdaptersDiffCallback(),
+        AdapterDelegatesManager<List<GeneralAdapterUi>>()
+            .addDelegate(
+                getEpisodeAdapter(
+                    onEpisodeClick = { sendEvent(Events.OnEpisodeClick(it)) }
+                )
+            )
     )
 
     private var character by fragmentArgument<CharacterDto>()
@@ -77,8 +85,8 @@ class DetailCharacterFragment :
             tvGender.performIfChanged(state.gender) {
                 setTextOrGone(secondRowText = state.gender)
             }
-            rvEpisode.performIfChanged(state.episodes) {
-                episodeAdapter.submitList(state.episodes)
+            rvEpisode.performIfChanged(state.episodes) { episodes->
+                episodeAdapter.items = episodes.map { GeneralAdapterUi.Episode(it) }
             }
             tvEpisodesStatic.performIfChanged(state.episodes.isNotEmpty()) {
                 isVisible = it

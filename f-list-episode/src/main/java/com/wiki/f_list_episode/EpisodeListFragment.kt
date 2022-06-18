@@ -2,6 +2,8 @@ package com.wiki.f_list_episode
 
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
+import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_extensions.pagination
@@ -9,7 +11,7 @@ import com.wiki.cf_ui.controllers.MenuItem
 import com.wiki.cf_ui.controllers.MenuType
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.ToolbarConfig
-import com.wiki.f_general_adapter.EpisodeAdapter
+import com.wiki.f_general_adapter.*
 import com.wiki.f_list_episode.EpisodeListScreenFeature.*
 import com.wiki.f_list_episode.databinding.FragmentEpisodeListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -18,17 +20,25 @@ class EpisodeListFragment : BaseFragment<FragmentEpisodeListBinding, State, Effe
 
     override val viewModel: EpisodeListViewModel by viewModel()
 
-    private val episodeAdapter = EpisodeAdapter(
-        horizontalPadding = 16,
-        onEpisodeClick = {
-            sendEvent(Events.OnEpisodeClick(it))
-        }
+    private val episodeAdapter = AsyncListDifferDelegationAdapter(
+        getGeneralAdaptersDiffCallback(),
+        AdapterDelegatesManager<List<GeneralAdapterUi>>()
+            .addDelegate(
+                getEpisodeAdapter(
+                    horizontalPadding = 16,
+                    onEpisodeClick = {
+                        sendEvent(Events.OnEpisodeClick(it))
+                    }
+                )
+            )
     )
 
     override fun renderState(state: State) {
         with(binding){
-            rvEpisode.performIfChanged(state.episodes){
-                episodeAdapter.submitListAndSaveState(state.episodes, rvEpisode)
+            rvEpisode.performIfChanged(state.episodes){ episodes->
+                episodeAdapter.items = episodes.map { episode->
+                    GeneralAdapterUi.Episode(episode)
+                }
             }
             refresh.performIfChanged(state.isLoading){
                 isRefreshing = it

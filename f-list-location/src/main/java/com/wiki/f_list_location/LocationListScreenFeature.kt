@@ -18,7 +18,7 @@ class LocationListScreenFeature {
 
     sealed class Effects : EffectScreen {
         data class OnNavigateToLocation(val location: LocationDto) : Effects()
-        data class NavigateToSearch(val feature: SearchFeature = SearchFeature.EPISODE) : Effects()
+        data class NavigateToSearch(val feature: SearchFeature = SearchFeature.LOCATION) : Effects()
     }
 
     data class State(
