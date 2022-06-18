@@ -8,8 +8,8 @@ import com.wiki.i_character.use_cases.GetCharactersByIdsUseCase
 import com.wiki.i_location.use_cases.GetLocationInfoUseCase
 
 class DetailLocationViewModel(
-    private val location: LocationDto?,
-    private val locationData: SimpleData?,
+    location: LocationDto?,
+    locationData: SimpleData?,
     private val getCharactersByIdsUseCase: GetCharactersByIdsUseCase,
     private val getLocationInfoUseCase: GetLocationInfoUseCase
 ) : BaseViewModel<State, Effects, Events>(
@@ -30,9 +30,9 @@ class DetailLocationViewModel(
     private fun getResidentCharacters(residentCharactersIds: List<String>) {
         launchInternetRequest {
             getCharactersByIdsUseCase(residentCharactersIds).collect { characters ->
-                setState(
+                renderState {
                     state.copy(residentCharacters = characters)
-                )
+                }
             }
         }
     }
@@ -40,13 +40,13 @@ class DetailLocationViewModel(
     private fun getFullInfoLocation(locationId: String) {
         launchInternetRequest {
             getLocationInfoUseCase(locationId).collect { location ->
-                setState(
+                renderState {
                     state.copy(
                         name = location.name,
                         dimension = location.dimension,
                         type = location.type
                     )
-                )
+                }
                 getResidentCharacters(location.residentCharactersIds)
             }
         }

@@ -28,12 +28,12 @@ class DetailCharacterViewModel(
         launchInternetRequest {
             getEpisodesByIdsUseCase(character.episodeIds).collect { response ->
                 val firstSeenInLocation: String = response.firstOrNull()?.name ?: "Unknown"
-                setState(
+                renderState {
                     state.copy(
                         firstSeenInEpisodeName = firstSeenInLocation,
                         episodes = response
                     )
-                )
+                }
             }
         }
     }

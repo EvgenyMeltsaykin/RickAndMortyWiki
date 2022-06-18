@@ -15,31 +15,36 @@ class CharacterListViewModel(
     private val pagination = DefaultPaginator(
         initialKey = state.page,
         onLoadUpdated = { isLoading ->
-            setState(state.copy(isLoading = isLoading))
+            renderState{
+                state.copy(isLoading = isLoading)
+            }
         },
         onRequest = { nextPage ->
             getAllCharactersUseCase(nextPage)
         },
         getNextKey = { state.page + 1 },
         onError = {
+            renderState{
+                state.copy(isLoading = false)
+            }
             showSnackBar(it?.messageError)
         },
         onSuccess = { items, newKey, isRefresh ->
             items.map { response ->
-                setState(
+                renderState {
                     state.copy(
                         endReached = response.info.next == null,
                         characters = if (isRefresh) emptyList() else state.characters
                     )
-                )
+                }
                 response.result.map { it.toCharacterDto() }
             }.collect { characters ->
-                setState(
+                renderState {
                     state.copy(
                         characters = state.characters + characters,
                         page = newKey,
                     )
-                )
+                }
             }
         }
     )
@@ -69,12 +74,12 @@ class CharacterListViewModel(
     }
 
     private fun onRefresh() {
-        setState(
+        renderState {
             state.copy(
                 page = 1,
                 endReached = false
             )
-        )
+        }
         pagination.reset()
         loadNextPage()
     }

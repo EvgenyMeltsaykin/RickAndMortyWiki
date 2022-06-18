@@ -37,9 +37,9 @@ class SearchViewModel(
     private val pagination = DefaultPaginator(
         initialKey = state.page,
         onLoadUpdated = { isLoading ->
-            setState(
+            renderState {
                 state.copy(isLoading = isLoading)
-            )
+            }
         },
         onRequest = { nextPage ->
             when (feature) {
@@ -59,36 +59,37 @@ class SearchViewModel(
         },
         getNextKey = { state.page + 1 },
         onError = {
+            renderState { state.copy(isLoading = false) }
             showSnackBar(it?.messageError)
         },
         onSuccess = { items, newKey, isRefresh ->
             items.map { response ->
                 when (response) {
                     is CharactersResponse -> {
-                        setState(
+                        renderState {
                             state.copy(
                                 endReached = response.info.next == null,
                                 searchResultUi = if (isRefresh) emptyList() else state.searchResultUi
                             )
-                        )
+                        }
                         response.result.map { it.toCharacterDto() }
                     }
                     is EpisodesResponse -> {
-                        setState(
+                        renderState {
                             state.copy(
                                 endReached = response.info.next == null,
                                 searchResultUi = if (isRefresh) emptyList() else state.searchResultUi
                             )
-                        )
+                        }
                         response.result.map { it.toEpisodeDto() }
                     }
                     is LocationsResponse -> {
-                        setState(
+                        renderState {
                             state.copy(
                                 endReached = response.info.next == null,
                                 searchResultUi = if (isRefresh) emptyList() else state.searchResultUi
                             )
-                        )
+                        }
                         response.result.map { it.toLocationDto() }
                     }
                     else -> {}
@@ -97,35 +98,35 @@ class SearchViewModel(
                 if (result.isNeededClass<CharacterDto>()) {
                     val characters = result.convertToList<CharacterDto>() ?: emptyList()
                     val searchUi = state.searchResultUi + characters.map { GeneralAdapterUi.Character(it) }
-                    setState(
+                    renderState {
                         state.copy(
                             searchResultUi = searchUi,
                             page = newKey,
                             isVisibleNotFound = false
                         )
-                    )
+                    }
                 }
                 if (result.isNeededClass<EpisodeDto>()) {
                     val episodes = result.convertToList<EpisodeDto>() ?: emptyList()
                     val searchUi = state.searchResultUi + episodes.map { GeneralAdapterUi.Episode(it) }
-                    setState(
+                    renderState {
                         state.copy(
                             searchResultUi = searchUi,
                             page = newKey,
                             isVisibleNotFound = false
                         )
-                    )
+                    }
                 }
                 if (result.isNeededClass<LocationDto>()) {
                     val locations = result.convertToList<LocationDto>() ?: emptyList()
                     val searchUi = state.searchResultUi + locations.map { GeneralAdapterUi.Location(it) }
-                    setState(
+                    renderState {
                         state.copy(
                             searchResultUi = searchUi,
                             page = newKey,
                             isVisibleNotFound = false
                         )
-                    )
+                    }
                 }
             }
         }
@@ -141,19 +142,19 @@ class SearchViewModel(
     fun onChangeSearchText(text: String) {
         if (searchText == text) return
         searchText = text
-        setState(
+        renderState {
             state.copy(searchText = text)
-        )
+        }
         pagination.reset()
         searchJob?.cancel()
         searchJob = launchInternetRequest(
             onNothingFoundError = {
-                setState(
+                renderState {
                     state.copy(
                         searchResultUi = emptyList(),
                         isVisibleNotFound = true
                     )
-                )
+                }
             }
         ) {
             delay(SEARCH_DELAY)

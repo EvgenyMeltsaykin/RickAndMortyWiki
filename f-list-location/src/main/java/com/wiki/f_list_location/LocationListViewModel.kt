@@ -13,33 +13,34 @@ class LocationListViewModel(
     private val pagination = DefaultPaginator(
         initialKey = state.page,
         onLoadUpdated = { isLoading ->
-            setState(
+            renderState {
                 state.copy(isLoading = isLoading)
-            )
+            }
         },
         onRequest = { nextPage ->
             getAllLocationsUseCase(nextPage)
         },
         getNextKey = { state.page + 1 },
         onError = {
+            renderState { state.copy(isLoading = false) }
             showSnackBar(it?.messageError)
         },
         onSuccess = { items, newKey, isRefresh ->
             items.map { response ->
-                setState(
+                renderState {
                     state.copy(
                         endReached = response.info.next == null,
                         locations = if (isRefresh) emptyList() else state.locations
                     )
-                )
+                }
                 response.result.map { it.toLocationDto() }
             }.collect { locations ->
-                setState(
+                renderState {
                     state.copy(
                         locations = state.locations + locations,
                         page = newKey,
                     )
-                )
+                }
             }
         }
     )
@@ -69,12 +70,12 @@ class LocationListViewModel(
     }
 
     private fun onRefresh() {
-        setState(
+        renderState {
             state.copy(
                 page = 1,
                 endReached = false
             )
-        )
+        }
         pagination.reset()
         loadNextPage()
     }

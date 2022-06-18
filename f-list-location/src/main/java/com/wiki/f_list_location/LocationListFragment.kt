@@ -28,9 +28,7 @@ class LocationListFragment :
         AdapterDelegatesManager<List<GeneralAdapterUi>>()
             .addDelegate(
                 getLocationAdapter(
-                    onLocationClick = {
-                        sendEvent(Events.OnLocationClick(it))
-                    }
+                    onLocationClick = { sendEvent(Events.OnLocationClick(it)) }
                 )
             )
     )

@@ -19,7 +19,7 @@ class DetailEpisodeViewModel(
     init {
         launchInternetRequest {
             getCharactersByIdsUseCase(episode.charactersIds).collect { characters ->
-                setState(state.copy(characters = characters))
+                renderState{ state.copy(characters = characters)}
             }
         }
     }

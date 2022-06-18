@@ -34,7 +34,7 @@ abstract class BaseViewModel<
 
     init {
         subscribeEvents()
-        setState(initialViewState)
+        renderState { initialViewState }
     }
 
     private fun subscribeEvents() {
@@ -48,7 +48,8 @@ abstract class BaseViewModel<
         viewModelScope.launch{ effectChanel.send(effect)}
     }
 
-    protected fun setState(newState:ViewStateFromScreen){
+    protected fun renderState(builder: () -> ViewStateFromScreen){
+        val newState = builder()
         stateFlow.update { newState }
     }
 
@@ -63,8 +64,8 @@ abstract class BaseViewModel<
     fun launchInternetRequest(onNothingFoundError: (() -> Unit?)? = null, block: suspend () -> Unit): Job {
         job = viewModelScope.launch(Dispatchers.IO) {
             try {
-                if (connectivityService.isOffline()) throw NetworkException.NoConnectivity
                 block()
+                if (connectivityService.isOffline()) throw NetworkException.NoConnectivity
                 baseScreenEventBus.invokeEvent(BaseEffectScreen.InternetError(false))
             } catch (e: CancellationException) {
 
