@@ -1,5 +1,7 @@
 package com.wiki.f_list_character
 
+import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
+import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_extensions.pagination
@@ -7,7 +9,9 @@ import com.wiki.cf_ui.controllers.MenuItem
 import com.wiki.cf_ui.controllers.MenuType
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.ToolbarConfig
-import com.wiki.f_general_adapter.CharacterAdapter
+import com.wiki.f_general_adapter.GeneralAdapterUi
+import com.wiki.f_general_adapter.getCharacterAdapter
+import com.wiki.f_general_adapter.getGeneralAdaptersDiffCallback
 import com.wiki.f_list_character.CharacterListScreenFeature.*
 import com.wiki.f_list_character.databinding.FragmentCharacterListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -16,18 +20,25 @@ class CharacterListFragment :
     BaseFragment<FragmentCharacterListBinding, State, Effects, Events, CharacterListViewModel>() {
 
     override val viewModel: CharacterListViewModel by viewModel()
-    private val characterAdapter: CharacterAdapter =
-        CharacterAdapter(
-            onCharacterClick = { character, _ ->
-                sendEvent(Events.OnCharacterClick(character))
-            },
-            onPreviewLoaded = {}
-        )
+
+    private val characterAdapter = AsyncListDifferDelegationAdapter(
+        getGeneralAdaptersDiffCallback(),
+        AdapterDelegatesManager<List<GeneralAdapterUi>>()
+            .addDelegate(
+                getCharacterAdapter(
+                    onCharacterClick = { character, _ ->
+                        sendEvent(Events.OnCharacterClick(character))
+                    }
+                )
+            )
+    )
 
     override fun renderState(state: State) {
         with(binding) {
-            rvCharacter.performIfChanged(state.characters) {
-                characterAdapter.submitListAndSaveState(it, rvCharacter)
+            rvCharacter.performIfChanged(state.characters) { characters->
+                characterAdapter.items = characters.map { character ->
+                    GeneralAdapterUi.Character(character)
+                }
             }
             refresh.performIfChanged(state.isLoading) {
                 isRefreshing = it

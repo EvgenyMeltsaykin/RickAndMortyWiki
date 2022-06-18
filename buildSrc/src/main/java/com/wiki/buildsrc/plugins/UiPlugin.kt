@@ -22,6 +22,8 @@ class UiPlugin : BasePlugin() {
                 api(Libs.Glide.glide)
                 annotationProcessor(Libs.Glide.glideCompile)
                 api(Libs.Glide.glideTransformations)
+                api(Libs.DelegateAdapter.adapter)
+                api(Libs.DelegateAdapter.viewBinding)
             }
         }
     }

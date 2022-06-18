@@ -7,6 +7,7 @@ import com.wiki.cf_data.CharacterDto
 import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_data.LocationDto
 import com.wiki.cf_data.SearchFeature
+import com.wiki.f_general_adapter.GeneralAdapterUi
 
 class SearchScreenFeature {
 
@@ -28,9 +29,7 @@ class SearchScreenFeature {
 
     data class State(
         val feature: SearchFeature,
-        val characters: List<CharacterDto> = emptyList(),
-        val episodes: List<EpisodeDto> = emptyList(),
-        val locations: List<LocationDto> = emptyList(),
+        val searchResultUi: List<GeneralAdapterUi> = emptyList(),
         val isLoading: Boolean = true,
         val page: Int = 1,
         val endReached: Boolean = false,

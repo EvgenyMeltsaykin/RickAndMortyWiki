@@ -8,6 +8,7 @@ import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_data.LocationDto
 import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_network.util.pagination.DefaultPaginator
+import com.wiki.f_general_adapter.GeneralAdapterUi
 import com.wiki.f_search.SearchScreenFeature.*
 import com.wiki.i_character.data.CharactersResponse
 import com.wiki.i_character.use_cases.GetCharactersByNameUseCase
@@ -67,7 +68,7 @@ class SearchViewModel(
                         setState(
                             state.copy(
                                 endReached = response.info.next == null,
-                                characters = if (isRefresh) emptyList() else state.characters
+                                searchResultUi = if (isRefresh) emptyList() else state.searchResultUi
                             )
                         )
                         response.result.map { it.toCharacterDto() }
@@ -76,7 +77,7 @@ class SearchViewModel(
                         setState(
                             state.copy(
                                 endReached = response.info.next == null,
-                                episodes = if (isRefresh) emptyList() else state.episodes
+                                searchResultUi = if (isRefresh) emptyList() else state.searchResultUi
                             )
                         )
                         response.result.map { it.toEpisodeDto() }
@@ -85,7 +86,7 @@ class SearchViewModel(
                         setState(
                             state.copy(
                                 endReached = response.info.next == null,
-                                locations = if (isRefresh) emptyList() else state.locations
+                                searchResultUi = if (isRefresh) emptyList() else state.searchResultUi
                             )
                         )
                         response.result.map { it.toLocationDto() }
@@ -95,9 +96,10 @@ class SearchViewModel(
             }.collect { result ->
                 if (result.isNeededClass<CharacterDto>()) {
                     val characters = result.convertToList<CharacterDto>() ?: emptyList()
+                    val searchUi = state.searchResultUi + characters.map { GeneralAdapterUi.Character(it) }
                     setState(
                         state.copy(
-                            characters = state.characters + characters,
+                            searchResultUi = searchUi,
                             page = newKey,
                             isVisibleNotFound = false
                         )
@@ -105,9 +107,10 @@ class SearchViewModel(
                 }
                 if (result.isNeededClass<EpisodeDto>()) {
                     val episodes = result.convertToList<EpisodeDto>() ?: emptyList()
+                    val searchUi = state.searchResultUi + episodes.map { GeneralAdapterUi.Episode(it) }
                     setState(
                         state.copy(
-                            episodes = state.episodes + episodes,
+                            searchResultUi = searchUi,
                             page = newKey,
                             isVisibleNotFound = false
                         )
@@ -115,9 +118,10 @@ class SearchViewModel(
                 }
                 if (result.isNeededClass<LocationDto>()) {
                     val locations = result.convertToList<LocationDto>() ?: emptyList()
+                    val searchUi = state.searchResultUi + locations.map { GeneralAdapterUi.Location(it) }
                     setState(
                         state.copy(
-                            locations = state.locations + locations,
+                            searchResultUi = searchUi,
                             page = newKey,
                             isVisibleNotFound = false
                         )
@@ -146,9 +150,7 @@ class SearchViewModel(
             onNothingFoundError = {
                 setState(
                     state.copy(
-                        characters = emptyList(),
-                        locations = emptyList(),
-                        episodes = emptyList(),
+                        searchResultUi = emptyList(),
                         isVisibleNotFound = true
                     )
                 )

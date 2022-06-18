@@ -21,6 +21,7 @@ object Versions {
     const val glideTransformations = "4.3.0"
     const val retrofit = "2.9.0"
     const val okhttp = "4.9.3"
+    const val delegateAdapter = "4.3.2"
 }
 
 object Libs {
@@ -82,6 +83,11 @@ object Libs {
     object OkHttp3 {
         const val okHttp = "com.squareup.okhttp3:okhttp:${Versions.okhttp}"
         const val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.okhttp}"
+    }
+
+    object DelegateAdapter{
+        const val adapter = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl:${Versions.delegateAdapter}"
+        const val viewBinding = "com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:${Versions.delegateAdapter}"
     }
 
 }

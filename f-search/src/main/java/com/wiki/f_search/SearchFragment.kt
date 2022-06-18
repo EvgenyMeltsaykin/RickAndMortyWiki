@@ -5,6 +5,8 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
+import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.extensions.hideKeyboard
@@ -14,9 +16,7 @@ import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_extensions.capitalize
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.NavigationUiConfig
-import com.wiki.f_general_adapter.CharacterAdapter
-import com.wiki.f_general_adapter.EpisodeAdapter
-import com.wiki.f_general_adapter.LocationAdapter
+import com.wiki.f_general_adapter.*
 import com.wiki.f_search.SearchScreenFeature.*
 import com.wiki.f_search.databinding.FragmentSearchBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -33,24 +33,31 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
 
     }
 
-    private val characterAdapter = CharacterAdapter(
-        onPreviewLoaded = { },
-        onCharacterClick = { character, _ ->
-            sendEvent(Events.OnCharacterClick(character))
-        }
-    )
-
-    private val episodeAdapter = EpisodeAdapter(
-        horizontalPadding = 16,
-        onEpisodeClick = {
-            sendEvent(Events.OnEpisodeClick(it))
-        }
-    )
-
-    private val locationAdapter = LocationAdapter(
-        onLocationClick = {
-            sendEvent(Events.OnLocationClick(it))
-        }
+    private val searchAdapter = AsyncListDifferDelegationAdapter(
+        getGeneralAdaptersDiffCallback(),
+        AdapterDelegatesManager<List<GeneralAdapterUi>>()
+            .addDelegate(
+                getCharacterAdapter(
+                    onCharacterClick = { character, _ ->
+                        sendEvent(Events.OnCharacterClick(character))
+                    }
+                )
+            )
+            .addDelegate(
+                getEpisodeAdapter(
+                    horizontalPadding = 16,
+                    onEpisodeClick = {
+                        sendEvent(Events.OnEpisodeClick(it))
+                    }
+                )
+            )
+            .addDelegate(
+                getLocationAdapter(
+                    onLocationClick = {
+                        sendEvent(Events.OnLocationClick(it))
+                    }
+                )
+            )
     )
 
     private var feature by fragmentArgument<SearchFeature>()
@@ -58,28 +65,9 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
     override val viewModel: SearchViewModel by viewModel { parametersOf(feature) }
 
     override fun renderState(state: State) {
-        when (state.feature) {
-            SearchFeature.CHARACTER -> characterAdapter.submitListAndSaveState(
-                state.characters,
-                binding.rvResult
-            )
-            SearchFeature.EPISODE -> episodeAdapter.submitListAndSaveState(
-                state.episodes,
-                binding.rvResult
-            )
-            SearchFeature.LOCATION -> locationAdapter.submitListAndSaveState(
-                state.locations,
-                binding.rvResult
-            )
-        }
-
         with(binding) {
-            rvResult.performIfChanged(state.feature) {
-                adapter = when (it) {
-                    SearchFeature.CHARACTER -> characterAdapter
-                    SearchFeature.EPISODE -> episodeAdapter
-                    SearchFeature.LOCATION -> locationAdapter
-                }
+            rvResult.performIfChanged(state.searchResultUi){ results->
+                searchAdapter.items = results
             }
 
             etSearch.performIfChanged(state.feature) {
@@ -96,6 +84,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
 
     override fun initView() {
         with(binding) {
+            rvResult.adapter = searchAdapter
             rvResult.addItemDecoration(
                 DividerItemDecoration(
                     rvResult.context,
