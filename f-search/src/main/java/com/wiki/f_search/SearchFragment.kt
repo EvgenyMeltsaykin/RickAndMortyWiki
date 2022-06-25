@@ -13,6 +13,10 @@ import com.wiki.cf_core.extensions.hideKeyboard
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.extensions.showKeyboard
+import com.wiki.cf_core.navigation.routes.DetailCharacterRoute
+import com.wiki.cf_core.navigation.routes.DetailEpisodeRoute
+import com.wiki.cf_core.navigation.routes.DetailLocationRoute
+import com.wiki.cf_core.navigation.routes.SearchRoute
 import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_extensions.capitalize
 import com.wiki.cf_extensions.pagination
@@ -23,11 +27,17 @@ import com.wiki.f_search.databinding.FragmentSearchBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Events, SearchViewModel>() {
+class SearchFragment : BaseFragment<
+        FragmentSearchBinding,
+        State,
+        Effects,
+        Events,
+        SearchViewModel,
+        SearchRoute>() {
 
     companion object {
-        fun newInstance(feature: SearchFeature) = SearchFragment().apply {
-            this.feature = feature
+        fun newInstance(route: SearchRoute) = SearchFragment().apply {
+            this.route = route
         }
 
         private const val HIDE_KEYBOARD_ON_SCROLL_THRESHOLD = 10
@@ -128,13 +138,22 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
     override fun bindEffects(effect: Effects) {
         binding.etSearch.hideKeyboard()
         when (effect) {
-            is Effects.OnNavigateToCharacter -> router.navigateTo(
-                screenProvider.DetailCharacter(effect.character)
-            )
-            is Effects.OnNavigateToEpisode -> router.navigateTo(screenProvider.DetailEpisode(effect.episode))
-            is Effects.OnNavigateToLocation -> router.navigateTo(
-                screenProvider.DetailLocation(effect.location)
-            )
+            is Effects.OnNavigateToCharacter -> {
+                val route = DetailCharacterRoute(effect.character)
+                router.navigateTo(
+                    screenProvider.byRoute(route)
+                )
+            }
+            is Effects.OnNavigateToEpisode -> {
+                val route = DetailEpisodeRoute(effect.episode)
+                router.navigateTo(screenProvider.byRoute(route))
+            }
+            is Effects.OnNavigateToLocation -> {
+                val route = DetailLocationRoute(effect.location,null)
+                router.navigateTo(
+                    screenProvider.byRoute(route)
+                )
+            }
             is Effects.OnNavigateToBack -> router.exit()
 
         }

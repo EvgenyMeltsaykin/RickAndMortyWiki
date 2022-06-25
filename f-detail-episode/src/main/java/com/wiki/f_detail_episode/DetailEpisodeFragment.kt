@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
-import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
-import com.wiki.cf_data.EpisodeDto
+import com.wiki.cf_core.navigation.routes.DetailCharacterRoute
+import com.wiki.cf_core.navigation.routes.DetailEpisodeRoute
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_detail_episode.DetailEpisodeScreenFeature.*
@@ -20,10 +20,22 @@ import com.wiki.f_general_adapter.getGeneralAdaptersDiffCallback
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class DetailEpisodeFragment :
-    BaseFragment<FragmentDetailEpisodeBinding, State, Effects, Events, DetailEpisodeViewModel>() {
+class DetailEpisodeFragment : BaseFragment<
+        FragmentDetailEpisodeBinding,
+        State,
+        Effects,
+        Events,
+        DetailEpisodeViewModel,
+        DetailEpisodeRoute
+        >() {
 
-    override val viewModel: DetailEpisodeViewModel by viewModel { parametersOf(episode) }
+    companion object {
+        fun newInstance(route: DetailEpisodeRoute) = DetailEpisodeFragment().apply {
+            this.route = route
+        }
+    }
+
+    override val viewModel: DetailEpisodeViewModel by viewModel { parametersOf(route.episode) }
 
     private val characterAdapter = AsyncListDifferDelegationAdapter(
         getGeneralAdaptersDiffCallback(),
@@ -36,14 +48,6 @@ class DetailEpisodeFragment :
                 )
             )
     )
-
-    companion object {
-        fun newInstance(episode: EpisodeDto) = DetailEpisodeFragment().apply {
-            this.episode = episode
-        }
-    }
-
-    private var episode by fragmentArgument<EpisodeDto>()
 
     override fun renderState(state: State) {
         with(binding) {
@@ -81,11 +85,12 @@ class DetailEpisodeFragment :
 
     override fun bindEffects(effect: Effects) {
         when (effect) {
-            is Effects.OnNavigateToCharacter -> router.navigateTo(
-                screenProvider.DetailCharacter(
-                    effect.character
+            is Effects.OnNavigateToCharacter -> {
+                val route = DetailCharacterRoute(effect.character)
+                router.navigateTo(
+                    screenProvider.byRoute(route)
                 )
-            )
+            }
         }
     }
 

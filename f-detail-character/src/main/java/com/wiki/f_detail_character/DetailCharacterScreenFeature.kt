@@ -3,6 +3,8 @@ package com.wiki.f_detail_character
 import com.wiki.cf_core.base.EffectScreen
 import com.wiki.cf_core.base.EventScreen
 import com.wiki.cf_core.base.StateScreen
+import com.wiki.cf_core.navigation.base.BaseRoute
+import com.wiki.cf_core.navigation.base.RouteConfig
 import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_data.LifeStatus
 import com.wiki.cf_data.common.SimpleData

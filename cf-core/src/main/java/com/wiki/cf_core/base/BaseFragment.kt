@@ -11,10 +11,16 @@ import androidx.viewbinding.ViewBinding
 import com.github.terrakok.cicerone.Router
 import com.google.android.material.transition.MaterialElevationScale
 import com.wiki.cf_core.controllers.InternetStateErrorController
+import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.navigation.OnBackPressedListener
 import com.wiki.cf_core.navigation.RouterProvider
 import com.wiki.cf_core.navigation.ScreenProvider
 import com.wiki.cf_core.navigation.UiControl
+import com.wiki.cf_core.navigation.animation_transitions.TransitionType
+import com.wiki.cf_core.navigation.animation_transitions.emptyTransition
+import com.wiki.cf_core.navigation.animation_transitions.simpleTransition
+import com.wiki.cf_core.navigation.base.BaseRoute
+import com.wiki.cf_core.navigation.routes.DetailEpisodeRoute
 import com.wiki.cf_network.util.ConnectivityService
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.NavigationUiControl
@@ -39,9 +45,8 @@ interface ScreenBinder<EffectFromScreen : EffectScreen, State : StateScreen> {
     fun renderState(state: State)
 }
 
-enum class TransitionType {
-    SIMPLE,
-    NONE
+interface RouteProvider<Route:BaseRoute>{
+    var route: Route
 }
 
 abstract class BaseFragment<
@@ -49,13 +54,15 @@ abstract class BaseFragment<
         ViewStateFromScreen : StateScreen,
         EffectsFromScreen : EffectScreen,
         EventsViewModel : EventScreen,
-        ViewModel : BaseViewModel<ViewStateFromScreen, EffectsFromScreen, EventsViewModel>
-        >(private val transitionType: TransitionType = TransitionType.SIMPLE) : Fragment(),
+        ViewModel : BaseViewModel<ViewStateFromScreen, EffectsFromScreen, EventsViewModel>,
+        Route: BaseRoute
+        >() : Fragment(),
     ViewModelProvider<ViewStateFromScreen, EffectsFromScreen, EventsViewModel, ViewModel>,
     ScreenBinder<EffectsFromScreen, ViewStateFromScreen>, RouterProvider,
-    OnBackPressedListener, UiControl {
+    OnBackPressedListener, UiControl, RouteProvider<Route> {
 
     override val router: Router get() = (parentFragment as RouterProvider).router
+    override var route: Route by fragmentArgument()
 
     protected val screenProvider: ScreenProvider by inject()
     private val connectivityService: ConnectivityService by inject()
@@ -81,17 +88,9 @@ abstract class BaseFragment<
     }
 
     private fun setTransitions() {
-        when (transitionType) {
-            TransitionType.SIMPLE -> {
-                exitTransition = MaterialElevationScale(false)
-                reenterTransition = MaterialElevationScale(true)
-                enterTransition = MaterialElevationScale(true)
-            }
-            TransitionType.NONE -> {
-                exitTransition = null
-                reenterTransition = null
-                enterTransition = null
-            }
+        when (route.routeConfig.animation) {
+            TransitionType.SIMPLE -> simpleTransition()
+            TransitionType.NONE -> emptyTransition()
         }
     }
 
