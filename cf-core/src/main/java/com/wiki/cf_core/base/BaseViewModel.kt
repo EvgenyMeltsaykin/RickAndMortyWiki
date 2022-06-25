@@ -59,6 +59,12 @@ abstract class BaseViewModel<
         }
     }
 
+    fun showToast(text: String) {
+        viewModelScope.launch {
+            baseScreenEventBus.invokeEvent(BaseEffectScreen.ShowToast(text))
+        }
+    }
+
     private var job: Job? = null
 
     fun launchInternetRequest(onNothingFoundError: (() -> Unit?)? = null, block: suspend () -> Unit): Job {

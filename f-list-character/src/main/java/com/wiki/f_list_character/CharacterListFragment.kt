@@ -4,6 +4,7 @@ import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.extensions.performIfChanged
+import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.MenuItem
 import com.wiki.cf_ui.controllers.MenuType
@@ -27,7 +28,7 @@ class CharacterListFragment :
             .addDelegate(
                 getCharacterAdapter(
                     onCharacterClick = { character, _ ->
-                        sendEvent(Events.OnCharacterClick(character))
+                        viewModel.sendEvent(Events.OnCharacterClick(character))
                     }
                 )
             )
@@ -52,11 +53,11 @@ class CharacterListFragment :
             rvCharacter.pagination(
                 loadThreshold = 5,
                 loadNextPage = {
-                    sendEvent(Events.LoadNextPage)
+                    viewModel.sendEvent(Events.LoadNextPage)
                 }
             )
             refresh.setOnRefreshListener {
-                sendEvent(Events.OnRefresh)
+                viewModel.sendEvent(Events.OnRefresh)
             }
         }
     }
@@ -84,7 +85,7 @@ class CharacterListFragment :
                         MenuItem(
                             menuType = MenuType.SEARCH,
                             clickListener = {
-                                sendEvent(Events.OnSearchClick)
+                                viewModel.sendEvent(Events.OnSearchClick)
                             }
                         )
                     )

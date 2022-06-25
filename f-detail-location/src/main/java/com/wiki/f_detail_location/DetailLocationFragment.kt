@@ -8,6 +8,7 @@ import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentNullableArgument
 import com.wiki.cf_core.extensions.performIfChanged
+import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_data.LocationDto
 import com.wiki.cf_data.common.SimpleData
 import com.wiki.cf_ui.controllers.NavigationUiConfig
@@ -39,7 +40,7 @@ class DetailLocationFragment :
             .addDelegate(
                 getCharacterAdapter(
                     onCharacterClick = { character, _ ->
-                        sendEvent(Events.OnCharacterClick(character))
+                        viewModel.sendEvent(Events.OnCharacterClick(character))
                     }
                 )
             )

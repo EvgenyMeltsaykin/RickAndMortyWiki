@@ -8,6 +8,7 @@ import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.extensions.performIfChanged
+import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.ToolbarConfig
@@ -30,7 +31,7 @@ class DetailEpisodeFragment :
             .addDelegate(
                 getCharacterAdapter(
                     onCharacterClick = { character, _ ->
-                        sendEvent(Events.OnCharacterClick(character))
+                        viewModel.sendEvent(Events.OnCharacterClick(character))
                     }
                 )
             )

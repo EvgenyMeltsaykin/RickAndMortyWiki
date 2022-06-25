@@ -11,6 +11,7 @@ import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.extensions.hideKeyboard
 import com.wiki.cf_core.extensions.performIfChanged
+import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.extensions.showKeyboard
 import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_extensions.capitalize
@@ -39,7 +40,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
             .addDelegate(
                 getCharacterAdapter(
                     onCharacterClick = { character, _ ->
-                        sendEvent(Events.OnCharacterClick(character))
+                        viewModel.sendEvent(Events.OnCharacterClick(character))
                     }
                 )
             )
@@ -47,14 +48,14 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
                 getEpisodeAdapter(
                     horizontalPadding = 16,
                     onEpisodeClick = {
-                        sendEvent(Events.OnEpisodeClick(it))
+                        viewModel.sendEvent(Events.OnEpisodeClick(it))
                     }
                 )
             )
             .addDelegate(
                 getLocationAdapter(
                     onLocationClick = {
-                        sendEvent(Events.OnLocationClick(it))
+                        viewModel.sendEvent(Events.OnLocationClick(it))
                     }
                 )
             )
@@ -94,7 +95,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
             rvResult.pagination(
                 loadThreshold = 5,
                 loadNextPage = {
-                    sendEvent(Events.LoadNextPage)
+                    viewModel.sendEvent(Events.LoadNextPage)
                 }
             )
             rvResult.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -110,7 +111,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
             }
             etSearch.showKeyboard()
             btnBack.setOnClickListener {
-                sendEvent(Events.OnBackClick)
+                viewModel.sendEvent(Events.OnBackClick)
             }
         }
 
@@ -128,15 +129,11 @@ class SearchFragment : BaseFragment<FragmentSearchBinding, State, Effects, Event
         binding.etSearch.hideKeyboard()
         when (effect) {
             is Effects.OnNavigateToCharacter -> router.navigateTo(
-                screenProvider.DetailCharacter(
-                    effect.character
-                )
+                screenProvider.DetailCharacter(effect.character)
             )
             is Effects.OnNavigateToEpisode -> router.navigateTo(screenProvider.DetailEpisode(effect.episode))
             is Effects.OnNavigateToLocation -> router.navigateTo(
-                screenProvider.DetailLocation(
-                    effect.location
-                )
+                screenProvider.DetailLocation(effect.location)
             )
             is Effects.OnNavigateToBack -> router.exit()
 

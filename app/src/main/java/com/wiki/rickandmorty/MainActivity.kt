@@ -4,9 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.annotation.ColorRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -16,35 +14,34 @@ import androidx.core.view.updatePadding
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Cicerone
-import com.github.terrakok.cicerone.Router
-import com.wiki.cf_core.BaseScreenEventBus
-import com.wiki.cf_core.base.BaseEffectScreen
+import com.wiki.cf_core.base.BaseActivity
 import com.wiki.cf_core.controllers.InternetStateErrorController
 import com.wiki.cf_core.extensions.getContrastColor
-import com.wiki.cf_core.extensions.safePostDelay
+import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.navigation.OnBackPressedListener
-import com.wiki.cf_core.navigation.RouterProvider
-import com.wiki.cf_core.navigation.TabKeys
-import com.wiki.cf_core.navigation.UiControl
+import com.wiki.cf_core.navigation.TabKey
+import com.wiki.cf_core.navigation.main.MainAppNavigator
+import com.wiki.cf_core.navigation.main.MainAppRouter
 import com.wiki.cf_ui.controllers.*
+import com.wiki.rickandmorty.MainActivityScreenFeature.*
 import com.wiki.rickandmorty.databinding.ActivityMainBinding
-import com.wiki.rickandmorty.navigation.Screens.TabContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
 
-class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, StatusBarController,
+class MainActivity : BaseActivity<
+        ActivityMainBinding,
+        State, Effects, Events,
+        MainActivityViewModel
+        >(), NavigationUiControl, StatusBarController,
     InternetStateErrorController {
 
     private var navigationConfig: NavigationUiConfig = NavigationUiConfig()
-    private val cicerone: Cicerone<Router> by inject()
-    override val router = cicerone.router
-    private var _binding: ActivityMainBinding? = null
-    private val binding: ActivityMainBinding get() = _binding!!
-    private val viewModel by viewModel<MainActivityViewModel>()
+    private val cicerone: Cicerone<MainAppRouter> by inject(qualifier = named("CiceroneMainApp"))
+    override val viewModel by viewModel<MainActivityViewModel>()
     private var doubleBackToExitPressedOnce = false
-    private val baseScreenEventBus by inject<BaseScreenEventBus>()
 
     private val heightBottomNavigation: Float by lazy {
         resources.getDimension(com.wiki.cf_ui.R.dimen.bottom_navigation_height)
@@ -52,38 +49,54 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
     private val visibleFragment
         get() = supportFragmentManager.fragments.find { it.isVisible }
 
+    private val navigator:MainAppNavigator by lazy {
+        MainAppNavigator(
+            activity = this,
+            containerId = binding.navHostFragment.id,
+            fragmentManager = this.supportFragmentManager
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setupSplashScreen()
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        selectTab(TabKeys.CHARACTERS)
-        //setStatusBarColor(com.wiki.cf_ui.R.color.white)
+        subscribeEffects()
+        subscribeState()
+        viewModel.viewModelScope.launch(Dispatchers.Main) {
+            bindBaseEvent()
+        }
+        initView()
+        renderState(viewModel.stateFlow.value)
+    }
+
+    override fun bindEffects(effect: Effects) { }
+
+    override fun initView() {
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.bottom_menu_item_characters -> {
-                    selectTab(TabKeys.CHARACTERS)
+                TabKey.CHARACTERS.menuRes -> {
+                    viewModel.sendEvent(Events.OnTabClick(TabKey.CHARACTERS))
                     true
                 }
-                R.id.bottom_menu_item_episodes -> {
-                    selectTab(TabKeys.EPISODES)
+                TabKey.EPISODES.menuRes -> {
+                    viewModel.sendEvent(Events.OnTabClick(TabKey.EPISODES))
                     true
                 }
-                R.id.bottom_menu_item_locations -> {
-                    selectTab(TabKeys.LOCATIONS)
+                TabKey.LOCATIONS.menuRes -> {
+                    viewModel.sendEvent(Events.OnTabClick(TabKey.LOCATIONS))
                     true
                 }
                 else -> false
             }
         }
 
-        viewModel.viewModelScope.launch(Dispatchers.Main) {
-            bindBaseEvent()
-        }
+        binding.btnBack.setOnClickListener { onBackPressed() }
+    }
 
-        binding.btnBack.setOnClickListener {
-            onBackPressed()
-        }
+    override fun renderState(state: State) {
+        binding.bottomNavigation.selectedItemId = state.selectedTab.menuRes
     }
 
     private fun setupSplashScreen() {
@@ -98,71 +111,13 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
         }
     }
 
-
-    private suspend fun bindBaseEvent() {
-        baseScreenEventBus.events.collect { event ->
-            when (event) {
-                is BaseEffectScreen.ShowToast -> {
-                    Toast.makeText(this, event.text, Toast.LENGTH_SHORT).show()
-                }
-                is BaseEffectScreen.ShowSnackBar -> {
-                    //showSnackBar(context = context, text = event.text)
-                }
-
-                is BaseEffectScreen.InternetError -> {
-                    showInternetError(isVisible = event.isVisible, text = event.text)
-                }
-            }
-        }
-    }
-
     override fun onBackPressed() {
         val fragment = visibleFragment
-
         if (fragment != null && fragment is OnBackPressedListener
             && (fragment as OnBackPressedListener).onBackPressed()
         ) return else {
-            if (doubleBackToExitPressedOnce) {
-                super.onBackPressed()
-                router.exit()
-            } else {
-                doubleBackToExitPressedOnce = true
-                Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT)
-                    .show()
-            }
-            binding.root.safePostDelay(2000) {
-                doubleBackToExitPressedOnce = false
-            }
+            viewModel.sendEvent(Events.OnBackPress)
         }
-
-    }
-
-    private fun selectTab(tabKey: TabKeys) {
-        val fm = supportFragmentManager
-
-        val currentFragment = visibleFragment
-        val newFragment = fm.findFragmentByTag(tabKey.name)
-
-        if (currentFragment != null && newFragment != null && currentFragment === newFragment)
-            return
-
-        if (newFragment != null && newFragment is UiControl)
-            (newFragment as UiControl).bindNavigationUi()
-
-        with(fm.beginTransaction()) {
-            newFragment?.let {
-                show(it)
-            } ?: run {
-                val fr = TabContainer(tabKey).createFragment(fm.fragmentFactory)
-                add(binding.navHostFragment.id, fr, tabKey.name)
-            }
-
-            currentFragment?.let {
-                hide(it)
-            }
-            commitNow()
-        }
-
     }
 
     override fun setNavigationUiConfig(config: NavigationUiConfig) {
@@ -177,7 +132,6 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
     private fun setupToolbar(navigationConfig: NavigationUiConfig) {
         clearMenu(navigationConfig.toolbarConfig.menuItem)
         binding.btnBack.isVisible = navigationConfig.isVisibleBackButton
-        //setStatusBarColor(navigationConfig.colorStatusBar)
         setBackgroundColor(navigationConfig.colorBackground)
         setToolbarVisible(navigationConfig.isVisibleToolbar)
         setToolbarInfo(navigationConfig.toolbarConfig)
@@ -243,6 +197,16 @@ class MainActivity : AppCompatActivity(), RouterProvider, NavigationUiControl, S
             this.isVisible = isVisible
             this.text = text
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        cicerone.getNavigatorHolder().setNavigator(navigator)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        cicerone.getNavigatorHolder().removeNavigator()
     }
 
 }

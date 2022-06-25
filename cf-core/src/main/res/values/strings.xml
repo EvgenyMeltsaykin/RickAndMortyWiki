@@ -1,0 +1,5 @@
+<resources>
+    <string name="bottom_navigation_title_characters">Characters</string>
+    <string name="bottom_navigation_title_episodes">Episodes</string>
+    <string name="bottom_navigation_title_locations">Locations</string>
+</resources>

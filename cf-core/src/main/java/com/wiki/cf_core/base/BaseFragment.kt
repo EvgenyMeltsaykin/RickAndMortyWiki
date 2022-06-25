@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.viewbinding.ViewBinding
 import com.github.terrakok.cicerone.Router
@@ -64,21 +65,19 @@ abstract class BaseFragment<
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        subscribeState()
-        subscribeEffects()
         setTransitions()
     }
 
     private fun subscribeState() {
         viewModel.stateFlow.onEach {
             if (_binding != null) renderState(it)
-        }.launchIn(viewModel.viewModelScope)
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun subscribeEffects() {
         viewModel.effectFlow.onEach {
             bindEffects(it)
-        }.launchIn(viewModel.viewModelScope)
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun setTransitions() {
@@ -113,6 +112,8 @@ abstract class BaseFragment<
                 Boolean::class.java
             )
         _binding = method.invoke(null, inflater, container, false) as VB
+        subscribeState()
+        subscribeEffects()
         initView()
         renderState(viewModel.stateFlow.value)
         return binding.root
@@ -121,10 +122,6 @@ abstract class BaseFragment<
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         showInternetError(isVisible = false)
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    fun sendEvent(event: EventsViewModel) {
-        viewModel.viewModelScope.launch(Dispatchers.Main) { viewModel.eventChannel.send(event) }
     }
 
     private fun showInternetError(isVisible: Boolean, text: String = "") {

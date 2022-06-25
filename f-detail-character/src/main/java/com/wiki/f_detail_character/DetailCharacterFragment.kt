@@ -15,6 +15,7 @@ import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.roundCorners
+import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_data.CharacterDto
 import com.wiki.cf_data.LifeStatus
 import com.wiki.cf_extensions.getDrawable
@@ -42,7 +43,7 @@ class DetailCharacterFragment :
         AdapterDelegatesManager<List<GeneralAdapterUi>>()
             .addDelegate(
                 getEpisodeAdapter(
-                    onEpisodeClick = { sendEvent(Events.OnEpisodeClick(it)) }
+                    onEpisodeClick = { viewModel.sendEvent(Events.OnEpisodeClick(it)) }
                 )
             )
     )
@@ -110,10 +111,10 @@ class DetailCharacterFragment :
             rvEpisode.addItemDecoration(DividerItemDecoration(rvEpisode.context, LinearLayout.VERTICAL))
 
             tvOriginLocation.setOnClickListener {
-                sendEvent(Events.OnOriginLocationClick)
+                viewModel.sendEvent(Events.OnOriginLocationClick)
             }
             tvLastLocation.setOnClickListener {
-                sendEvent(Events.OnLastKnownLocation)
+                viewModel.sendEvent(Events.OnLastKnownLocation)
             }
         }
     }
