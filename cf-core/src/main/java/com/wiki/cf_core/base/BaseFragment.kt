@@ -124,10 +124,6 @@ abstract class BaseFragment<
         super.onViewCreated(view, savedInstanceState)
     }
 
-    fun sendEvent(event: EventsViewModel) {
-        viewModel.viewModelScope.launch(Dispatchers.Main) { viewModel.eventChannel.send(event) }
-    }
-
     private fun showInternetError(isVisible: Boolean, text: String = "") {
         (requireActivity() as? InternetStateErrorController)?.showInternetError(isVisible, text)
     }

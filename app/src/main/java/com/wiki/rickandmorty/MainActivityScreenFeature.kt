@@ -1,5 +1,6 @@
 package com.wiki.rickandmorty
 
+import com.wiki.cf_core.base.BaseEffectScreen
 import com.wiki.cf_core.base.EffectScreen
 import com.wiki.cf_core.base.EventScreen
 import com.wiki.cf_core.base.StateScreen
@@ -9,6 +10,7 @@ class MainActivityScreenFeature {
 
     sealed class Events : EventScreen {
         data class OnTabClick(val tabKey: TabKey) : Events()
+        object OnBackPress:Events()
     }
 
     sealed class Effects : EffectScreen {

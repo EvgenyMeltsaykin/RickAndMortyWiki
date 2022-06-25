@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -15,23 +14,17 @@ import androidx.core.view.updatePadding
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Cicerone
-import com.github.terrakok.cicerone.Router
-import com.wiki.cf_core.BaseScreenEventBus
 import com.wiki.cf_core.base.BaseActivity
-import com.wiki.cf_core.base.BaseEffectScreen
 import com.wiki.cf_core.controllers.InternetStateErrorController
 import com.wiki.cf_core.extensions.getContrastColor
-import com.wiki.cf_core.extensions.safePostDelay
+import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.navigation.OnBackPressedListener
-import com.wiki.cf_core.navigation.RouterProvider
 import com.wiki.cf_core.navigation.TabKey
-import com.wiki.cf_core.navigation.UiControl
 import com.wiki.cf_core.navigation.main.MainAppNavigator
 import com.wiki.cf_core.navigation.main.MainAppRouter
 import com.wiki.cf_ui.controllers.*
 import com.wiki.rickandmorty.MainActivityScreenFeature.*
 import com.wiki.rickandmorty.databinding.ActivityMainBinding
-import com.wiki.rickandmorty.navigation.Screens.TabContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -78,42 +71,28 @@ class MainActivity : BaseActivity<
         renderState(viewModel.stateFlow.value)
     }
 
-    override fun onResume() {
-        super.onResume()
-        cicerone.getNavigatorHolder().setNavigator(navigator)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        cicerone.getNavigatorHolder().removeNavigator()
-    }
-
-    override fun bindEffects(effect: Effects) {
-
-    }
+    override fun bindEffects(effect: Effects) { }
 
     override fun initView() {
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 TabKey.CHARACTERS.menuRes -> {
-                    sendEvent(Events.OnTabClick(TabKey.CHARACTERS))
+                    viewModel.sendEvent(Events.OnTabClick(TabKey.CHARACTERS))
                     true
                 }
                 TabKey.EPISODES.menuRes -> {
-                    sendEvent(Events.OnTabClick(TabKey.EPISODES))
+                    viewModel.sendEvent(Events.OnTabClick(TabKey.EPISODES))
                     true
                 }
                 TabKey.LOCATIONS.menuRes -> {
-                    sendEvent(Events.OnTabClick(TabKey.LOCATIONS))
+                    viewModel.sendEvent(Events.OnTabClick(TabKey.LOCATIONS))
                     true
                 }
                 else -> false
             }
         }
 
-        binding.btnBack.setOnClickListener {
-            onBackPressed()
-        }
+        binding.btnBack.setOnClickListener { onBackPressed() }
     }
 
     override fun renderState(state: State) {
@@ -134,23 +113,11 @@ class MainActivity : BaseActivity<
 
     override fun onBackPressed() {
         val fragment = visibleFragment
-
         if (fragment != null && fragment is OnBackPressedListener
             && (fragment as OnBackPressedListener).onBackPressed()
         ) return else {
-            if (doubleBackToExitPressedOnce) {
-                super.onBackPressed()
-                //router.exit()
-            } else {
-                doubleBackToExitPressedOnce = true
-                Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT)
-                    .show()
-            }
-            binding.root.safePostDelay(2000) {
-                doubleBackToExitPressedOnce = false
-            }
+            viewModel.sendEvent(Events.OnBackPress)
         }
-
     }
 
     override fun setNavigationUiConfig(config: NavigationUiConfig) {
@@ -165,7 +132,6 @@ class MainActivity : BaseActivity<
     private fun setupToolbar(navigationConfig: NavigationUiConfig) {
         clearMenu(navigationConfig.toolbarConfig.menuItem)
         binding.btnBack.isVisible = navigationConfig.isVisibleBackButton
-        //setStatusBarColor(navigationConfig.colorStatusBar)
         setBackgroundColor(navigationConfig.colorBackground)
         setToolbarVisible(navigationConfig.isVisibleToolbar)
         setToolbarInfo(navigationConfig.toolbarConfig)
@@ -231,6 +197,16 @@ class MainActivity : BaseActivity<
             this.isVisible = isVisible
             this.text = text
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        cicerone.getNavigatorHolder().setNavigator(navigator)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        cicerone.getNavigatorHolder().removeNavigator()
     }
 
 }

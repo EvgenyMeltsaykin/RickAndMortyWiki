@@ -63,8 +63,4 @@ abstract class BaseActivity<
         }.launchIn(lifecycleScope)
     }
 
-    fun sendEvent(event: EventsViewModel) {
-        viewModel.viewModelScope.launch(Dispatchers.Main) { viewModel.eventChannel.send(event) }
-    }
-
 }

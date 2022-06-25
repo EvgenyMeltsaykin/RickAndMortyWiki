@@ -6,6 +6,7 @@ import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.extensions.performIfChanged
+import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.MenuItem
 import com.wiki.cf_ui.controllers.MenuType
@@ -28,7 +29,7 @@ class LocationListFragment :
         AdapterDelegatesManager<List<GeneralAdapterUi>>()
             .addDelegate(
                 getLocationAdapter(
-                    onLocationClick = { sendEvent(Events.OnLocationClick(it)) }
+                    onLocationClick = { viewModel.sendEvent(Events.OnLocationClick(it)) }
                 )
             )
     )
@@ -58,11 +59,11 @@ class LocationListFragment :
             rvLocation.pagination(
                 loadThreshold = 5,
                 loadNextPage = {
-                    sendEvent(Events.LoadNextPage)
+                    viewModel.sendEvent(Events.LoadNextPage)
                 }
             )
             refresh.setOnRefreshListener {
-                sendEvent(Events.OnRefresh)
+                viewModel.sendEvent(Events.OnRefresh)
             }
         }
 
@@ -89,7 +90,7 @@ class LocationListFragment :
                         MenuItem(
                             menuType = MenuType.SEARCH,
                             clickListener = {
-                                sendEvent(Events.OnSearchClick)
+                                viewModel.sendEvent(Events.OnSearchClick)
                             }
                         )
                     )

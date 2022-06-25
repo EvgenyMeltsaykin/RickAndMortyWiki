@@ -6,6 +6,7 @@ import com.wiki.cf_core.BaseScreenEventBus
 import com.wiki.cf_core.navigation.NavigationTabHolder
 import com.wiki.cf_core.navigation.ScreenProvider
 import com.wiki.cf_core.navigation.main.MainAppRouter
+import com.wiki.cf_core.utils.StringProvider
 import com.wiki.rickandmorty.MainActivityViewModel
 import com.wiki.rickandmorty.navigation.Screens
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -18,6 +19,7 @@ val MainModule = module {
     single { get<Cicerone<MainAppRouter>>(named("CiceroneMainApp")).router }
     single { NavigationTabHolder() }
     single<ScreenProvider> { Screens }
-    viewModel { MainActivityViewModel(get()) }
+    viewModel { MainActivityViewModel(get(), get()) }
     single { BaseScreenEventBus() }
+    single { StringProvider(get()) }
 }
