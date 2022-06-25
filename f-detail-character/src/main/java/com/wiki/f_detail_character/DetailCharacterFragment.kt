@@ -16,7 +16,9 @@ import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.roundCorners
 import com.wiki.cf_core.extensions.sendEvent
-import com.wiki.cf_data.CharacterDto
+import com.wiki.cf_core.navigation.routes.DetailCharacterRoute
+import com.wiki.cf_core.navigation.routes.DetailEpisodeRoute
+import com.wiki.cf_core.navigation.routes.DetailLocationRoute
 import com.wiki.cf_data.LifeStatus
 import com.wiki.cf_extensions.getDrawable
 import com.wiki.cf_ui.controllers.NavigationUiConfig
@@ -25,17 +27,26 @@ import com.wiki.cf_ui.extensions.blurMask
 import com.wiki.cf_ui.extensions.setTextOrGone
 import com.wiki.f_detail_character.DetailCharacterScreenFeature.*
 import com.wiki.f_detail_character.databinding.FragmentDetailCharacterBinding
-import com.wiki.f_general_adapter.*
+import com.wiki.f_general_adapter.GeneralAdapterUi
+import com.wiki.f_general_adapter.getEpisodeAdapter
+import com.wiki.f_general_adapter.getGeneralAdaptersDiffCallback
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class DetailCharacterFragment :
-    BaseFragment<FragmentDetailCharacterBinding, State, Effects, Events, DetailCharacterViewModel>() {
+class DetailCharacterFragment : BaseFragment<
+        FragmentDetailCharacterBinding,
+        State,
+        Effects,
+        Events,
+        DetailCharacterViewModel,
+        DetailCharacterRoute>() {
 
     companion object {
-        fun newInstance(character: CharacterDto) = DetailCharacterFragment().apply {
-            this.character = character
+
+        fun newInstance(route: DetailCharacterRoute) = DetailCharacterFragment().apply {
+            this.route = route
         }
+
     }
 
     private val episodeAdapter = AsyncListDifferDelegationAdapter(
@@ -48,9 +59,7 @@ class DetailCharacterFragment :
             )
     )
 
-    private var character by fragmentArgument<CharacterDto>()
-
-    override val viewModel: DetailCharacterViewModel by viewModel { parametersOf(character) }
+    override val viewModel: DetailCharacterViewModel by viewModel { parametersOf(route.character) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +95,7 @@ class DetailCharacterFragment :
             tvGender.performIfChanged(state.gender) {
                 setTextOrGone(secondRowText = state.gender)
             }
-            rvEpisode.performIfChanged(state.episodes) { episodes->
+            rvEpisode.performIfChanged(state.episodes) { episodes ->
                 episodeAdapter.items = episodes.map { GeneralAdapterUi.Episode(it) }
             }
             tvEpisodesStatic.performIfChanged(state.episodes.isNotEmpty()) {
@@ -108,7 +117,12 @@ class DetailCharacterFragment :
     override fun initView() {
         with(binding) {
             rvEpisode.adapter = episodeAdapter
-            rvEpisode.addItemDecoration(DividerItemDecoration(rvEpisode.context, LinearLayout.VERTICAL))
+            rvEpisode.addItemDecoration(
+                DividerItemDecoration(
+                    rvEpisode.context,
+                    LinearLayout.VERTICAL
+                )
+            )
 
             tvOriginLocation.setOnClickListener {
                 viewModel.sendEvent(Events.OnOriginLocationClick)
@@ -142,14 +156,13 @@ class DetailCharacterFragment :
         when (effect) {
             is Effects.OnNavigateBack -> router.exit()
             is Effects.NavigateToEpisode -> {
-                router.navigateTo(screenProvider.DetailEpisode(effect.episode))
+                val route = DetailEpisodeRoute(effect.episode)
+                router.navigateTo(screenProvider.byRoute(route))
             }
             is Effects.NavigateToLocation -> {
+                val route = DetailLocationRoute(location = null, effect.locationData)
                 router.navigateTo(
-                    screenProvider.DetailLocation(
-                        location = null,
-                        locationData = effect.locationData
-                    )
+                    screenProvider.byRoute(route)
                 )
             }
         }

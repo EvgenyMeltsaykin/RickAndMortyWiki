@@ -6,33 +6,40 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
-import com.wiki.cf_core.delegates.fragmentNullableArgument
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
-import com.wiki.cf_data.LocationDto
-import com.wiki.cf_data.common.SimpleData
+import com.wiki.cf_core.navigation.routes.DetailCharacterRoute
+import com.wiki.cf_core.navigation.routes.DetailLocationRoute
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_detail_location.DetailLocationScreenFeature.*
 import com.wiki.f_detail_location.databinding.FragmentDetailLocationBinding
-import com.wiki.f_general_adapter.*
+import com.wiki.f_general_adapter.GeneralAdapterUi
+import com.wiki.f_general_adapter.getCharacterAdapter
+import com.wiki.f_general_adapter.getGeneralAdaptersDiffCallback
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class DetailLocationFragment :
-    BaseFragment<FragmentDetailLocationBinding, State, Effects, Events, DetailLocationViewModel>() {
+class DetailLocationFragment : BaseFragment<
+        FragmentDetailLocationBinding,
+        State,
+        Effects,
+        Events,
+        DetailLocationViewModel,
+        DetailLocationRoute>() {
 
     companion object {
-        fun newInstance(location: LocationDto?, locationData: SimpleData?) = DetailLocationFragment().apply {
-            this.location = location
-            this.locationData = locationData
+        fun newInstance(route: DetailLocationRoute) = DetailLocationFragment().apply {
+            this.route = route
         }
     }
 
-    override val viewModel: DetailLocationViewModel by viewModel { parametersOf(location, locationData) }
-
-    private var location by fragmentNullableArgument<LocationDto>()
-    private var locationData by fragmentNullableArgument<SimpleData>()
+    override val viewModel: DetailLocationViewModel by viewModel {
+        parametersOf(
+            route.location,
+            route.locationData
+        )
+    }
 
     private val characterAdapter = AsyncListDifferDelegationAdapter(
         getGeneralAdaptersDiffCallback(),
@@ -48,7 +55,7 @@ class DetailLocationFragment :
 
     override fun renderState(state: State) {
         with(binding) {
-            rvCharacters.performIfChanged(state.residentCharacters){ characters->
+            rvCharacters.performIfChanged(state.residentCharacters) { characters ->
                 characterAdapter.items = characters.map { GeneralAdapterUi.Character(it) }
             }
 
@@ -79,7 +86,8 @@ class DetailLocationFragment :
     override fun bindEffects(effect: Effects) {
         when (effect) {
             is Effects.OnNavigateToCharacter -> {
-                router.navigateTo(screenProvider.DetailCharacter(effect.character))
+                val route = DetailCharacterRoute(effect.character)
+                router.navigateTo(screenProvider.byRoute(route))
             }
         }
     }

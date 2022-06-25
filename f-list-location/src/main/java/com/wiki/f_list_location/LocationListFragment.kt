@@ -7,6 +7,9 @@ import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
+import com.wiki.cf_core.navigation.routes.DetailLocationRoute
+import com.wiki.cf_core.navigation.routes.LocationListRoute
+import com.wiki.cf_core.navigation.routes.SearchRoute
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.MenuItem
 import com.wiki.cf_ui.controllers.MenuType
@@ -19,8 +22,20 @@ import com.wiki.f_list_location.LocationListScreenFeature.*
 import com.wiki.f_list_location.databinding.FragmentLocationListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class LocationListFragment :
-    BaseFragment<FragmentLocationListBinding, State, Effects, Events, LocationListViewModel>() {
+class LocationListFragment : BaseFragment<
+        FragmentLocationListBinding,
+        State,
+        Effects,
+        Events,
+        LocationListViewModel,
+        LocationListRoute>() {
+
+    companion object {
+        fun newInstance(route: LocationListRoute): LocationListFragment =
+            LocationListFragment().apply {
+                this.route = route
+            }
+    }
 
     override val viewModel: LocationListViewModel by viewModel()
 
@@ -71,10 +86,16 @@ class LocationListFragment :
 
     override fun bindEffects(effect: Effects) {
         when (effect) {
-            is Effects.OnNavigateToLocation -> router.navigateTo(
-                screenProvider.DetailLocation(effect.location)
-            )
-            is Effects.NavigateToSearch -> router.navigateTo(screenProvider.Search(effect.feature))
+            is Effects.OnNavigateToLocation -> {
+                val route = DetailLocationRoute(effect.location, null)
+                router.navigateTo(
+                    screenProvider.byRoute(route)
+                )
+            }
+            is Effects.NavigateToSearch -> {
+                val route = SearchRoute(effect.feature)
+                router.navigateTo(screenProvider.byRoute(route))
+            }
         }
     }
 

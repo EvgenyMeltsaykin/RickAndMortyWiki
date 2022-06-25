@@ -5,6 +5,9 @@ import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.BaseFragment
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
+import com.wiki.cf_core.navigation.routes.CharacterListRoute
+import com.wiki.cf_core.navigation.routes.DetailCharacterRoute
+import com.wiki.cf_core.navigation.routes.SearchRoute
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.MenuItem
 import com.wiki.cf_ui.controllers.MenuType
@@ -17,8 +20,20 @@ import com.wiki.f_list_character.CharacterListScreenFeature.*
 import com.wiki.f_list_character.databinding.FragmentCharacterListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CharacterListFragment :
-    BaseFragment<FragmentCharacterListBinding, State, Effects, Events, CharacterListViewModel>() {
+class CharacterListFragment : BaseFragment<
+        FragmentCharacterListBinding,
+        State,
+        Effects,
+        Events,
+        CharacterListViewModel,
+        CharacterListRoute>() {
+
+    companion object {
+        fun newInstance(route: CharacterListRoute): CharacterListFragment =
+            CharacterListFragment().apply {
+                this.route = route
+            }
+    }
 
     override val viewModel: CharacterListViewModel by viewModel()
 
@@ -36,7 +51,7 @@ class CharacterListFragment :
 
     override fun renderState(state: State) {
         with(binding) {
-            rvCharacter.performIfChanged(state.characters) { characters->
+            rvCharacter.performIfChanged(state.characters) { characters ->
                 characterAdapter.items = characters.map { character ->
                     GeneralAdapterUi.Character(character)
                 }
@@ -65,10 +80,12 @@ class CharacterListFragment :
     override fun bindEffects(effect: Effects) {
         when (effect) {
             is Effects.NavigateToDetailCharacter -> {
-                router.navigateTo(screenProvider.DetailCharacter(effect.character))
+                val route = DetailCharacterRoute(effect.character)
+                router.navigateTo(screenProvider.byRoute(route))
             }
             is Effects.NavigateToSearch -> {
-                router.navigateTo(screenProvider.Search(effect.feature))
+                val route = SearchRoute(effect.feature)
+                router.navigateTo(screenProvider.byRoute(route))
             }
         }
     }
