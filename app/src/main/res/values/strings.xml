@@ -1,7 +1,4 @@
 <resources>
     <string name="app_name">Rick And Morty Wiki</string>
     <string name="press_again_to_exit">Press again to exit</string>
-    <string name="bottom_navigation_title_characters">Characters</string>
-    <string name="bottom_navigation_title_episodes">Episodes</string>
-    <string name="bottom_navigation_title_locations">Locations</string>
 </resources>

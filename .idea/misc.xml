@@ -41,6 +41,10 @@
         <entry key="..\:/RickAndMortyWiki/f-search/src/main/res/drawable/bg_rounded_gray.xml" value="0.2005" />
         <entry key="..\:/RickAndMortyWiki/f-search/src/main/res/layout/fragment_search.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.10778443113772455" />
+        <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.1" />
+        <entry key="cf-core/src/main/res/drawable/ic_bottom_navigation_characters.xml" value="0.1" />
+        <entry key="cf-core/src/main/res/drawable/ic_bottom_navigation_episodes.xml" value="0.1" />
+        <entry key="cf-core/src/main/res/menu/bottom_navigation_menu.xml" value="0.1" />
       </map>
     </option>
   </component>

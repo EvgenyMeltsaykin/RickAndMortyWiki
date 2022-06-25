@@ -15,6 +15,6 @@ interface ScreenProvider {
     fun Locations(): FragmentScreen
     fun DetailLocation(location: LocationDto?, locationData: SimpleData? = null): FragmentScreen
     fun Search(feature: SearchFeature): FragmentScreen
-    fun TabContainer(tabKey: TabKeys): FragmentScreen
-    fun TabFragment(tabKey: TabKeys): FragmentScreen
+    fun TabContainer(tabKey: TabKey): FragmentScreen
+    fun TabFragment(tabKey: TabKey): FragmentScreen
 }

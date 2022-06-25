@@ -22,7 +22,7 @@ class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener,
 
     companion object {
         private const val TAB_KEY = "TAB_KEY"
-        fun newInstance(tabKey: TabKeys) = NavigationTabFragment().apply {
+        fun newInstance(tabKey: TabKey) = NavigationTabFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(TAB_KEY, tabKey)
             }
@@ -42,8 +42,8 @@ class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener,
 
     private val navigationTabHolder: NavigationTabHolder by inject()
 
-    private val tabKey: TabKeys
-        get() = requireArguments().getSerializable(TAB_KEY) as TabKeys
+    private val tabKey: TabKey
+        get() = requireArguments().getSerializable(TAB_KEY) as TabKey
 
     private val cicerone: Cicerone<Router>
         get() = navigationTabHolder.getCicerone(tabKey)

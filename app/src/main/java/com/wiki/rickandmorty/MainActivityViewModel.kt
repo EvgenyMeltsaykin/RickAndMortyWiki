@@ -1,14 +1,24 @@
 package com.wiki.rickandmorty
 
-import com.wiki.cf_core.base.BaseEffectScreen
 import com.wiki.cf_core.base.BaseViewModel
-import com.wiki.cf_core.base.EventScreen
-import com.wiki.cf_core.base.StateScreen
+import com.wiki.cf_core.navigation.TabKey
+import com.wiki.cf_core.navigation.main.MainAppRouter
+import com.wiki.rickandmorty.MainActivityScreenFeature.*
 
-object EmptyState : StateScreen
-
-class MainActivityViewModel : BaseViewModel<EmptyState,BaseEffectScreen, EventScreen>(
-    EmptyState
+class MainActivityViewModel(
+    private val router:MainAppRouter
+) : BaseViewModel<State,Effects, Events>(
+    State(
+        selectedTab = TabKey.CHARACTERS
+    )
 ) {
-    override fun bindEvents(event: EventScreen) { }
+
+    override fun bindEvents(event: Events) {
+        when(event){
+            is Events.OnTabClick ->{
+                router.changeTab(event.tabKey)
+            }
+        }
+    }
+
 }

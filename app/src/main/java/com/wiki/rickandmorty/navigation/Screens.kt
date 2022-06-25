@@ -3,7 +3,7 @@ package com.wiki.rickandmorty.navigation
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 import com.wiki.cf_core.navigation.NavigationTabFragment
 import com.wiki.cf_core.navigation.ScreenProvider
-import com.wiki.cf_core.navigation.TabKeys
+import com.wiki.cf_core.navigation.TabKey
 import com.wiki.cf_data.CharacterDto
 import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_data.LocationDto
@@ -34,13 +34,13 @@ object Screens : ScreenProvider {
 
     override fun Search(feature: SearchFeature) = FragmentScreen { SearchFragment.newInstance(feature) }
 
-    override fun TabContainer(tabKey: TabKeys) = FragmentScreen {
+    override fun TabContainer(tabKey: TabKey) = FragmentScreen {
         NavigationTabFragment.newInstance(tabKey)
     }
 
-    override fun TabFragment(tabKey: TabKeys) = when (tabKey) {
-        TabKeys.CHARACTERS -> Characters()
-        TabKeys.EPISODES -> Episodes()
-        TabKeys.LOCATIONS -> Locations()
+    override fun TabFragment(tabKey: TabKey) = when (tabKey) {
+        TabKey.CHARACTERS -> Characters()
+        TabKey.EPISODES -> Episodes()
+        TabKey.LOCATIONS -> Locations()
     }
 }
