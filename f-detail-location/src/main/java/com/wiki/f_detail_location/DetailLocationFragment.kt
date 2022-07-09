@@ -11,8 +11,6 @@ import com.wiki.cf_core.base.fragment.BaseFragment
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.navigation.routes.DetailLocationRoute
-import com.wiki.cf_ui.controllers.NavigationUiConfig
-import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_detail_location.DetailLocationScreenFeature.*
 import com.wiki.f_detail_location.databinding.FragmentDetailLocationBinding
 import com.wiki.f_general_adapter.GeneralAdapterUi
@@ -23,14 +21,13 @@ import org.koin.core.parameter.parametersOf
 
 class DetailLocationFragment : BaseFragment<State, Actions, Events, DetailLocationViewModel, DetailLocationRoute>() {
 
-    override val binding: FragmentDetailLocationBinding by viewBinding(CreateMethod.INFLATE)
-
     companion object {
         fun newInstance(route: DetailLocationRoute) = DetailLocationFragment().apply {
             this.route = route
         }
     }
 
+    override val binding: FragmentDetailLocationBinding by viewBinding(CreateMethod.INFLATE)
     override val viewModel: DetailLocationViewModel by viewModel {
         parametersOf(route.location, route.locationData)
     }
@@ -75,24 +72,14 @@ class DetailLocationFragment : BaseFragment<State, Actions, Events, DetailLocati
             adapter = characterAdapter
             addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
         }
+        binding.btnBack.setOnClickListener {
+            viewModel.sendEvent(Events.OnBackClick)
+        }
     }
 
     override fun bindActions(action: Actions) {
         when (action) {
         }
-    }
-
-    override fun bindNavigationUi() {
-        setNavigationUiConfig(
-            NavigationUiConfig(
-                isVisibleToolbar = true,
-                isVisibleBackButton = true,
-                isVisibleBottomNavigation = true,
-                toolbarConfig = ToolbarConfig(
-                    title = getString(R.string.detail_location_toolbar_title)
-                )
-            )
-        )
     }
 
 }

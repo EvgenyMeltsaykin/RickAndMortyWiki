@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import com.github.terrakok.cicerone.Command
 import com.wiki.cf_core.navigation.TabKey
-import com.wiki.cf_core.navigation.UiControl
 import com.wiki.cf_core.navigation.base.BaseAppNavigator
 import com.wiki.cf_core.navigation.commands.ChangeTab
 import org.koin.core.component.KoinComponent
@@ -34,20 +33,13 @@ class MainAppNavigator(
     private fun changeTab(tabKey: TabKey) {
         val currentFragment = visibleFragment
         val newFragment = fragmentManager.findFragmentByTag(tabKey.name)
-        println("1234 currentFragment $currentFragment")
-        println("1234 newFragment $newFragment")
         if (currentFragment != null && newFragment != null && currentFragment === newFragment) {
-            println("1234 if main $newFragment")
             return
         }
 
-
-        if (newFragment != null && newFragment is UiControl)
-            (newFragment as UiControl).bindNavigationUi()
-
         with(fragmentManager.beginTransaction()) {
             newFragment?.let {
-                show(it)
+                attach(it)
             } ?: run {
                 val fr = screenProvider
                     .TabContainer(tabKey)
@@ -56,7 +48,7 @@ class MainAppNavigator(
             }
 
             currentFragment?.let {
-                hide(it)
+                detach(it)
             }
             commitNow()
         }

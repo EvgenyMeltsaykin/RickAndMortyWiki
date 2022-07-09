@@ -30,6 +30,7 @@ class DetailEpisodeViewModel(
     override fun bindEvents(event: Events) {
         when (event) {
             is Events.OnCharacterClick -> onCharacterClick(event)
+            is Events.OnBackClick -> router.back()
         }
     }
 

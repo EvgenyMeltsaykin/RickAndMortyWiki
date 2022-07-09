@@ -9,4 +9,5 @@ interface RouteSetting {
 
 data class RouteConfig(
     val animation: TransitionType = TransitionType.SIMPLE,
+    val isVisibleBottomNavigation: Boolean = true
 ) : Serializable

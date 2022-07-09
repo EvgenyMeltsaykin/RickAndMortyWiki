@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
-import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -22,7 +21,8 @@ import com.wiki.cf_core.navigation.OnBackPressedListener
 import com.wiki.cf_core.navigation.TabKey
 import com.wiki.cf_core.navigation.main.MainAppNavigator
 import com.wiki.cf_core.navigation.main.MainAppRouter
-import com.wiki.cf_ui.controllers.*
+import com.wiki.cf_ui.controllers.BottomNavigationController
+import com.wiki.cf_ui.controllers.StatusBarController
 import com.wiki.rickandmorty.MainActivityScreenFeature.*
 import com.wiki.rickandmorty.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
@@ -31,17 +31,11 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
 
-class MainActivity : BaseActivity<
-    ActivityMainBinding,
-    State, Actions, Events,
-    MainActivityViewModel
-    >(), NavigationUiControl, StatusBarController,
-    InternetStateErrorController {
+class MainActivity : BaseActivity<ActivityMainBinding, State, Actions, Events, MainActivityViewModel
+    >(), StatusBarController, InternetStateErrorController, BottomNavigationController {
 
-    private var navigationConfig: NavigationUiConfig = NavigationUiConfig()
     private val cicerone: Cicerone<MainAppRouter> by inject(qualifier = named("CiceroneMainApp"))
     override val viewModel by viewModel<MainActivityViewModel>()
-    private var doubleBackToExitPressedOnce = false
 
     private val heightBottomNavigation: Float by lazy {
         resources.getDimension(com.wiki.cf_ui.R.dimen.bottom_navigation_height)
@@ -91,8 +85,6 @@ class MainActivity : BaseActivity<
                 else -> false
             }
         }
-
-        binding.btnBack.setOnClickListener { onBackPressed() }
     }
 
     override fun renderState(state: State) {
@@ -120,60 +112,7 @@ class MainActivity : BaseActivity<
         }
     }
 
-    override fun setNavigationUiConfig(config: NavigationUiConfig) {
-        navigationConfig = config
-        setupToolbar(config)
-    }
-
-    override fun getNavigationUiConfig(): NavigationUiConfig {
-        return navigationConfig
-    }
-
-    private fun setupToolbar(navigationConfig: NavigationUiConfig) {
-        clearMenu(navigationConfig.toolbarConfig.menuItem)
-        binding.btnBack.isVisible = navigationConfig.isVisibleBackButton
-        setBackgroundColor(navigationConfig.colorBackground)
-        setToolbarVisible(navigationConfig.isVisibleToolbar)
-        setToolbarInfo(navigationConfig.toolbarConfig)
-        setBottomNavigationBarVisible(navigationConfig.isVisibleBottomNavigation)
-    }
-
-    private fun clearMenu(menuItem: List<MenuItem>) {
-        binding.btnSearch.isVisible = menuItem.any { it.menuType == MenuType.SEARCH }
-    }
-
-    private fun setToolbarInfo(toolbarConfig: ToolbarConfig) {
-        when (toolbarConfig.toolbarType) {
-            is ToolbarType.Simple -> {
-                with(binding.tvTitle) {
-                    isVisible = true
-                    text = toolbarConfig.title
-                    isAllCaps = toolbarConfig.isTextAllCaps
-                }
-            }
-        }
-
-        toolbarConfig.menuItem.forEach { menuItem ->
-            when (menuItem.menuType) {
-                MenuType.SEARCH -> {
-                    binding.btnSearch.setOnClickListener {
-                        menuItem.clickListener()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setToolbarVisible(isVisible: Boolean) {
-        binding.toolbar.isVisible = isVisible
-        binding.divider.isVisible = isVisible
-    }
-
-    private fun setBackgroundColor(@ColorRes color: Int) {
-        binding.root.setBackgroundColor(getColor(color))
-    }
-
-    private fun setBottomNavigationBarVisible(isVisible: Boolean) {
+    override fun setBottomNavigationBarVisible(isVisible: Boolean) {
         binding.bottomNavigation.isVisible = isVisible
         if (isVisible) {
             binding.navHostFragment.updatePadding(bottom = heightBottomNavigation.toInt())

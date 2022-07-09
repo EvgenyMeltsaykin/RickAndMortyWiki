@@ -1,7 +1,5 @@
 package com.wiki.f_detail_character
 
-import android.graphics.Color
-import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
 import androidx.core.view.isVisible
@@ -10,7 +8,6 @@ import by.kirich1409.viewbindingdelegate.CreateMethod
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.transition.MaterialContainerTransform
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.fragment.BaseFragment
@@ -20,8 +17,6 @@ import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.navigation.routes.DetailCharacterRoute
 import com.wiki.cf_data.LifeStatus
 import com.wiki.cf_extensions.getDrawable
-import com.wiki.cf_ui.controllers.NavigationUiConfig
-import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.cf_ui.extensions.blurMask
 import com.wiki.cf_ui.extensions.setTextOrGone
 import com.wiki.f_detail_character.DetailCharacterScreenFeature.*
@@ -34,13 +29,14 @@ import org.koin.core.parameter.parametersOf
 
 class DetailCharacterFragment : BaseFragment<State, Actions, Events, DetailCharacterViewModel, DetailCharacterRoute>() {
 
-    override val binding: FragmentDetailCharacterBinding by viewBinding(CreateMethod.INFLATE)
-
     companion object {
         fun newInstance(route: DetailCharacterRoute) = DetailCharacterFragment().apply {
             this.route = route
         }
     }
+
+    override val binding: FragmentDetailCharacterBinding by viewBinding(CreateMethod.INFLATE)
+    override val viewModel: DetailCharacterViewModel by viewModel { parametersOf(route.character) }
 
     private val episodeAdapter = AsyncListDifferDelegationAdapter(
         getGeneralAdaptersDiffCallback(),
@@ -51,19 +47,6 @@ class DetailCharacterFragment : BaseFragment<State, Actions, Events, DetailChara
                 )
             )
     )
-
-    override val viewModel: DetailCharacterViewModel by viewModel { parametersOf(route.character) }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setupTransition()
-    }
-
-    private fun setupTransition() {
-        val transform = MaterialContainerTransform()
-        transform.scrimColor = Color.TRANSPARENT
-        sharedElementEnterTransition = transform
-    }
 
     override fun renderState(state: State) {
         with(binding) {
@@ -123,6 +106,9 @@ class DetailCharacterFragment : BaseFragment<State, Actions, Events, DetailChara
             tvLastLocation.setOnClickListener {
                 viewModel.sendEvent(Events.OnLastKnownLocation)
             }
+            btnBack.setOnClickListener {
+                viewModel.sendEvent(Events.OnCloseClick)
+            }
         }
     }
 
@@ -149,19 +135,6 @@ class DetailCharacterFragment : BaseFragment<State, Actions, Events, DetailChara
         when (action) {
 
         }
-    }
-
-    override fun bindNavigationUi() {
-        setNavigationUiConfig(
-            NavigationUiConfig(
-                isVisibleToolbar = true,
-                isVisibleBackButton = true,
-                isVisibleBottomNavigation = true,
-                toolbarConfig = ToolbarConfig(
-                    title = getString(R.string.detail_character_toolbar_title)
-                )
-            )
-        )
     }
 
 }

@@ -11,10 +11,6 @@ import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.navigation.routes.EpisodeListRoute
 import com.wiki.cf_extensions.pagination
-import com.wiki.cf_ui.controllers.MenuItem
-import com.wiki.cf_ui.controllers.MenuType
-import com.wiki.cf_ui.controllers.NavigationUiConfig
-import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_general_adapter.GeneralAdapterUi
 import com.wiki.f_general_adapter.getEpisodeAdapter
 import com.wiki.f_general_adapter.getGeneralAdaptersDiffCallback
@@ -24,15 +20,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EpisodeListFragment : BaseFragment<State, Actions, Events, EpisodeListViewModel, EpisodeListRoute>() {
 
-    override val binding: FragmentEpisodeListBinding by viewBinding(CreateMethod.INFLATE)
-
     companion object {
-        fun newInstance(route: EpisodeListRoute): EpisodeListFragment =
+        fun newInstance(route: EpisodeListRoute) =
             EpisodeListFragment().apply {
                 this.route = route
             }
     }
 
+    override val binding: FragmentEpisodeListBinding by viewBinding(CreateMethod.INFLATE)
     override val viewModel: EpisodeListViewModel by viewModel()
 
     private val episodeAdapter = AsyncListDifferDelegationAdapter(
@@ -79,34 +74,16 @@ class EpisodeListFragment : BaseFragment<State, Actions, Events, EpisodeListView
             refresh.setOnRefreshListener {
                 viewModel.sendEvent(Events.OnRefresh)
             }
+
+            btnSearch.setOnClickListener {
+                viewModel.sendEvent(Events.OnSearchClick)
+            }
         }
     }
 
     override fun bindActions(action: Actions) {
         when (action) {
-
         }
-    }
-
-    override fun bindNavigationUi() {
-        setNavigationUiConfig(
-            NavigationUiConfig(
-                isVisibleBottomNavigation = true,
-                isVisibleToolbar = true,
-                isVisibleBackButton = false,
-                toolbarConfig = ToolbarConfig(
-                    title = getString(R.string.episodes_toolbar_title),
-                    menuItem = listOf(
-                        MenuItem(
-                            menuType = MenuType.SEARCH,
-                            clickListener = {
-                                viewModel.sendEvent(Events.OnSearchClick)
-                            }
-                        )
-                    )
-                )
-            )
-        )
     }
 
     override fun onBackPressed(): Boolean {

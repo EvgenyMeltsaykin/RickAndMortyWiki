@@ -5,59 +5,57 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import by.kirich1409.viewbindingdelegate.CreateMethod
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Navigator
 import com.wiki.cf_core.R
 import com.wiki.cf_core.databinding.FragmentTabContainerBinding
+import com.wiki.cf_core.delegates.fragmentArgument
+import com.wiki.cf_core.navigation.animation_transitions.tabTransaction
 import org.koin.android.ext.android.inject
 
-class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener, UiControl {
-
-    private var _binding: FragmentTabContainerBinding? = null
-    private val binding: FragmentTabContainerBinding
-        get() = _binding!!
-
-    private val screensProvider: ScreenProvider by inject()
+class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener {
 
     companion object {
-        private const val TAB_KEY = "TAB_KEY"
         fun newInstance(tabKey: TabKey) = NavigationTabFragment().apply {
-            arguments = Bundle().apply {
-                putSerializable(TAB_KEY, tabKey)
-            }
+            this.tabKey = tabKey
         }
     }
 
-    private val navigator: Navigator by lazy {
-        FragmentAppNavigator(
-            requireActivity(),
-            R.id.ftc_container,
-            childFragmentManager
-        )
-    }
+    private var tabKey: TabKey by fragmentArgument()
 
-    private val fragment
-        get() = childFragmentManager.findFragmentById(binding.ftcContainer.id)
-
+    private val binding: FragmentTabContainerBinding by viewBinding(CreateMethod.INFLATE)
+    private val screensProvider: ScreenProvider by inject()
     private val navigationTabHolder: NavigationTabHolder by inject()
-
-    private val tabKey: TabKey
-        get() = requireArguments().getSerializable(TAB_KEY) as TabKey
 
     private val cicerone: Cicerone<FragmentRouter>
         get() = navigationTabHolder.getCicerone(tabKey)
     override val router: FragmentRouter
         get() = cicerone.router
 
+    private val navigator: Navigator by lazy {
+        FragmentAppNavigator(
+            activity = requireActivity(),
+            containerId = R.id.ftc_container,
+            fragmentManager = childFragmentManager
+        )
+    }
+
+    private val fragment get() = childFragmentManager.findFragmentById(binding.ftcContainer.id)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        tabTransaction()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentTabContainerBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (childFragmentManager.findFragmentById(binding.ftcContainer.id) == null) {
-            println("1234 NavigationTabFragment onViewCreated")
             router.replace(screensProvider.TabFragment(tabKey))
         }
     }
@@ -75,10 +73,5 @@ class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener,
     override fun onBackPressed(): Boolean {
         return (fragment as? OnBackPressedListener)?.onBackPressed() ?: false
     }
-
-    override fun bindNavigationUi() {
-        (fragment.takeIf { it != null && it is UiControl } as? UiControl)?.bindNavigationUi()
-    }
-
 
 }

@@ -8,6 +8,8 @@ class SearchRoute(
     val feature: SearchFeature
 ) : FragmentRoute() {
 
-    override var routeConfig: RouteConfig = RouteConfig()
+    override var routeConfig: RouteConfig = RouteConfig(
+        isVisibleBottomNavigation = false
+    )
 
 }

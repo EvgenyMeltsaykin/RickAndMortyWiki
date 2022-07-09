@@ -22,12 +22,14 @@ object Versions {
     const val retrofit = "2.9.0"
     const val okhttp = "4.9.3"
     const val delegateAdapter = "4.3.2"
+    const val viewBindingDelegate = "1.5.6"
 }
 
 object Libs {
 
     const val cicerone = "com.github.terrakok:cicerone:${Versions.cicerone}"
     const val splashscreen = "androidx.core:core-splashscreen:${Versions.splashscreen}"
+    const val viewBindingDelegate = "com.github.kirich1409:viewbindingpropertydelegate:1.5.6"
 
     object Firebase {
         const val bom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
