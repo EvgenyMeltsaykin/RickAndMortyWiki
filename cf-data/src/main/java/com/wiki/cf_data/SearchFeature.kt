@@ -6,8 +6,9 @@ enum class SearchFeature(val featureName: String) : Serializable {
     CHARACTER("character"),
     EPISODE("episode"),
     LOCATION("location");
+
+    fun isCharacter(): Boolean = this == CHARACTER
+    fun isEpisode(): Boolean = this == EPISODE
+    fun isLocation(): Boolean = this == LOCATION
 }
 
-fun SearchFeature.isCharacter(): Boolean = this == SearchFeature.CHARACTER
-fun SearchFeature.isEpisode(): Boolean = this == SearchFeature.EPISODE
-fun SearchFeature.isLocation(): Boolean = this == SearchFeature.LOCATION

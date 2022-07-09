@@ -2,7 +2,7 @@ package com.wiki.buildsrc
 
 object Versions {
     const val kotlin = "1.6.21"
-    const val koin = "3.1.6"
+    const val koin = "3.2.0"
     const val firebaseBom = "29.3.1"
     const val cicerone = "7.1"
     const val androidxCore = "1.8.0"

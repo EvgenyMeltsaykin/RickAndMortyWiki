@@ -2,14 +2,14 @@ package com.wiki.f_list_location
 
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
+import by.kirich1409.viewbindingdelegate.CreateMethod
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import com.wiki.cf_core.base.BaseFragment
+import com.wiki.cf_core.base.fragment.BaseFragment
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
-import com.wiki.cf_core.navigation.routes.DetailLocationRoute
 import com.wiki.cf_core.navigation.routes.LocationListRoute
-import com.wiki.cf_core.navigation.routes.SearchRoute
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.MenuItem
 import com.wiki.cf_ui.controllers.MenuType
@@ -22,13 +22,9 @@ import com.wiki.f_list_location.LocationListScreenFeature.*
 import com.wiki.f_list_location.databinding.FragmentLocationListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class LocationListFragment : BaseFragment<
-        FragmentLocationListBinding,
-        State,
-        Effects,
-        Events,
-        LocationListViewModel,
-        LocationListRoute>() {
+class LocationListFragment : BaseFragment<State, Actions, Events, LocationListViewModel, LocationListRoute>() {
+
+    override val binding: FragmentLocationListBinding by viewBinding(CreateMethod.INFLATE)
 
     companion object {
         fun newInstance(route: LocationListRoute): LocationListFragment =
@@ -84,18 +80,9 @@ class LocationListFragment : BaseFragment<
 
     }
 
-    override fun bindEffects(effect: Effects) {
-        when (effect) {
-            is Effects.OnNavigateToLocation -> {
-                val route = DetailLocationRoute(effect.location, null)
-                router.navigateTo(
-                    screenProvider.byRoute(route)
-                )
-            }
-            is Effects.NavigateToSearch -> {
-                val route = SearchRoute(effect.feature)
-                router.navigateTo(screenProvider.byRoute(route))
-            }
+    override fun bindActions(action: Actions) {
+        when (action) {
+
         }
     }
 

@@ -1,14 +1,19 @@
 package com.wiki.f_list_episode
 
 import com.wiki.cf_core.base.BaseViewModel
+import com.wiki.cf_core.navigation.FragmentRouter
+import com.wiki.cf_core.navigation.routes.DetailEpisodeRoute
+import com.wiki.cf_core.navigation.routes.SearchRoute
+import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_network.util.pagination.DefaultPaginator
 import com.wiki.f_list_episode.EpisodeListScreenFeature.*
 import com.wiki.i_episode.use_cases.GetAllEpisodesUseCase
 import kotlinx.coroutines.flow.map
 
 class EpisodeListViewModel(
+    private val router: FragmentRouter,
     private val getAllEpisodesUseCase: GetAllEpisodesUseCase
-) : BaseViewModel<State, Effects,Events>(State()) {
+) : BaseViewModel<State, Actions, Events>(State()) {
 
     private val pagination = DefaultPaginator(
         initialKey = state.page,
@@ -50,16 +55,22 @@ class EpisodeListViewModel(
     }
 
     override fun bindEvents(event: Events) {
-        when(event){
+        when (event) {
             is Events.LoadNextPage -> loadNextPage()
             is Events.OnRefresh -> onRefresh()
-            is Events.OnSearchClick -> setEffect {
-                Effects.NavigateToSearch()
-            }
-            is Events.OnEpisodeClick ->setEffect{
-                Effects.OnNavigateToEpisode(event.episode)
-            }
+            is Events.OnSearchClick -> onSearchClick()
+            is Events.OnEpisodeClick -> onEpisodeClick(event)
         }
+    }
+
+    private fun onSearchClick() {
+        val route = SearchRoute(SearchFeature.EPISODE)
+        router.navigateTo(route)
+    }
+
+    private fun onEpisodeClick(event: Events.OnEpisodeClick) {
+        val route = DetailEpisodeRoute(event.episode)
+        router.navigateTo(route)
     }
 
     private fun loadNextPage() {

@@ -2,14 +2,14 @@ package com.wiki.f_list_episode
 
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
+import by.kirich1409.viewbindingdelegate.CreateMethod
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import com.wiki.cf_core.base.BaseFragment
+import com.wiki.cf_core.base.fragment.BaseFragment
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
-import com.wiki.cf_core.navigation.routes.DetailEpisodeRoute
 import com.wiki.cf_core.navigation.routes.EpisodeListRoute
-import com.wiki.cf_core.navigation.routes.SearchRoute
 import com.wiki.cf_extensions.pagination
 import com.wiki.cf_ui.controllers.MenuItem
 import com.wiki.cf_ui.controllers.MenuType
@@ -22,13 +22,9 @@ import com.wiki.f_list_episode.EpisodeListScreenFeature.*
 import com.wiki.f_list_episode.databinding.FragmentEpisodeListBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class EpisodeListFragment : BaseFragment<
-        FragmentEpisodeListBinding,
-        State,
-        Effects,
-        Events,
-        EpisodeListViewModel,
-        EpisodeListRoute>() {
+class EpisodeListFragment : BaseFragment<State, Actions, Events, EpisodeListViewModel, EpisodeListRoute>() {
+
+    override val binding: FragmentEpisodeListBinding by viewBinding(CreateMethod.INFLATE)
 
     companion object {
         fun newInstance(route: EpisodeListRoute): EpisodeListFragment =
@@ -86,16 +82,9 @@ class EpisodeListFragment : BaseFragment<
         }
     }
 
-    override fun bindEffects(effect: Effects) {
-        when (effect) {
-            is Effects.OnNavigateToEpisode -> {
-                val route = DetailEpisodeRoute(effect.episode)
-                router.navigateTo(screenProvider.byRoute(route))
-            }
-            is Effects.NavigateToSearch -> {
-                val route = SearchRoute(effect.feature)
-                router.navigateTo(screenProvider.byRoute(route))
-            }
+    override fun bindActions(action: Actions) {
+        when (action) {
+
         }
     }
 

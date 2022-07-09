@@ -3,12 +3,13 @@ package com.wiki.f_detail_location
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
+import by.kirich1409.viewbindingdelegate.CreateMethod
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import com.wiki.cf_core.base.BaseFragment
+import com.wiki.cf_core.base.fragment.BaseFragment
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
-import com.wiki.cf_core.navigation.routes.DetailCharacterRoute
 import com.wiki.cf_core.navigation.routes.DetailLocationRoute
 import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.cf_ui.controllers.ToolbarConfig
@@ -20,13 +21,9 @@ import com.wiki.f_general_adapter.getGeneralAdaptersDiffCallback
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class DetailLocationFragment : BaseFragment<
-        FragmentDetailLocationBinding,
-        State,
-        Effects,
-        Events,
-        DetailLocationViewModel,
-        DetailLocationRoute>() {
+class DetailLocationFragment : BaseFragment<State, Actions, Events, DetailLocationViewModel, DetailLocationRoute>() {
+
+    override val binding: FragmentDetailLocationBinding by viewBinding(CreateMethod.INFLATE)
 
     companion object {
         fun newInstance(route: DetailLocationRoute) = DetailLocationFragment().apply {
@@ -35,10 +32,7 @@ class DetailLocationFragment : BaseFragment<
     }
 
     override val viewModel: DetailLocationViewModel by viewModel {
-        parametersOf(
-            route.location,
-            route.locationData
-        )
+        parametersOf(route.location, route.locationData)
     }
 
     private val characterAdapter = AsyncListDifferDelegationAdapter(
@@ -83,12 +77,8 @@ class DetailLocationFragment : BaseFragment<
         }
     }
 
-    override fun bindEffects(effect: Effects) {
-        when (effect) {
-            is Effects.OnNavigateToCharacter -> {
-                val route = DetailCharacterRoute(effect.character)
-                router.navigateTo(screenProvider.byRoute(route))
-            }
+    override fun bindActions(action: Actions) {
+        when (action) {
         }
     }
 

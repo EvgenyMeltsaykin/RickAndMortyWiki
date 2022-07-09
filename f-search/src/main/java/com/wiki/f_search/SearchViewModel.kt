@@ -3,6 +3,10 @@ package com.wiki.f_search
 import com.wiki.cf_core.base.BaseViewModel
 import com.wiki.cf_core.extensions.convertToList
 import com.wiki.cf_core.extensions.isNeededClass
+import com.wiki.cf_core.navigation.FragmentRouter
+import com.wiki.cf_core.navigation.routes.DetailCharacterRoute
+import com.wiki.cf_core.navigation.routes.DetailEpisodeRoute
+import com.wiki.cf_core.navigation.routes.DetailLocationRoute
 import com.wiki.cf_data.CharacterDto
 import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_data.LocationDto
@@ -21,11 +25,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 
 class SearchViewModel(
+    private val router: FragmentRouter,
     private val feature: SearchFeature,
     private val getCharactersByNameUseCase: GetCharactersByNameUseCase,
     private val getEpisodesByNameUseCase: GetEpisodesByNameUseCase,
     private val getLocationsByNameUseCase: GetLocationsByNameUseCase
-) : BaseViewModel<State, Effects, Events>(
+) : BaseViewModel<State, Actions, Events>(
     State(feature = feature)
 ) {
     companion object {
@@ -166,20 +171,27 @@ class SearchViewModel(
     override fun bindEvents(event: Events) {
         when (event) {
             is Events.LoadNextPage -> loadNextPage()
-            is Events.OnCharacterClick -> setEffect {
-                Effects.OnNavigateToCharacter(event.character)
-            }
-            is Events.OnEpisodeClick -> setEffect {
-                Effects.OnNavigateToEpisode(event.episode)
-            }
-            is Events.OnLocationClick -> setEffect {
-                Effects.OnNavigateToLocation(event.location)
-            }
-            is Events.OnBackClick -> setEffect {
-                Effects.OnNavigateToBack
-            }
+            is Events.OnCharacterClick -> onCharacterClick(event)
+            is Events.OnEpisodeClick -> onEpisodeClick(event)
+            is Events.OnLocationClick -> onLocationClick(event)
+            is Events.OnBackClick -> router.back()
             is Events.OnChangeSearchText -> onChangeSearchText(event.text)
         }
+    }
+
+    private fun onCharacterClick(event: Events.OnCharacterClick) {
+        val route = DetailCharacterRoute(event.character)
+        router.navigateTo(route)
+    }
+
+    private fun onEpisodeClick(event: Events.OnEpisodeClick) {
+        val route = DetailEpisodeRoute(event.episode)
+        router.navigateTo(route)
+    }
+
+    private fun onLocationClick(event: Events.OnLocationClick) {
+        val route = DetailLocationRoute(event.location, null)
+        router.navigateTo(route)
     }
 
 }

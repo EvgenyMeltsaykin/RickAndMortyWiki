@@ -32,10 +32,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.qualifier.named
 
 class MainActivity : BaseActivity<
-        ActivityMainBinding,
-        State, Effects, Events,
-        MainActivityViewModel
-        >(), NavigationUiControl, StatusBarController,
+    ActivityMainBinding,
+    State, Actions, Events,
+    MainActivityViewModel
+    >(), NavigationUiControl, StatusBarController,
     InternetStateErrorController {
 
     private var navigationConfig: NavigationUiConfig = NavigationUiConfig()
@@ -62,7 +62,7 @@ class MainActivity : BaseActivity<
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        subscribeEffects()
+        subscribeActions()
         subscribeState()
         viewModel.viewModelScope.launch(Dispatchers.Main) {
             bindBaseEvent()
@@ -71,7 +71,7 @@ class MainActivity : BaseActivity<
         renderState(viewModel.stateFlow.value)
     }
 
-    override fun bindEffects(effect: Effects) { }
+    override fun bindActions(action: Actions) {}
 
     override fun initView() {
         binding.bottomNavigation.setOnItemSelectedListener { menuItem ->

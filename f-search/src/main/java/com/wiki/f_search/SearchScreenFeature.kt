@@ -1,6 +1,6 @@
 package com.wiki.f_search
 
-import com.wiki.cf_core.base.EffectScreen
+import com.wiki.cf_core.base.ActionScreen
 import com.wiki.cf_core.base.EventScreen
 import com.wiki.cf_core.base.StateScreen
 import com.wiki.cf_data.CharacterDto
@@ -20,12 +20,7 @@ class SearchScreenFeature {
         data class OnChangeSearchText(val text: String) : Events()
     }
 
-    sealed class Effects : EffectScreen {
-        data class OnNavigateToCharacter(val character: CharacterDto) : Effects()
-        data class OnNavigateToEpisode(val episode: EpisodeDto) : Effects()
-        data class OnNavigateToLocation(val location: LocationDto) : Effects()
-        object OnNavigateToBack : Effects()
-    }
+    sealed class Actions : ActionScreen {}
 
     data class State(
         val feature: SearchFeature,

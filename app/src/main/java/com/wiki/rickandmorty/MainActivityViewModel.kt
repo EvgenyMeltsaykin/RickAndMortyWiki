@@ -1,16 +1,16 @@
 package com.wiki.rickandmorty
 
 import com.wiki.cf_core.base.BaseViewModel
-import com.wiki.cf_core.utils.safePostDelay
 import com.wiki.cf_core.navigation.TabKey
 import com.wiki.cf_core.navigation.main.MainAppRouter
 import com.wiki.cf_core.utils.StringProvider
+import com.wiki.cf_core.utils.safePostDelay
 import com.wiki.rickandmorty.MainActivityScreenFeature.*
 
 class MainActivityViewModel(
-    private val router:MainAppRouter,
+    private val router: MainAppRouter,
     private val stringProvider: StringProvider
-) : BaseViewModel<State,Effects, Events>(
+) : BaseViewModel<State, Actions, Events>(
     State(
         selectedTab = TabKey.CHARACTERS
     )
@@ -18,8 +18,8 @@ class MainActivityViewModel(
     private var doubleBackToExitPressedOnce = false
 
     override fun bindEvents(event: Events) {
-        when(event){
-            is Events.OnTabClick ->{
+        when (event) {
+            is Events.OnTabClick -> {
                 router.changeTab(event.tabKey)
             }
             is Events.OnBackPress ->{
