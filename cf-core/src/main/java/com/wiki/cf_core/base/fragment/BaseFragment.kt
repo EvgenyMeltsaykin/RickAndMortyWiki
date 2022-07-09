@@ -14,14 +14,10 @@ import com.wiki.cf_core.controllers.InternetStateErrorController
 import com.wiki.cf_core.delegates.fragmentArgument
 import com.wiki.cf_core.navigation.OnBackPressedListener
 import com.wiki.cf_core.navigation.RouterProvider
-import com.wiki.cf_core.navigation.UiControl
-import com.wiki.cf_core.navigation.animation_transitions.TransitionType
-import com.wiki.cf_core.navigation.animation_transitions.emptyTransition
-import com.wiki.cf_core.navigation.animation_transitions.simpleTransition
+import com.wiki.cf_core.navigation.animation_transitions.*
 import com.wiki.cf_core.navigation.base.route.BaseRoute
 import com.wiki.cf_network.util.ConnectivityService
-import com.wiki.cf_ui.controllers.NavigationUiConfig
-import com.wiki.cf_ui.controllers.NavigationUiControl
+import com.wiki.cf_ui.controllers.BottomNavigationController
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.android.ext.android.inject
@@ -53,7 +49,7 @@ abstract class BaseFragment<
     >() : BaseScopeFragment(),
     ViewModelProvider<ViewStateFromScreen, ActionsFromScreen, EventsViewModel, ViewModel>,
     ScreenBinder<ActionsFromScreen, ViewStateFromScreen>, RouterProvider,
-    OnBackPressedListener, UiControl, RouteProvider<Route> {
+    OnBackPressedListener, RouteProvider<Route> {
 
     override var route: Route by fragmentArgument()
 
@@ -63,8 +59,8 @@ abstract class BaseFragment<
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bindNavigationUi()
         setTransitions()
+        (activity as? BottomNavigationController)?.setBottomNavigationBarVisible(route.routeConfig.isVisibleBottomNavigation)
     }
 
     private fun subscribeState() {
@@ -83,8 +79,12 @@ abstract class BaseFragment<
 
     private fun setTransitions() {
         when (route.routeConfig.animation) {
-            TransitionType.SIMPLE -> simpleTransition()
-            TransitionType.NONE -> emptyTransition()
+            TransitionType.FADE -> fadeTransaction()
+            TransitionType.MODAL -> modalTransaction()
+            TransitionType.TAB -> tabTransaction()
+            TransitionType.SLIDE -> slideTransaction()
+            TransitionType.SIMPLE -> simpleTransaction()
+            TransitionType.NONE -> emptyTransaction()
         }
     }
 
@@ -93,23 +93,16 @@ abstract class BaseFragment<
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        showInternetError(isVisible = false)
         subscribeState()
         subscribeActions()
         initView()
         super.onViewCreated(view, savedInstanceState)
-        showInternetError(isVisible = false)
         renderState(viewModel.stateFlow.value)
     }
 
     private fun showInternetError(isVisible: Boolean, text: String = "") {
         (requireActivity() as? InternetStateErrorController)?.showInternetError(isVisible, text)
-    }
-
-    private val navigationConfig: NavigationUiConfig
-        get() = (requireActivity() as NavigationUiControl).getNavigationUiConfig()
-
-    protected fun setNavigationUiConfig(navigationUiConfig: NavigationUiConfig) {
-        (requireActivity() as NavigationUiControl).setNavigationUiConfig(navigationUiConfig)
     }
 
     override fun onBackPressed(): Boolean {

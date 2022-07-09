@@ -45,9 +45,7 @@ class DetailCharacterViewModel(
     override fun bindEvents(event: Events) {
         when (event) {
             is Events.OnEpisodeClick -> onEpisodeClick(event)
-            is Events.OnCloseClick -> {
-                router.back()
-            }
+            is Events.OnCloseClick -> router.back()
             is Events.OnOriginLocationClick -> onOriginLocationClick()
             is Events.OnLastKnownLocation -> onLastKnownLocation()
         }

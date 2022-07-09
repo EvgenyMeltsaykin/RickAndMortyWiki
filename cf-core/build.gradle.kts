@@ -13,6 +13,7 @@ dependencies {
     implementation(Libs.Koin.android)
     implementation(Libs.Lifecycle.viewModel)
     implementation(Libs.Lifecycle.runtime)
+    implementation(Libs.viewBindingDelegate)
 
     implementation(projects.cfNetwork)
     implementation(projects.cfData)

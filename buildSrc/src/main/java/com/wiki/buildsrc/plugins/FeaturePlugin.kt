@@ -22,7 +22,7 @@ class FeaturePlugin : BasePlugin() {
                 implementation(Libs.Koin.android)
                 implementation(Libs.cicerone)
                 implementation(Libs.Lifecycle.viewModel)
-                implementation("com.github.kirich1409:viewbindingpropertydelegate:1.5.6")
+                implementation(Libs.viewBindingDelegate)
 
                 implementation(project(":cf-core"))
                 implementation(project(":cf-data"))

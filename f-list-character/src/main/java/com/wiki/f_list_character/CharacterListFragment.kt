@@ -9,10 +9,6 @@ import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.navigation.routes.CharacterListRoute
 import com.wiki.cf_extensions.pagination
-import com.wiki.cf_ui.controllers.MenuItem
-import com.wiki.cf_ui.controllers.MenuType
-import com.wiki.cf_ui.controllers.NavigationUiConfig
-import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_general_adapter.GeneralAdapterUi
 import com.wiki.f_general_adapter.getCharacterAdapter
 import com.wiki.f_general_adapter.getGeneralAdaptersDiffCallback
@@ -22,8 +18,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CharacterListFragment : BaseFragment<State, Actions, Events, CharacterListViewModel, CharacterListRoute>() {
 
-    override val binding: FragmentCharacterListBinding by viewBinding(CreateMethod.INFLATE)
-
     companion object {
         fun newInstance(route: CharacterListRoute): CharacterListFragment =
             CharacterListFragment().apply {
@@ -31,6 +25,7 @@ class CharacterListFragment : BaseFragment<State, Actions, Events, CharacterList
             }
     }
 
+    override val binding: FragmentCharacterListBinding by viewBinding(CreateMethod.INFLATE)
     override val viewModel: CharacterListViewModel by viewModel()
 
     private val characterAdapter = AsyncListDifferDelegationAdapter(
@@ -70,6 +65,9 @@ class CharacterListFragment : BaseFragment<State, Actions, Events, CharacterList
             refresh.setOnRefreshListener {
                 viewModel.sendEvent(Events.OnRefresh)
             }
+            btnSearch.setOnClickListener {
+                viewModel.sendEvent(Events.OnSearchClick)
+            }
         }
     }
 
@@ -77,27 +75,6 @@ class CharacterListFragment : BaseFragment<State, Actions, Events, CharacterList
         when (action) {
 
         }
-    }
-
-    override fun bindNavigationUi() {
-        setNavigationUiConfig(
-            NavigationUiConfig(
-                isVisibleBottomNavigation = true,
-                isVisibleToolbar = true,
-                isVisibleBackButton = false,
-                toolbarConfig = ToolbarConfig(
-                    title = getString(R.string.characters_toolbar_title),
-                    menuItem = listOf(
-                        MenuItem(
-                            menuType = MenuType.SEARCH,
-                            clickListener = {
-                                viewModel.sendEvent(Events.OnSearchClick)
-                            }
-                        )
-                    )
-                )
-            )
-        )
     }
 
     override fun onBackPressed(): Boolean {

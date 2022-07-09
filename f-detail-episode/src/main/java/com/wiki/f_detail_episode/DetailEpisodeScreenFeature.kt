@@ -9,6 +9,7 @@ class DetailEpisodeScreenFeature {
 
     sealed class Events : EventScreen {
         data class OnCharacterClick(val character: CharacterDto) : Events()
+        object OnBackClick : Events()
     }
 
     sealed class Actions : ActionScreen {}

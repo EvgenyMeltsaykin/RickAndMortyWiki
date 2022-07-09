@@ -18,7 +18,6 @@ import com.wiki.cf_core.navigation.routes.SearchRoute
 import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_extensions.capitalize
 import com.wiki.cf_extensions.pagination
-import com.wiki.cf_ui.controllers.NavigationUiConfig
 import com.wiki.f_general_adapter.*
 import com.wiki.f_search.SearchScreenFeature.*
 import com.wiki.f_search.databinding.FragmentSearchBinding
@@ -27,16 +26,16 @@ import org.koin.core.parameter.parametersOf
 
 class SearchFragment : BaseFragment<State, Actions, Events, SearchViewModel, SearchRoute>() {
 
-    override val binding: FragmentSearchBinding by viewBinding(CreateMethod.INFLATE)
-
     companion object {
         fun newInstance(route: SearchRoute) = SearchFragment().apply {
             this.route = route
         }
 
         private const val HIDE_KEYBOARD_ON_SCROLL_THRESHOLD = 10
-
     }
+
+    override val binding: FragmentSearchBinding by viewBinding(CreateMethod.INFLATE)
+    override val viewModel: SearchViewModel by viewModel { parametersOf(route.feature) }
 
     private val searchAdapter = AsyncListDifferDelegationAdapter(
         getGeneralAdaptersDiffCallback(),
@@ -65,11 +64,9 @@ class SearchFragment : BaseFragment<State, Actions, Events, SearchViewModel, Sea
             )
     )
 
-    override val viewModel: SearchViewModel by viewModel { parametersOf(route.feature) }
-
     override fun renderState(state: State) {
         with(binding) {
-            rvResult.performIfChanged(state.searchResultUi){ results->
+            rvResult.performIfChanged(state.searchResultUi) { results ->
                 searchAdapter.items = results
             }
 
@@ -128,18 +125,10 @@ class SearchFragment : BaseFragment<State, Actions, Events, SearchViewModel, Sea
     }
 
     override fun bindActions(action: Actions) {
-        binding.etSearch.hideKeyboard()
         when (action) {
+
         }
     }
 
-    override fun bindNavigationUi() {
-        setNavigationUiConfig(
-            NavigationUiConfig(
-                isVisibleBottomNavigation = false,
-                isVisibleToolbar = false
-            )
-        )
-    }
 }
 

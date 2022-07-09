@@ -11,8 +11,6 @@ import com.wiki.cf_core.base.fragment.BaseFragment
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.navigation.routes.DetailEpisodeRoute
-import com.wiki.cf_ui.controllers.NavigationUiConfig
-import com.wiki.cf_ui.controllers.ToolbarConfig
 import com.wiki.f_detail_episode.DetailEpisodeScreenFeature.*
 import com.wiki.f_detail_episode.databinding.FragmentDetailEpisodeBinding
 import com.wiki.f_general_adapter.GeneralAdapterUi
@@ -23,14 +21,13 @@ import org.koin.core.parameter.parametersOf
 
 class DetailEpisodeFragment : BaseFragment<State, Actions, Events, DetailEpisodeViewModel, DetailEpisodeRoute>() {
 
-    override val binding: FragmentDetailEpisodeBinding by viewBinding(CreateMethod.INFLATE)
-
     companion object {
         fun newInstance(route: DetailEpisodeRoute) = DetailEpisodeFragment().apply {
             this.route = route
         }
     }
 
+    override val binding: FragmentDetailEpisodeBinding by viewBinding(CreateMethod.INFLATE)
     override val viewModel: DetailEpisodeViewModel by viewModel { parametersOf(route.episode) }
 
     private val characterAdapter = AsyncListDifferDelegationAdapter(
@@ -76,25 +73,15 @@ class DetailEpisodeFragment : BaseFragment<State, Actions, Events, DetailEpisode
                     LinearLayout.VERTICAL
                 )
             )
+            btnBack.setOnClickListener {
+                viewModel.sendEvent(Events.OnBackClick)
+            }
         }
     }
 
     override fun bindActions(action: Actions) {
         when (action) {
         }
-    }
-
-    override fun bindNavigationUi() {
-        setNavigationUiConfig(
-            NavigationUiConfig(
-                isVisibleToolbar = true,
-                isVisibleBackButton = true,
-                isVisibleBottomNavigation = true,
-                toolbarConfig = ToolbarConfig(
-                    title = getString(R.string.detail_episode_toolbar_title)
-                )
-            )
-        )
     }
 
 }

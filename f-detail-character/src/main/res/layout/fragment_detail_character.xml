@@ -4,154 +4,206 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="16dp"
-    android:paddingTop="16dp"
     android:transitionGroup="true"
     app:layoutDescription="@xml/fragment_detail_character_scene">
 
-    <ImageView
-        android:id="@+id/iv_preview"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_character_name"
-        style="@style/Text.Montserrat_R_22"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:minHeight="80dp"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_preview"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Rick" />
-
-    <LinearLayout
-        android:id="@+id/ll_short_info"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:baselineAligned="false"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:elevation="2dp"
         android:orientation="horizontal"
+        android:paddingVertical="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_character_name">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/ll_status_with_icon"
+        <ImageButton
+            android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:background="@null"
+            android:padding="10dp"
+            android:src="@drawable/ic_arrow_back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/iv_status"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_circle_gray" />
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/Text.Montserrat_R_22"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:elevation="2dp"
+            android:gravity="center"
+            android:paddingStart="24dp"
+            android:text="@string/detail_character_toolbar_title"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <ImageView
+            android:id="@+id/iv_preview"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_character_name"
+            style="@style/Text.Montserrat_R_22"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="80dp"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_preview"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Rick" />
+
+        <LinearLayout
+            android:id="@+id/ll_short_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_character_name">
 
             <LinearLayout
-                android:id="@+id/ll_status"
+                android:id="@+id/ll_status_with_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-                <com.wiki.cf_ui.custom_view.TwoRowTextView
-                    android:id="@+id/tv_status"
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/iv_status"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_circle_gray" />
+
+                <LinearLayout
+                    android:id="@+id/ll_status"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:firstRowText="@string/detail_character_status"
-                    app:rowTextSize="18sp"
-                    tools:secondRowText="Alive" />
+                    android:layout_marginStart="4dp"
+                    android:orientation="vertical">
+
+                    <com.wiki.cf_ui.custom_view.TwoRowTextView
+                        android:id="@+id/tv_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:firstRowText="@string/detail_character_status"
+                        app:rowTextSize="18sp"
+                        tools:secondRowText="Alive" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
+            <com.wiki.cf_ui.custom_view.TwoRowTextView
+                android:id="@+id/tv_species"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                app:firstRowText="@string/detail_character_species"
+                app:rowTextSize="18sp"
+                tools:secondRowText="Human" />
+
+            <com.wiki.cf_ui.custom_view.TwoRowTextView
+                android:id="@+id/tv_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                app:firstRowText="@string/detail_character_gender"
+                app:rowTextSize="18sp"
+                tools:secondRowText="Male" />
+
         </LinearLayout>
 
-        <com.wiki.cf_ui.custom_view.TwoRowTextView
-            android:id="@+id/tv_species"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            app:firstRowText="@string/detail_character_species"
-            app:rowTextSize="18sp"
-            tools:secondRowText="Human" />
+        <LinearLayout
+            android:id="@+id/ll_full_info"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_short_info">
 
-        <com.wiki.cf_ui.custom_view.TwoRowTextView
-            android:id="@+id/tv_gender"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            app:firstRowText="@string/detail_character_gender"
-            app:rowTextSize="18sp"
-            tools:secondRowText="Male" />
+            <com.wiki.cf_ui.custom_view.TwoRowTextView
+                android:id="@+id/tv_first_seen_in_episode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:firstRowText="@string/detail_character_first_seen_in_episode"
+                app:rowTextSize="18sp"
+                tools:secondRowText="Episode" />
 
-    </LinearLayout>
+            <com.wiki.cf_ui.custom_view.TwoRowTextView
+                android:id="@+id/tv_origin_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                app:firstRowText="@string/detail_character_origin_location"
+                app:rowTextSize="18sp"
+                tools:secondRowText="Location" />
 
-    <LinearLayout
-        android:id="@+id/ll_full_info"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_short_info">
+            <com.wiki.cf_ui.custom_view.TwoRowTextView
+                android:id="@+id/tv_last_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                app:firstRowText="@string/detail_character_last_known_location"
+                app:rowTextSize="18sp"
+                tools:secondRowText="Last location" />
 
-        <com.wiki.cf_ui.custom_view.TwoRowTextView
-            android:id="@+id/tv_first_seen_in_episode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:firstRowText="@string/detail_character_first_seen_in_episode"
-            app:rowTextSize="18sp"
-            tools:secondRowText="Episode" />
+            <TextView
+                android:id="@+id/tv_episodes_static"
+                style="@style/Text.Montserrat_SB_22"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:gravity="center"
+                android:text="@string/detail_character_episodes_title"
+                android:textAllCaps="true"
+                android:textColor="@android:color/black" />
 
-        <com.wiki.cf_ui.custom_view.TwoRowTextView
-            android:id="@+id/tv_origin_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            app:firstRowText="@string/detail_character_origin_location"
-            app:rowTextSize="18sp"
-            tools:secondRowText="Location" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_episode"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        <com.wiki.cf_ui.custom_view.TwoRowTextView
-            android:id="@+id/tv_last_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            app:firstRowText="@string/detail_character_last_known_location"
-            app:rowTextSize="18sp"
-            tools:secondRowText="Last location" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_episodes_static"
-            style="@style/Text.Montserrat_SB_22"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
-            android:gravity="center"
-            android:text="@string/detail_character_episodes_title"
-            android:textAllCaps="true"
-            android:textColor="@android:color/black" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_episode"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:nestedScrollingEnabled="false"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
