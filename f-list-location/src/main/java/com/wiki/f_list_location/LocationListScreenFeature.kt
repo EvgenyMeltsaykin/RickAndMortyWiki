@@ -1,24 +1,21 @@
 package com.wiki.f_list_location
 
-import com.wiki.cf_core.base.EffectScreen
+import com.wiki.cf_core.base.ActionScreen
 import com.wiki.cf_core.base.EventScreen
 import com.wiki.cf_core.base.StateScreen
-import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_data.LocationDto
-import com.wiki.cf_data.SearchFeature
 
 class LocationListScreenFeature {
 
     sealed class Events : EventScreen {
-        object LoadNextPage:Events()
-        object OnRefresh:Events()
-        object OnSearchClick:Events()
-        data class OnLocationClick(val location: LocationDto):Events()
+        object LoadNextPage : Events()
+        object OnRefresh : Events()
+        object OnSearchClick : Events()
+        data class OnLocationClick(val location: LocationDto) : Events()
     }
 
-    sealed class Effects : EffectScreen {
-        data class OnNavigateToLocation(val location: LocationDto) : Effects()
-        data class NavigateToSearch(val feature: SearchFeature = SearchFeature.LOCATION) : Effects()
+    sealed class Actions : ActionScreen {
+
     }
 
     data class State(

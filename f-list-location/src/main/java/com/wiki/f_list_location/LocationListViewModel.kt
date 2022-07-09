@@ -1,14 +1,19 @@
 package com.wiki.f_list_location
 
 import com.wiki.cf_core.base.BaseViewModel
+import com.wiki.cf_core.navigation.FragmentRouter
+import com.wiki.cf_core.navigation.routes.DetailLocationRoute
+import com.wiki.cf_core.navigation.routes.SearchRoute
+import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_network.util.pagination.DefaultPaginator
 import com.wiki.f_list_location.LocationListScreenFeature.*
 import com.wiki.i_location.use_cases.GetAllLocationsUseCase
 import kotlinx.coroutines.flow.map
 
 class LocationListViewModel(
+    private val router: FragmentRouter,
     private val getAllLocationsUseCase: GetAllLocationsUseCase
-) : BaseViewModel<State, Effects, Events>(State()) {
+) : BaseViewModel<State, Actions, Events>(State()) {
 
     private val pagination = DefaultPaginator(
         initialKey = state.page,
@@ -50,16 +55,22 @@ class LocationListViewModel(
     }
 
     override fun bindEvents(event: Events) {
-        when(event){
+        when (event) {
             is Events.LoadNextPage -> loadNextPage()
             is Events.OnRefresh -> onRefresh()
-            is Events.OnSearchClick -> setEffect {
-                Effects.NavigateToSearch()
-            }
-            is Events.OnLocationClick ->setEffect{
-                Effects.OnNavigateToLocation(event.location)
-            }
+            is Events.OnSearchClick -> onSearchClick()
+            is Events.OnLocationClick -> onLocationClick(event)
         }
+    }
+
+    private fun onSearchClick() {
+        val route = SearchRoute(SearchFeature.LOCATION)
+        router.navigateTo(route)
+    }
+
+    private fun onLocationClick(event: Events.OnLocationClick) {
+        val route = DetailLocationRoute(event.location, null)
+        router.navigateTo(route)
     }
 
     private fun loadNextPage() {

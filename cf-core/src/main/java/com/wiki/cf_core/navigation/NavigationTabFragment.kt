@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Navigator
-import com.github.terrakok.cicerone.Router
 import com.wiki.cf_core.R
 import com.wiki.cf_core.databinding.FragmentTabContainerBinding
 import org.koin.android.ext.android.inject
@@ -30,7 +29,7 @@ class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener,
     }
 
     private val navigator: Navigator by lazy {
-        CustomAppNavigator(
+        FragmentAppNavigator(
             requireActivity(),
             R.id.ftc_container,
             childFragmentManager
@@ -45,9 +44,9 @@ class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener,
     private val tabKey: TabKey
         get() = requireArguments().getSerializable(TAB_KEY) as TabKey
 
-    private val cicerone: Cicerone<Router>
+    private val cicerone: Cicerone<FragmentRouter>
         get() = navigationTabHolder.getCicerone(tabKey)
-    override val router: Router
+    override val router: FragmentRouter
         get() = cicerone.router
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -58,10 +57,10 @@ class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (childFragmentManager.findFragmentById(binding.ftcContainer.id) == null) {
-            router.replaceScreen(screensProvider.TabFragment(tabKey))
+            println("1234 NavigationTabFragment onViewCreated")
+            router.replace(screensProvider.TabFragment(tabKey))
         }
     }
-
 
     override fun onResume() {
         super.onResume()

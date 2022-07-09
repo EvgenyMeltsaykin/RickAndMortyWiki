@@ -5,17 +5,15 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.CreateMethod
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
-import com.wiki.cf_core.base.BaseFragment
-import com.wiki.cf_core.delegates.fragmentArgument
+import com.wiki.cf_core.base.fragment.BaseFragment
 import com.wiki.cf_core.extensions.hideKeyboard
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.extensions.showKeyboard
-import com.wiki.cf_core.navigation.routes.DetailCharacterRoute
-import com.wiki.cf_core.navigation.routes.DetailEpisodeRoute
-import com.wiki.cf_core.navigation.routes.DetailLocationRoute
 import com.wiki.cf_core.navigation.routes.SearchRoute
 import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_extensions.capitalize
@@ -27,13 +25,9 @@ import com.wiki.f_search.databinding.FragmentSearchBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class SearchFragment : BaseFragment<
-        FragmentSearchBinding,
-        State,
-        Effects,
-        Events,
-        SearchViewModel,
-        SearchRoute>() {
+class SearchFragment : BaseFragment<State, Actions, Events, SearchViewModel, SearchRoute>() {
+
+    override val binding: FragmentSearchBinding by viewBinding(CreateMethod.INFLATE)
 
     companion object {
         fun newInstance(route: SearchRoute) = SearchFragment().apply {
@@ -71,9 +65,7 @@ class SearchFragment : BaseFragment<
             )
     )
 
-    private var feature by fragmentArgument<SearchFeature>()
-
-    override val viewModel: SearchViewModel by viewModel { parametersOf(feature) }
+    override val viewModel: SearchViewModel by viewModel { parametersOf(route.feature) }
 
     override fun renderState(state: State) {
         with(binding) {
@@ -135,27 +127,9 @@ class SearchFragment : BaseFragment<
         return getString(R.string.not_found, feature.featureName.capitalize())
     }
 
-    override fun bindEffects(effect: Effects) {
+    override fun bindActions(action: Actions) {
         binding.etSearch.hideKeyboard()
-        when (effect) {
-            is Effects.OnNavigateToCharacter -> {
-                val route = DetailCharacterRoute(effect.character)
-                router.navigateTo(
-                    screenProvider.byRoute(route)
-                )
-            }
-            is Effects.OnNavigateToEpisode -> {
-                val route = DetailEpisodeRoute(effect.episode)
-                router.navigateTo(screenProvider.byRoute(route))
-            }
-            is Effects.OnNavigateToLocation -> {
-                val route = DetailLocationRoute(effect.location,null)
-                router.navigateTo(
-                    screenProvider.byRoute(route)
-                )
-            }
-            is Effects.OnNavigateToBack -> router.exit()
-
+        when (action) {
         }
     }
 

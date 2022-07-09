@@ -1,21 +1,26 @@
 package com.wiki.f_list_character
 
 import com.wiki.cf_core.base.BaseViewModel
+import com.wiki.cf_core.navigation.FragmentRouter
+import com.wiki.cf_core.navigation.routes.DetailCharacterRoute
+import com.wiki.cf_core.navigation.routes.SearchRoute
+import com.wiki.cf_data.SearchFeature
 import com.wiki.cf_network.util.pagination.DefaultPaginator
 import com.wiki.f_list_character.CharacterListScreenFeature.*
 import com.wiki.i_character.use_cases.GetAllCharactersUseCase
 import kotlinx.coroutines.flow.map
 
 class CharacterListViewModel(
+    private val router: FragmentRouter,
     private val getAllCharactersUseCase: GetAllCharactersUseCase
-) : BaseViewModel<State, Effects, Events>(
+) : BaseViewModel<State, Actions, Events>(
     State()
 ) {
 
     private val pagination = DefaultPaginator(
         initialKey = state.page,
         onLoadUpdated = { isLoading ->
-            renderState{
+            renderState {
                 state.copy(isLoading = isLoading)
             }
         },
@@ -54,16 +59,22 @@ class CharacterListViewModel(
     }
 
     override fun bindEvents(event: Events) {
-        when(event) {
+        when (event) {
             is Events.LoadNextPage -> loadNextPage()
             is Events.OnRefresh -> onRefresh()
-            is Events.OnSearchClick -> setEffect {
-                Effects.NavigateToSearch()
-            }
-            is Events.OnCharacterClick -> setEffect {
-                Effects.NavigateToDetailCharacter(event.character)
-            }
+            is Events.OnSearchClick -> onSearchClick()
+            is Events.OnCharacterClick -> onCharacterClick(event)
         }
+    }
+
+    private fun onSearchClick() {
+        val route = SearchRoute(SearchFeature.CHARACTER)
+        router.navigateTo(route)
+    }
+
+    private fun onCharacterClick(event: Events.OnCharacterClick) {
+        val route = DetailCharacterRoute(event.character)
+        router.navigateTo(route)
     }
 
     private fun loadNextPage() {

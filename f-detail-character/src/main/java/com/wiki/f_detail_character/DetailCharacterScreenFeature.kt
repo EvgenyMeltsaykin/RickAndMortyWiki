@@ -1,27 +1,22 @@
 package com.wiki.f_detail_character
 
-import com.wiki.cf_core.base.EffectScreen
+import com.wiki.cf_core.base.ActionScreen
 import com.wiki.cf_core.base.EventScreen
 import com.wiki.cf_core.base.StateScreen
-import com.wiki.cf_core.navigation.base.BaseRoute
-import com.wiki.cf_core.navigation.base.RouteConfig
 import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_data.LifeStatus
-import com.wiki.cf_data.common.SimpleData
 
 class DetailCharacterScreenFeature {
 
-    sealed class Events: EventScreen {
-        data class OnEpisodeClick(val episodeDto: EpisodeDto): Events()
-        object OnCloseClick:Events()
-        object OnOriginLocationClick:Events()
-        object OnLastKnownLocation:Events()
+    sealed class Events : EventScreen {
+        data class OnEpisodeClick(val episodeDto: EpisodeDto) : Events()
+        object OnCloseClick : Events()
+        object OnOriginLocationClick : Events()
+        object OnLastKnownLocation : Events()
     }
 
-    sealed class Effects : EffectScreen {
-        object OnNavigateBack : Effects()
-        data class NavigateToEpisode(val episode: EpisodeDto) : Effects()
-        data class NavigateToLocation(val locationData: SimpleData) : Effects()
+    sealed class Actions : ActionScreen {
+
     }
 
     data class State(
