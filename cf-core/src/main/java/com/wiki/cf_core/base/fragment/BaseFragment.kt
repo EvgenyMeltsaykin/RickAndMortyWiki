@@ -62,6 +62,7 @@ abstract class BaseFragment<
         setBottomNavigationBarVisible(route.routeConfig.isVisibleBottomNavigation)
         super.onCreate(savedInstanceState)
         setTransitions()
+        (activity as? BottomNavigationController)?.setBottomNavigationBarVisible(route.routeConfig.isVisibleBottomNavigation)
     }
 
     override fun onResume() {
