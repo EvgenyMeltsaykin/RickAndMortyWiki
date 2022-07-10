@@ -12,7 +12,6 @@ import com.github.terrakok.cicerone.Navigator
 import com.wiki.cf_core.R
 import com.wiki.cf_core.databinding.FragmentTabContainerBinding
 import com.wiki.cf_core.delegates.fragmentArgument
-import com.wiki.cf_core.navigation.animation_transitions.tabTransaction
 import org.koin.android.ext.android.inject
 
 class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener {
@@ -43,11 +42,6 @@ class NavigationTabFragment : Fragment(), RouterProvider, OnBackPressedListener 
     }
 
     private val fragment get() = childFragmentManager.findFragmentById(binding.ftcContainer.id)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        tabTransaction()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return binding.root
