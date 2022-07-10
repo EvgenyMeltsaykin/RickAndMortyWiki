@@ -12,6 +12,7 @@ import com.wiki.cf_core.base.EventScreen
 import com.wiki.cf_core.base.StateScreen
 import com.wiki.cf_core.controllers.InternetStateErrorController
 import com.wiki.cf_core.delegates.fragmentArgument
+import com.wiki.cf_core.navigation.NavigationTabFragment
 import com.wiki.cf_core.navigation.OnBackPressedListener
 import com.wiki.cf_core.navigation.RouterProvider
 import com.wiki.cf_core.navigation.animation_transitions.*
@@ -58,9 +59,24 @@ abstract class BaseFragment<
     private val connectivityService: ConnectivityService by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setBottomNavigationBarVisible(route.routeConfig.isVisibleBottomNavigation)
         super.onCreate(savedInstanceState)
         setTransitions()
-        (activity as? BottomNavigationController)?.setBottomNavigationBarVisible(route.routeConfig.isVisibleBottomNavigation)
+    }
+
+    override fun onResume() {
+        if (isCurrentVisibleTabFragment()) {
+            setBottomNavigationBarVisible(route.routeConfig.isVisibleBottomNavigation)
+        }
+        super.onResume()
+    }
+
+    private fun isCurrentVisibleTabFragment(): Boolean {
+        return this.isVisible && parentFragment is NavigationTabFragment && parentFragment?.isVisible == true
+    }
+
+    private fun setBottomNavigationBarVisible(isVisible: Boolean) {
+        (activity as? BottomNavigationController)?.setBottomNavigationBarVisible(isVisible)
     }
 
     private fun subscribeState() {
