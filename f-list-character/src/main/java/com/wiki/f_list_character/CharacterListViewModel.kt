@@ -68,7 +68,7 @@ class CharacterListViewModel(
     }
 
     private fun onSearchClick() {
-        val route = SearchRoute(SearchFeature.CHARACTER)
+        val route = SearchRoute(SearchFeature.ALL)
         router.navigateTo(route)
     }
 

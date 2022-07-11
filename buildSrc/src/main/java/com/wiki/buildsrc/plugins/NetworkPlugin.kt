@@ -21,6 +21,7 @@ class NetworkPlugin : BasePlugin() {
                 implementation(Libs.OkHttp3.okHttp)
                 implementation(Libs.OkHttp3.loggingInterceptor)
                 implementation(Libs.Coroutines.core)
+                api(Libs.Coroutines.android)
 
                 api(Libs.Koin.core)
                 api(Libs.Koin.android)

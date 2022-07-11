@@ -11,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.fragment.BaseFragment
+import com.wiki.cf_core.delegates.adapter.AdapterDelegateItem
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.roundCorners
 import com.wiki.cf_core.extensions.sendEvent
@@ -40,7 +41,7 @@ class DetailCharacterFragment : BaseFragment<State, Actions, Events, DetailChara
 
     private val episodeAdapter = AsyncListDifferDelegationAdapter(
         getGeneralAdaptersDiffCallback(),
-        AdapterDelegatesManager<List<GeneralAdapterUi>>()
+        AdapterDelegatesManager<List<AdapterDelegateItem>>()
             .addDelegate(
                 getEpisodeAdapter(
                     onEpisodeClick = { viewModel.sendEvent(Events.OnEpisodeClick(it)) }

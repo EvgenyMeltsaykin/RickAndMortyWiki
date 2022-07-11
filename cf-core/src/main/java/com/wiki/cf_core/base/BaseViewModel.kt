@@ -52,7 +52,6 @@ abstract class BaseViewModel<
 
     protected fun renderState(builder: () -> ViewStateFromScreen) {
         val newState = builder()
-        println("1234 this $this newState $newState")
         stateFlow.update { newState }
     }
 

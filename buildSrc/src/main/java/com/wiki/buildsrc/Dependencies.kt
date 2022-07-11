@@ -30,6 +30,7 @@ object Libs {
     const val cicerone = "com.github.terrakok:cicerone:${Versions.cicerone}"
     const val splashscreen = "androidx.core:core-splashscreen:${Versions.splashscreen}"
     const val viewBindingDelegate = "com.github.kirich1409:viewbindingpropertydelegate:1.5.6"
+    const val recyclerDecoration = "ru.surfstudio.android:recycler-decorator:1.0.1"
 
     object Firebase {
         const val bom = "com.google.firebase:firebase-bom:${Versions.firebaseBom}"
@@ -63,6 +64,7 @@ object Libs {
 
     object Coroutines {
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutinesCore}"
+        const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutinesCore}"
     }
 
     object Lifecycle {

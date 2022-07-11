@@ -34,7 +34,7 @@ class EpisodeListViewModel(
             items.map { response ->
                 renderState {
                     state.copy(
-                        endReached = response.info.next == null,
+                        endReached = response.info?.next == null,
                         episodes = if (isRefresh) emptyList() else state.episodes
                     )
                 }

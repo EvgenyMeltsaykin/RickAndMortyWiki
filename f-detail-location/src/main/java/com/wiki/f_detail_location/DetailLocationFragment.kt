@@ -8,6 +8,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.fragment.BaseFragment
+import com.wiki.cf_core.delegates.adapter.AdapterDelegateItem
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.navigation.routes.DetailLocationRoute
@@ -34,7 +35,7 @@ class DetailLocationFragment : BaseFragment<State, Actions, Events, DetailLocati
 
     private val characterAdapter = AsyncListDifferDelegationAdapter(
         getGeneralAdaptersDiffCallback(),
-        AdapterDelegatesManager<List<GeneralAdapterUi>>()
+        AdapterDelegatesManager<List<AdapterDelegateItem>>()
             .addDelegate(
                 getCharacterAdapter(
                     onCharacterClick = { character, _ ->

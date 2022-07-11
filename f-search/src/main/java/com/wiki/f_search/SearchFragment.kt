@@ -4,12 +4,14 @@ import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.CreateMethod
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
-import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.fragment.BaseFragment
+import com.wiki.cf_core.delegates.adapter.AdapterDelegateItem
+import com.wiki.cf_core.delegates.adapter.DelegateAdapter
+import com.wiki.cf_core.delegates.adapter.DelegateManager
 import com.wiki.cf_core.extensions.hideKeyboard
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
@@ -20,9 +22,12 @@ import com.wiki.cf_extensions.capitalize
 import com.wiki.cf_extensions.pagination
 import com.wiki.f_general_adapter.*
 import com.wiki.f_search.SearchScreenFeature.*
+import com.wiki.f_search.adapter.getSearchHeaderAdapter
+import com.wiki.f_search.data.SearchItemUi
 import com.wiki.f_search.databinding.FragmentSearchBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import ru.surfstudio.android.recycler.decorator.Decorator
 
 class SearchFragment : BaseFragment<State, Actions, Events, SearchViewModel, SearchRoute>() {
 
@@ -37,37 +42,39 @@ class SearchFragment : BaseFragment<State, Actions, Events, SearchViewModel, Sea
     override val binding: FragmentSearchBinding by viewBinding(CreateMethod.INFLATE)
     override val viewModel: SearchViewModel by viewModel { parametersOf(route.feature) }
 
-    private val searchAdapter = AsyncListDifferDelegationAdapter(
+    private val characterDelegateAdapter = getCharacterAdapter(
+        onCharacterClick = { character, _ ->
+            viewModel.sendEvent(Events.OnCharacterClick(character))
+        }
+    )
+    private val episodeDelegateAdapter = getEpisodeAdapter(
+        horizontalPadding = 16,
+        onEpisodeClick = {
+            viewModel.sendEvent(Events.OnEpisodeClick(it))
+        }
+    )
+
+    private val locationDelegateAdapter = getLocationAdapter(
+        onLocationClick = {
+            viewModel.sendEvent(Events.OnLocationClick(it))
+        }
+    )
+
+    private val searchDelegateAdapter = getSearchHeaderAdapter()
+
+    private val searchAdapter = DelegateAdapter(
         getGeneralAdaptersDiffCallback(),
-        AdapterDelegatesManager<List<GeneralAdapterUi>>()
-            .addDelegate(
-                getCharacterAdapter(
-                    onCharacterClick = { character, _ ->
-                        viewModel.sendEvent(Events.OnCharacterClick(character))
-                    }
-                )
-            )
-            .addDelegate(
-                getEpisodeAdapter(
-                    horizontalPadding = 16,
-                    onEpisodeClick = {
-                        viewModel.sendEvent(Events.OnEpisodeClick(it))
-                    }
-                )
-            )
-            .addDelegate(
-                getLocationAdapter(
-                    onLocationClick = {
-                        viewModel.sendEvent(Events.OnLocationClick(it))
-                    }
-                )
-            )
+        DelegateManager<List<AdapterDelegateItem>>()
+            .addDelegate(characterDelegateAdapter)
+            .addDelegate(episodeDelegateAdapter)
+            .addDelegate(locationDelegateAdapter)
+            .addDelegate(searchDelegateAdapter)
     )
 
     override fun renderState(state: State) {
         with(binding) {
             rvResult.performIfChanged(state.searchResultUi) { results ->
-                searchAdapter.items = results
+                searchAdapter.setItems(results)
             }
 
             etSearch.performIfChanged(state.feature) {
@@ -77,8 +84,8 @@ class SearchFragment : BaseFragment<State, Actions, Events, SearchViewModel, Sea
             tvNotFound.performIfChanged(state.feature, state.isVisibleNotFound) { feature, isVisible ->
                 text = getNotFoundText(feature)
                 this.isVisible = isVisible
-
             }
+
         }
     }
 
@@ -91,12 +98,37 @@ class SearchFragment : BaseFragment<State, Actions, Events, SearchViewModel, Sea
                     LinearLayout.VERTICAL
                 )
             )
+            rvResult.addItemDecoration(buildDecoration())
             rvResult.pagination(
                 loadThreshold = 5,
                 loadNextPage = {
                     viewModel.sendEvent(Events.LoadNextPage)
                 }
             )
+            rvResult.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val firstVisibleVisible = layoutManager.findFirstVisibleItemPosition()
+                    if (searchAdapter.items.count() < firstVisibleVisible) return
+                    val item = searchAdapter.items[firstVisibleVisible]
+                    when (item) {
+                        is GeneralAdapterUi.Character -> {
+                            binding.tvTitle.text = "Characters"
+                        }
+                        is GeneralAdapterUi.Location -> {
+                            binding.tvTitle.text = "Locations"
+                        }
+                        is GeneralAdapterUi.Episode -> {
+                            binding.tvTitle.text = "Episodes"
+                        }
+                        is SearchItemUi.Header -> {
+                            binding.tvTitle.text = item.text
+                        }
+                        else -> {
+                        }
+                    }
+                }
+            })
             rvResult.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -122,6 +154,11 @@ class SearchFragment : BaseFragment<State, Actions, Events, SearchViewModel, Sea
 
     private fun getNotFoundText(feature: SearchFeature): String {
         return getString(R.string.not_found, feature.featureName.capitalize())
+    }
+
+    private fun buildDecoration(): RecyclerView.ItemDecoration {
+        return Decorator.Builder()
+            .build()
     }
 
     override fun bindActions(action: Actions) {

@@ -7,6 +7,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.wiki.cf_core.base.fragment.BaseFragment
+import com.wiki.cf_core.delegates.adapter.AdapterDelegateItem
 import com.wiki.cf_core.extensions.performIfChanged
 import com.wiki.cf_core.extensions.sendEvent
 import com.wiki.cf_core.navigation.routes.LocationListRoute
@@ -32,7 +33,7 @@ class LocationListFragment : BaseFragment<State, Actions, Events, LocationListVi
 
     private val locationAdapter = AsyncListDifferDelegationAdapter(
         getGeneralAdaptersDiffCallback(),
-        AdapterDelegatesManager<List<GeneralAdapterUi>>()
+        AdapterDelegatesManager<List<AdapterDelegateItem>>()
             .addDelegate(
                 getLocationAdapter(
                     onLocationClick = { viewModel.sendEvent(Events.OnLocationClick(it)) }

@@ -10,7 +10,6 @@ class MainAppRouter(
 ) : BaseAppRouter(screenProvider) {
 
     fun changeTab(tabKey: TabKey) {
-        println("1234 MainAppRouter tabKey $tabKey")
         executeCommands(ChangeTab(tabKey))
     }
 

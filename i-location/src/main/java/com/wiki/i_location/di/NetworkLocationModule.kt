@@ -9,5 +9,5 @@ val NetworkLocationModule = module {
     single<GetAllLocationsUseCase> { GetAllLocationsUseCaseImpl(get()) }
     single<GetLocationInfoUseCase> { GetLocationInfoUseCaseImpl(get()) }
     single<GetLocationsByIdsUseCase> { GetLocationsByIdsUseCaseImpl(get()) }
-    single<GetLocationsByNameUseCase> { GetLocationsByNameUseCaseImpl(get()) }
+    single<GetLocationsByNameUseCase> { GetLocationsByNameUseCase(get()) }
 }

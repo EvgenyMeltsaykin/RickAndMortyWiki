@@ -24,6 +24,7 @@ class UiPlugin : BasePlugin() {
                 api(Libs.Glide.glideTransformations)
                 api(Libs.DelegateAdapter.adapter)
                 api(Libs.DelegateAdapter.viewBinding)
+                api(Libs.recyclerDecoration)
             }
         }
     }

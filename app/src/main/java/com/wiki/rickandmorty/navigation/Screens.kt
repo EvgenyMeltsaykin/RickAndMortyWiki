@@ -18,7 +18,6 @@ import com.wiki.f_search.SearchFragment
 
 class Screens() : ScreenProvider {
     override fun byRoute(route: FragmentRoute): FragmentScreen {
-        println("1234 byRoute $route")
         return when (route) {
             is DetailCharacterRoute -> {
                 FragmentScreen { DetailCharacterFragment.newInstance(route) }

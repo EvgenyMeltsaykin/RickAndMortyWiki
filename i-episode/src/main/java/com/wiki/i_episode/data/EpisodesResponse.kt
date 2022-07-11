@@ -6,7 +6,7 @@ import com.wiki.cf_network.data.PaginationInfo
 
 data class EpisodesResponse(
     @SerializedName("results") val result: List<EpisodeInfoResponse>,
-    @SerializedName("info") val info: PaginationInfo
+    @SerializedName("info") val info: PaginationInfo?
 )
 
 data class EpisodeInfoResponse(

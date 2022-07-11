@@ -3,11 +3,11 @@ package com.wiki.f_search
 import com.wiki.cf_core.base.ActionScreen
 import com.wiki.cf_core.base.EventScreen
 import com.wiki.cf_core.base.StateScreen
+import com.wiki.cf_core.delegates.adapter.AdapterDelegateItem
 import com.wiki.cf_data.CharacterDto
 import com.wiki.cf_data.EpisodeDto
 import com.wiki.cf_data.LocationDto
 import com.wiki.cf_data.SearchFeature
-import com.wiki.f_general_adapter.GeneralAdapterUi
 
 class SearchScreenFeature {
 
@@ -24,7 +24,7 @@ class SearchScreenFeature {
 
     data class State(
         val feature: SearchFeature,
-        val searchResultUi: List<GeneralAdapterUi> = emptyList(),
+        val searchResultUi: List<AdapterDelegateItem> = emptyList(),
         val isLoading: Boolean = true,
         val page: Int = 1,
         val endReached: Boolean = false,
