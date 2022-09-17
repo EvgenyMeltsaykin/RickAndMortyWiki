@@ -5,15 +5,11 @@ import com.wiki.i_episode.data.EpisodesResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-interface GetAllEpisodesUseCase {
-    suspend operator fun invoke(page: Int = 0): Result<Flow<EpisodesResponse>>
-}
-
-class GetAllEpisodesUseCaseImpl(
+class GetAllEpisodesUseCase(
     private val apiService: EpisodeApiService
-) : GetAllEpisodesUseCase {
+) {
 
-    override suspend fun invoke(page: Int): Result<Flow<EpisodesResponse>> {
+    suspend operator fun invoke(page: Int): Result<Flow<EpisodesResponse>> {
         return Result.success(flowOf(apiService.getAllEpisodes(page)))
     }
 
