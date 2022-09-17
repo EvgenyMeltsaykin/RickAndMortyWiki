@@ -5,15 +5,11 @@ import com.wiki.i_episode.EpisodeApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-interface GetEpisodesByIdsUseCase {
-    suspend operator fun invoke(ids: List<String>): Flow<List<EpisodeDto>>
-}
-
-class GetEpisodesByIdsUseCaseImpl(
+class GetEpisodesByIdsUseCase(
     private val apiService: EpisodeApiService
-) : GetEpisodesByIdsUseCase {
+) {
 
-    override suspend fun invoke(ids: List<String>): Flow<List<EpisodeDto>> {
+    suspend operator fun invoke(ids: List<String>): Flow<List<EpisodeDto>> {
         val idsString = ids.joinToString(separator = ",")
         return if (ids.size > 1) {
             flowOf(apiService.getEpisodes(idsString).map { it.toEpisodeDto() })

@@ -5,15 +5,11 @@ import com.wiki.i_character.CharactersApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-interface GetCharactersByIdsUseCase {
-    suspend operator fun invoke(ids: List<String>): Flow<List<CharacterDto>>
-}
-
-class GetCharactersByIdsUseCaseImpl(
+class GetCharactersByIdsUseCase(
     private val apiService: CharactersApiService
-) : GetCharactersByIdsUseCase {
+) {
 
-    override suspend fun invoke(ids: List<String>): Flow<List<CharacterDto>> {
+    suspend operator fun invoke(ids: List<String>): Flow<List<CharacterDto>> {
         val idsString = ids.joinToString(separator = ",")
         return if (ids.size > 1) {
             flowOf(apiService.getCharacters(idsString).map { it.toCharacterDto() })

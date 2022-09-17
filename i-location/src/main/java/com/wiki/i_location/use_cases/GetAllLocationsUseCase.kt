@@ -5,15 +5,11 @@ import com.wiki.i_location.data.LocationsResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-interface GetAllLocationsUseCase {
-    suspend operator fun invoke(page: Int = 0): Result<Flow<LocationsResponse>>
-}
-
-class GetAllLocationsUseCaseImpl(
+class GetAllLocationsUseCase(
     private val apiService: LocationApiService
-) : GetAllLocationsUseCase {
+) {
 
-    override suspend fun invoke(page: Int): Result<Flow<LocationsResponse>> {
+    suspend operator fun invoke(page: Int): Result<Flow<LocationsResponse>> {
         return Result.success(flowOf(apiService.getAllLocations(page)))
     }
 
